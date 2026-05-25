@@ -2,7 +2,7 @@
 
 Auto Manual RAG Assistant 是一个面向汽车用户手册的本地化 RAG 问答系统项目。项目目标是基于汽车用户产品手册 PDF，逐步构建支持文档解析、结构化 chunk、向量检索、本地大模型问答、引用溯源、前端展示和评估体系的智能用车助手。
 
-当前版本是 V0 初始化版本，只提供项目结构、基础 FastAPI 接口、配置管理、数据模型和占位模块，不实现完整 RAG 功能。
+当前版本是 V1 最小 RAG 闭环版本，支持 PDF 文本抽取、基础清洗、fixed-size chunk、本地 embedding、Chroma 入库、检索、Ollama 回答和引用返回。
 
 ## 项目规范
 
@@ -32,6 +32,34 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
+```
+
+## V1 使用流程
+
+准备 PDF：
+
+```bash
+mkdir -p data/raw
+cp /path/to/your/manual.pdf data/raw/train_a.pdf
+```
+
+安装并启动 Ollama：
+
+```bash
+ollama pull qwen2.5:7b
+ollama serve
+```
+
+构建索引：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+```
+
+命令行提问：
+
+```bash
+python scripts/query_manual.py --question "如何正确使用安全带？"
 ```
 
 ## 启动 FastAPI

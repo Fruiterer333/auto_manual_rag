@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     RAW_DATA_DIR: str = "data/raw"
     PROCESSED_DATA_DIR: str = "data/processed"
     CHROMA_DIR: str = "data/chroma"
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_BASE_URL: str = "http://127.0.0.1:11434"
     OLLAMA_MODEL: str = "qwen2.5:7b"
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-zh-v1.5"
 

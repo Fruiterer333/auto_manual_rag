@@ -1,42 +1,40 @@
-from typing import Literal
-
 from pydantic import BaseModel, Field
 
 
-ContentType = Literal["normal", "warning", "caution", "note", "procedure", "table"]
-RiskLevel = Literal["low", "medium", "high", "critical"]
+MetadataValue = str | int | float | bool | None
 
 
 class Document(BaseModel):
+    doc_id: str
     source_file: str
-    title: str | None = None
-    page_count: int | None = None
-    metadata: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    page: int
+    text: str
+    metadata: dict[str, MetadataValue] = Field(default_factory=dict)
 
 
 class Chunk(BaseModel):
-    id: str
-    text: str
+    chunk_id: str
+    doc_id: str
     source_file: str
+    text: str
     page: int | None = None
     chapter: str | None = None
     section: str | None = None
-    content_type: ContentType = "normal"
-    risk_level: RiskLevel = "low"
-    metadata: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    content_type: str | None = None
+    risk_level: str | None = None
+    metadata: dict[str, MetadataValue] = Field(default_factory=dict)
 
 
 class Citation(BaseModel):
     source_file: str
     page: int | None = None
-    chapter: str | None = None
-    section: str | None = None
-    chunk_id: str | None = None
-    quote: str | None = None
+    chunk_id: str
+    quote: str
 
 
 class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1)
+    top_k: int = Field(default=5, ge=1, le=20)
 
 
 class QueryResponse(BaseModel):

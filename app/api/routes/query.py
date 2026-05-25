@@ -1,13 +1,12 @@
 from fastapi import APIRouter
 
-from app.data.schemas.models import QueryRequest
+from app.data.schemas.models import QueryRequest, QueryResponse
+from app.rag.chains.qa_chain import QAChain
 
 router = APIRouter(tags=["query"])
 
 
-@router.post("/query")
-def query_manual(request: QueryRequest) -> dict[str, str]:
-    return {
-        "question": request.question,
-        "answer": "Query endpoint is not implemented yet",
-    }
+@router.post("/query", response_model=QueryResponse)
+def query_manual(request: QueryRequest) -> QueryResponse:
+    chain = QAChain()
+    return chain.answer(question=request.question, top_k=request.top_k)

@@ -5,6 +5,7 @@ from app.rag.embeddings.local_embedding import LocalEmbeddingClient
 from app.rag.llms.ollama_client import OllamaClient
 from app.rag.prompts.answer_prompt import build_answer_prompt
 from app.rag.retrievers.chroma_retriever import ChromaRetriever
+from app.rag.utils.citation_utils import build_relevant_quote
 
 
 logger = get_logger(__name__)
@@ -28,26 +29,28 @@ class QAChain:
     def answer(self, question: str, top_k: int = 5) -> QueryResponse:
         logger.info("Query received: %s", question)
         query_embedding = self.embedding_client.embed_query(question)
-        chunks = self.retriever.search(query_embedding=query_embedding, top_k=top_k)
-        logger.info("Retrieved chunks: %s", len(chunks))
+        retrieved_chunks = self.retriever.search(query_embedding=query_embedding, top_k=top_k)
+        logger.info("Retrieved chunks: %s", len(retrieved_chunks))
 
-        if not chunks:
+        if not retrieved_chunks:
             return QueryResponse(
                 question=question,
                 answer="我没有在手册中找到可靠依据",
                 citations=[],
             )
 
+        chunks = [retrieved.chunk for retrieved in retrieved_chunks]
         prompt = build_answer_prompt(question=question, chunks=chunks)
         answer = self.llm_client.generate(prompt)
         citations = [
             Citation(
-                source_file=chunk.source_file,
-                page=chunk.page,
-                chunk_id=chunk.chunk_id,
-                quote=chunk.text[:120],
+                source_file=retrieved.chunk.source_file,
+                page=retrieved.chunk.page,
+                chunk_id=retrieved.chunk.chunk_id,
+                quote=build_relevant_quote(question, retrieved.chunk.text),
+                score=retrieved.score,
             )
-            for chunk in chunks
+            for retrieved in retrieved_chunks
         ]
         return QueryResponse(question=question, answer=answer, citations=citations)
 

@@ -28,6 +28,11 @@ if st.button("提交"):
 
             st.subheader("引用")
             for citation in data.get("citations", []):
-                st.markdown(f"- page={citation.get('page')}  \n  {citation.get('quote')}")
+                score = citation.get("score")
+                score_text = f"{score:.4f}" if isinstance(score, (int, float)) else "N/A"
+                st.markdown(
+                    f"- score={score_text} | page={citation.get('page')}  \n"
+                    f"  {citation.get('quote')}"
+                )
     else:
         st.warning("请输入问题后再提交。")

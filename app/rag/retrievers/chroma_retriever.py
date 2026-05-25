@@ -3,7 +3,7 @@ from pathlib import Path
 import chromadb
 
 from app.core.config import Settings
-from app.data.schemas.models import Chunk
+from app.data.schemas.models import Chunk, RetrievedChunk
 
 
 class ChromaRetriever:
@@ -33,22 +33,37 @@ class ChromaRetriever:
             metadatas=[self._chunk_to_metadata(chunk) for chunk in chunks],
         )
 
-    def search(self, query_embedding: list[float], top_k: int = 5) -> list[Chunk]:
+    def search(self, query_embedding: list[float], top_k: int = 5) -> list[RetrievedChunk]:
         results = self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
-            include=["documents", "metadatas"],
+            include=["documents", "metadatas", "distances"],
         )
 
         ids = results.get("ids", [[]])[0]
         documents = results.get("documents", [[]])[0]
         metadatas = results.get("metadatas", [[]])[0]
+        distances = results.get("distances", [[]])[0]
+        if not distances:
+            distances = [None] * len(ids)
 
-        chunks: list[Chunk] = []
-        for chunk_id, text, metadata in zip(ids, documents, metadatas, strict=False):
-            chunks.append(self._metadata_to_chunk(chunk_id, text or "", metadata or {}))
+        retrieved: list[RetrievedChunk] = []
+        for chunk_id, text, metadata, distance in zip(
+            ids,
+            documents,
+            metadatas,
+            distances,
+            strict=False,
+        ):
+            chunk = self._metadata_to_chunk(chunk_id, text or "", metadata or {})
+            retrieved.append(
+                RetrievedChunk(
+                    chunk=chunk,
+                    score=self._distance_to_score(distance),
+                )
+            )
 
-        return chunks
+        return retrieved
 
     def reset_collection(self) -> None:
         if self._collection_exists():
@@ -102,3 +117,8 @@ class ChromaRetriever:
                 if isinstance(value, (str, int, float, bool)) or value is None
             },
         )
+
+    def _distance_to_score(self, distance: object) -> float | None:
+        if isinstance(distance, (int, float)):
+            return 1.0 - float(distance)
+        return None

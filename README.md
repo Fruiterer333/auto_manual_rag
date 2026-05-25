@@ -62,6 +62,22 @@ python scripts/ingest_manual.py --rebuild
 python scripts/query_manual.py --question "如何正确使用安全带？"
 ```
 
+## V1.1 检索调试
+
+普通问答：
+
+```bash
+python scripts/query_manual.py --question "如何正确使用安全带？"
+```
+
+检索调试：
+
+```bash
+python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什么？" --debug-retrieval
+```
+
+`--debug-retrieval` 模式不会调用 Ollama，只用于查看 Chroma 检索结果。`score` 用于辅助判断检索相关性，越高表示越相关。
+
 ## 启动 FastAPI
 
 ```bash

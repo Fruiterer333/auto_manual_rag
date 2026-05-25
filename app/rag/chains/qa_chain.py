@@ -49,6 +49,7 @@ class QAChain:
                 chunk_id=retrieved.chunk.chunk_id,
                 quote=build_relevant_quote(question, retrieved.chunk.text),
                 score=retrieved.score,
+                distance=retrieved.distance,
             )
             for retrieved in retrieved_chunks
         ]

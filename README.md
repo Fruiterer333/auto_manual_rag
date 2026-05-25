@@ -76,7 +76,25 @@ python scripts/query_manual.py --question "如何正确使用安全带？"
 python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什么？" --debug-retrieval
 ```
 
-`--debug-retrieval` 模式不会调用 Ollama，只用于查看 Chroma 检索结果。`score` 用于辅助判断检索相关性，越高表示越相关。
+`--debug-retrieval` 模式不会调用 Ollama，只用于查看 Chroma 检索结果。
+
+V1.1.1 中 debug retrieval 会显示 `score` 和 `distance`：
+
+- `distance` 越小越相关。
+- `score` 越高越相关。
+- 当前 `score = 1 - distance`，基于 Chroma cosine distance。
+
+查看完整 chunk：
+
+```bash
+python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什么？" --debug-retrieval --show-full-chunk
+```
+
+当前 Chroma collection 显式使用 cosine metric。如果更新后发现 score/distance 行为异常，或者旧 collection 不是 cosine，请重新构建索引：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+```
 
 ## 启动 FastAPI
 

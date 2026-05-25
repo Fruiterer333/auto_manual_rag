@@ -31,11 +31,13 @@ class Citation(BaseModel):
     chunk_id: str
     quote: str
     score: float | None = None
+    distance: float | None = None
 
 
 class RetrievedChunk(BaseModel):
     chunk: Chunk
     score: float | None = None
+    distance: float | None = None
 
 
 class QueryRequest(BaseModel):

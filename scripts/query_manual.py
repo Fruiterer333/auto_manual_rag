@@ -19,13 +19,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--question", required=True)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--debug-retrieval", action="store_true")
+    parser.add_argument("--show-full-chunk", action="store_true")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     if args.debug_retrieval:
-        debug_retrieval(question=args.question, top_k=args.top_k)
+        debug_retrieval(
+            question=args.question,
+            top_k=args.top_k,
+            show_full_chunk=args.show_full_chunk,
+        )
         return
 
     response = QAChain().answer(question=args.question, top_k=args.top_k)
@@ -35,11 +40,15 @@ def main() -> None:
     print("引用：")
     for citation in response.citations:
         score = citation.score if citation.score is not None else "N/A"
-        print(f"- score={score} page={citation.page} chunk_id={citation.chunk_id}")
+        distance = citation.distance if citation.distance is not None else "N/A"
+        print(
+            f"- score={score} distance={distance} "
+            f"page={citation.page} chunk_id={citation.chunk_id}"
+        )
         print(f"  quote={citation.quote}")
 
 
-def debug_retrieval(question: str, top_k: int) -> None:
+def debug_retrieval(question: str, top_k: int, show_full_chunk: bool = False) -> None:
     settings = get_settings()
     embedding_client = LocalEmbeddingClient(settings)
     retriever = ChromaRetriever(settings)
@@ -51,14 +60,17 @@ def debug_retrieval(question: str, top_k: int) -> None:
     for rank, result in enumerate(results, start=1):
         chunk = result.chunk
         score = result.score if result.score is not None else "N/A"
-        preview = chunk.text[:300].replace("\n", " ")
+        distance = result.distance if result.distance is not None else "N/A"
+        chunk_text = chunk.text if show_full_chunk else chunk.text[:300].replace("\n", " ")
         quote = build_relevant_quote(question, chunk.text)
         print(f"\nrank={rank}")
         print(f"score={score}")
+        print(f"distance={distance}")
         print(f"page={chunk.page}")
         print(f"chunk_id={chunk.chunk_id}")
         print(f"source_file={chunk.source_file}")
-        print(f"text_preview={preview}")
+        label = "full_chunk" if show_full_chunk else "text_preview"
+        print(f"{label}={chunk_text}")
         print(f"relevant_quote={quote}")
 
 

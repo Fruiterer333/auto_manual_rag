@@ -29,9 +29,14 @@ if st.button("提交"):
             st.subheader("引用")
             for citation in data.get("citations", []):
                 score = citation.get("score")
+                distance = citation.get("distance")
                 score_text = f"{score:.4f}" if isinstance(score, (int, float)) else "N/A"
+                distance_text = (
+                    f"{distance:.4f}" if isinstance(distance, (int, float)) else "N/A"
+                )
                 st.markdown(
-                    f"- score={score_text} | page={citation.get('page')}  \n"
+                    f"- score={score_text} | distance={distance_text} | "
+                    f"page={citation.get('page')}  \n"
                     f"  {citation.get('quote')}"
                 )
     else:

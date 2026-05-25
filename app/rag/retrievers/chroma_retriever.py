@@ -18,7 +18,10 @@ class ChromaRetriever:
         self.collection_name = collection_name
         Path(settings.CHROMA_DIR).mkdir(parents=True, exist_ok=True)
         self.client = chromadb.PersistentClient(path=settings.CHROMA_DIR)
-        self.collection = self.client.get_or_create_collection(name=collection_name)
+        self.collection = self.client.get_or_create_collection(
+            name=collection_name,
+            metadata={"hnsw:space": "cosine"},
+        )
 
     def add_chunks(self, chunks: list[Chunk], embeddings: list[list[float]]) -> None:
         if len(chunks) != len(embeddings):
@@ -60,6 +63,7 @@ class ChromaRetriever:
                 RetrievedChunk(
                     chunk=chunk,
                     score=self._distance_to_score(distance),
+                    distance=self._normalize_distance(distance),
                 )
             )
 
@@ -68,7 +72,10 @@ class ChromaRetriever:
     def reset_collection(self) -> None:
         if self._collection_exists():
             self.client.delete_collection(name=self.collection_name)
-        self.collection = self.client.get_or_create_collection(name=self.collection_name)
+        self.collection = self.client.get_or_create_collection(
+            name=self.collection_name,
+            metadata={"hnsw:space": "cosine"},
+        )
 
     def _collection_exists(self) -> bool:
         for collection in self.client.list_collections():
@@ -119,6 +126,14 @@ class ChromaRetriever:
         )
 
     def _distance_to_score(self, distance: object) -> float | None:
+        normalized_distance = self._normalize_distance(distance)
+        if normalized_distance is None:
+            return None
+        # Chroma cosine distance is smaller for more relevant chunks.
+        # This score is based on cosine distance: higher score is more relevant.
+        return 1.0 - normalized_distance
+
+    def _normalize_distance(self, distance: object) -> float | None:
         if isinstance(distance, (int, float)):
-            return 1.0 - float(distance)
+            return float(distance)
         return None

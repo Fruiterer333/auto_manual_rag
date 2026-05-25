@@ -1,3 +1,5 @@
+from time import perf_counter
+
 from app.core.config import Settings, get_settings
 from app.core.logger import get_logger
 from app.data.schemas.models import Citation, QueryRequest, QueryResponse
@@ -27,15 +29,23 @@ class QAChain:
         self.llm_client = llm_client or OllamaClient(self.settings)
 
     def answer(self, question: str, top_k: int = 5) -> QueryResponse:
-        logger.info("Query received: %s", question)
+        start_time = perf_counter()
+        logger.info("QA started: question=%s top_k=%s", question, top_k)
         query_embedding = self.embedding_client.embed_query(question)
         retrieved_chunks = self.retriever.search(query_embedding=query_embedding, top_k=top_k)
         logger.info("Retrieved chunks: %s", len(retrieved_chunks))
 
         if not retrieved_chunks:
+            answer = "我没有在手册中找到可靠依据"
+            logger.warning("No retrieved chunks for question=%s", question)
+            logger.info(
+                "QA completed: citations=0 answer_chars=%s elapsed=%.2fs",
+                len(answer),
+                perf_counter() - start_time,
+            )
             return QueryResponse(
                 question=question,
-                answer="我没有在手册中找到可靠依据",
+                answer=answer,
                 citations=[],
             )
 
@@ -53,6 +63,12 @@ class QAChain:
             )
             for retrieved in retrieved_chunks
         ]
+        logger.info(
+            "QA completed: citations=%s answer_chars=%s elapsed=%.2fs",
+            len(citations),
+            len(answer),
+            perf_counter() - start_time,
+        )
         return QueryResponse(question=question, answer=answer, citations=citations)
 
     def run(self, request: QueryRequest) -> QueryResponse:

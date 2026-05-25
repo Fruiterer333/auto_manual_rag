@@ -1,6 +1,11 @@
+from statistics import mean
 from uuid import NAMESPACE_URL, uuid5
 
+from app.core.logger import get_logger
 from app.data.schemas.models import Chunk, Document
+
+
+logger = get_logger(__name__)
 
 
 class ManualTextSplitter:
@@ -18,6 +23,12 @@ class ManualTextSplitter:
         self.chunk_overlap = chunk_overlap
 
     def split_documents(self, documents: list[Document]) -> list[Chunk]:
+        logger.info(
+            "Start splitting documents: documents=%s chunk_size=%s chunk_overlap=%s",
+            len(documents),
+            self.chunk_size,
+            self.chunk_overlap,
+        )
         chunks: list[Chunk] = []
 
         for document in documents:
@@ -39,6 +50,18 @@ class ManualTextSplitter:
                     )
                 )
 
+        if not chunks:
+            logger.warning("No chunks generated from documents=%s", len(documents))
+            return chunks
+
+        lengths = [len(chunk.text) for chunk in chunks]
+        logger.info(
+            "Documents split: chunks=%s length_min=%s length_max=%s length_avg=%.1f",
+            len(chunks),
+            min(lengths),
+            max(lengths),
+            mean(lengths),
+        )
         return chunks
 
     def _split_text(self, text: str) -> list[str]:

@@ -34,6 +34,21 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+日志配置：
+
+```env
+LOG_LEVEL=INFO
+LOG_FILE=logs/app.log
+```
+
+`LOG_LEVEL` 控制日志详细程度。`LOG_FILE` 为空时只输出到控制台；设置 `LOG_FILE` 后会同时写入文件，并自动创建父目录。推荐本地调试使用 `INFO`；如果需要更详细的检索细节，例如检索结果文本 preview，可以设置 `LOG_LEVEL=DEBUG`。
+
+验证文件日志：
+
+```bash
+python -c "from app.core.logger import get_logger; logger=get_logger('test_logger'); logger.info('hello log file test')"
+```
+
 ## V1 使用流程
 
 准备 PDF：

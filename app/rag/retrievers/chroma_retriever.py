@@ -3,7 +3,11 @@ from pathlib import Path
 import chromadb
 
 from app.core.config import Settings
+from app.core.logger import get_logger
 from app.data.schemas.models import Chunk, RetrievedChunk
+
+
+logger = get_logger(__name__)
 
 
 class ChromaRetriever:
@@ -17,6 +21,11 @@ class ChromaRetriever:
         self.settings = settings
         self.collection_name = collection_name
         Path(settings.CHROMA_DIR).mkdir(parents=True, exist_ok=True)
+        logger.info(
+            "Initializing Chroma retriever: chroma_dir=%s collection=%s metric=cosine",
+            settings.CHROMA_DIR,
+            collection_name,
+        )
         self.client = chromadb.PersistentClient(path=settings.CHROMA_DIR)
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
@@ -24,9 +33,11 @@ class ChromaRetriever:
         )
 
     def add_chunks(self, chunks: list[Chunk], embeddings: list[list[float]]) -> None:
+        logger.info("Adding chunks to Chroma: count=%s collection=%s", len(chunks), self.collection_name)
         if len(chunks) != len(embeddings):
             raise ValueError("chunks and embeddings must have the same length")
         if not chunks:
+            logger.warning("No chunks to add to Chroma")
             return
 
         self.collection.upsert(
@@ -35,8 +46,10 @@ class ChromaRetriever:
             embeddings=embeddings,
             metadatas=[self._chunk_to_metadata(chunk) for chunk in chunks],
         )
+        logger.info("Chunks added to Chroma: count=%s collection=%s", len(chunks), self.collection_name)
 
     def search(self, query_embedding: list[float], top_k: int = 5) -> list[RetrievedChunk]:
+        logger.info("Searching Chroma: top_k=%s collection=%s", top_k, self.collection_name)
         results = self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
@@ -59,17 +72,31 @@ class ChromaRetriever:
             strict=False,
         ):
             chunk = self._metadata_to_chunk(chunk_id, text or "", metadata or {})
-            retrieved.append(
-                RetrievedChunk(
-                    chunk=chunk,
-                    score=self._distance_to_score(distance),
-                    distance=self._normalize_distance(distance),
-                )
+            retrieved_chunk = RetrievedChunk(
+                chunk=chunk,
+                score=self._distance_to_score(distance),
+                distance=self._normalize_distance(distance),
+            )
+            retrieved.append(retrieved_chunk)
+            logger.info(
+                "Search result: rank=%s page=%s score=%s distance=%s chunk_id=%s",
+                len(retrieved),
+                chunk.page,
+                retrieved_chunk.score,
+                retrieved_chunk.distance,
+                chunk.chunk_id,
+            )
+            logger.debug(
+                "Search result preview: rank=%s preview=%s",
+                len(retrieved),
+                chunk.text[:80].replace("\n", " "),
             )
 
+        logger.info("Chroma search completed: returned=%s", len(retrieved))
         return retrieved
 
     def reset_collection(self) -> None:
+        logger.info("Resetting Chroma collection: collection=%s", self.collection_name)
         if self._collection_exists():
             self.client.delete_collection(name=self.collection_name)
         self.collection = self.client.get_or_create_collection(

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: str = "http://127.0.0.1:11434"
     OLLAMA_MODEL: str = "qwen2.5:7b"
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-zh-v1.5"
+    LOG_LEVEL: str = "INFO"
+    LOG_FILE: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

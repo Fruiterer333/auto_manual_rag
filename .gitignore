@@ -9,3 +9,5 @@ data/chroma/*
 !data/chroma/.gitkeep
 *.pyc
 .DS_Store
+logs/
+*.log

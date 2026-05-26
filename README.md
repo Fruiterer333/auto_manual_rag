@@ -111,6 +111,32 @@ python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什�
 python scripts/ingest_manual.py --rebuild
 ```
 
+## V2.0 Manual-Aware Chunk
+
+V2.0 引入汽车用户手册结构化解析和 manual-aware chunk。索引构建时会先从 PDF 页文本中解析基础手册结构，再生成更细粒度、更适合检索的 chunk。
+
+新的 chunk 会尽量保留：
+
+- `chapter`
+- `section`
+- `warning` / `caution` / `note`
+- `procedure`
+- `risk_level`
+
+重新构建索引：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+```
+
+查看结构化检索结果：
+
+```bash
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval
+```
+
+V2.0 仍然没有实现 hybrid search、rerank、query rewrite 或评估体系，这些属于后续版本。
+
 ## 启动 FastAPI
 
 ```bash

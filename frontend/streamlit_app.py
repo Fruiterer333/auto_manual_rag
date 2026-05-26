@@ -36,7 +36,11 @@ if st.button("提交"):
                 )
                 st.markdown(
                     f"- score={score_text} | distance={distance_text} | "
-                    f"page={citation.get('page')}  \n"
+                    f"page={citation.get('page')} | "
+                    f"chapter={citation.get('chapter') or 'N/A'} | "
+                    f"section={citation.get('section') or 'N/A'} | "
+                    f"content_type={citation.get('content_type') or 'N/A'} | "
+                    f"risk_level={citation.get('risk_level') or 'N/A'}  \n"
                     f"  {citation.get('quote')}"
                 )
     else:

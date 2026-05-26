@@ -1,0 +1,1 @@
+"""Manual structure parser modules."""

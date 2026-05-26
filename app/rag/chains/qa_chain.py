@@ -60,6 +60,10 @@ class QAChain:
                 quote=build_relevant_quote(question, retrieved.chunk.text),
                 score=retrieved.score,
                 distance=retrieved.distance,
+                chapter=retrieved.chunk.chapter,
+                section=retrieved.chunk.section,
+                content_type=retrieved.chunk.content_type,
+                risk_level=retrieved.chunk.risk_level,
             )
             for retrieved in retrieved_chunks
         ]

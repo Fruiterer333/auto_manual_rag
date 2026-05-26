@@ -120,12 +120,20 @@ class ChromaRetriever:
             "section": chunk.section or "",
             "content_type": chunk.content_type or "",
             "risk_level": chunk.risk_level or "",
+            "start_page": self._metadata_value(chunk, "start_page", -1),
+            "end_page": self._metadata_value(chunk, "end_page", -1),
+            "heading_path": self._metadata_value(chunk, "heading_path", ""),
+            "split_strategy": self._metadata_value(chunk, "split_strategy", ""),
+            "has_warning": self._metadata_value(chunk, "has_warning", False),
+            "has_caution": self._metadata_value(chunk, "has_caution", False),
+            "has_note": self._metadata_value(chunk, "has_note", False),
+            "is_procedure": self._metadata_value(chunk, "is_procedure", False),
+            "source_pages": self._metadata_value(chunk, "source_pages", ""),
         }
         for key, value in chunk.metadata.items():
-            if value is None:
-                continue
-            if isinstance(value, (str, int, float, bool)):
-                metadata[key] = value
+            sanitized = self._sanitize_metadata_value(value, key=key)
+            if sanitized is not None:
+                metadata[key] = sanitized
         return metadata
 
     def _metadata_to_chunk(
@@ -151,6 +159,31 @@ class ChromaRetriever:
                 if isinstance(value, (str, int, float, bool)) or value is None
             },
         )
+
+    def _metadata_value(
+        self,
+        chunk: Chunk,
+        key: str,
+        default: str | int | float | bool,
+    ) -> str | int | float | bool:
+        value = chunk.metadata.get(key, default)
+        sanitized = self._sanitize_metadata_value(value, key=key)
+        return sanitized if sanitized is not None else default
+
+    def _sanitize_metadata_value(
+        self,
+        value: object,
+        key: str | None = None,
+    ) -> str | int | float | bool | None:
+        if value is None:
+            return None
+        if isinstance(value, (str, int, float, bool)):
+            return value
+        if isinstance(value, list):
+            if key == "heading_path":
+                return " > ".join(str(item) for item in value)
+            return ",".join(str(item) for item in value)
+        return str(value)
 
     def _distance_to_score(self, distance: object) -> float | None:
         normalized_distance = self._normalize_distance(distance)

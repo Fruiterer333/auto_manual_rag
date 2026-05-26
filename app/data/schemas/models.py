@@ -50,12 +50,16 @@ class Citation(BaseModel):
     section: str | None = None
     content_type: str | None = None
     risk_level: str | None = None
+    selection_score: float | None = None
+    is_expanded_neighbor: bool = False
 
 
 class RetrievedChunk(BaseModel):
     chunk: Chunk
     score: float | None = None
     distance: float | None = None
+    selection_score: float | None = None
+    is_expanded_neighbor: bool = False
 
 
 class QueryRequest(BaseModel):

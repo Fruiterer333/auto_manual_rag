@@ -104,6 +104,54 @@ class ChromaRetriever:
             metadata={"hnsw:space": "cosine"},
         )
 
+    def find_neighbor_chunks(
+        self,
+        chunk: Chunk,
+        max_neighbors: int = 1,
+    ) -> list[RetrievedChunk]:
+        if max_neighbors <= 0:
+            return []
+
+        chunk_index = self._metadata_int(chunk, "chunk_index")
+        if chunk_index is None:
+            return []
+
+        try:
+            results = self.collection.get(
+                where={"source_file": chunk.source_file},
+                include=["documents", "metadatas"],
+            )
+        except Exception:
+            logger.exception("Failed to lookup neighbor chunks: chunk_id=%s", chunk.chunk_id)
+            return []
+
+        ids = results.get("ids", [])
+        documents = results.get("documents", [])
+        metadatas = results.get("metadatas", [])
+        candidates: list[Chunk] = []
+        for chunk_id, text, metadata in zip(ids, documents, metadatas, strict=False):
+            if chunk_id == chunk.chunk_id:
+                continue
+            candidate = self._metadata_to_chunk(chunk_id, text or "", metadata or {})
+            if self._is_neighbor_candidate(chunk, candidate, chunk_index):
+                candidates.append(candidate)
+
+        candidates.sort(
+            key=lambda candidate: abs(
+                (self._metadata_int(candidate, "chunk_index") or chunk_index) - chunk_index
+            )
+        )
+        neighbors = [
+            RetrievedChunk(chunk=candidate, is_expanded_neighbor=True)
+            for candidate in candidates[:max_neighbors]
+        ]
+        logger.info(
+            "Neighbor lookup completed: base_chunk_id=%s neighbors=%s",
+            chunk.chunk_id,
+            [neighbor.chunk.chunk_id for neighbor in neighbors],
+        )
+        return neighbors
+
     def _collection_exists(self) -> bool:
         for collection in self.client.list_collections():
             name = getattr(collection, "name", collection)
@@ -159,6 +207,39 @@ class ChromaRetriever:
                 if isinstance(value, (str, int, float, bool)) or value is None
             },
         )
+
+    def _is_neighbor_candidate(
+        self,
+        base_chunk: Chunk,
+        candidate: Chunk,
+        base_index: int,
+    ) -> bool:
+        candidate_index = self._metadata_int(candidate, "chunk_index")
+        if candidate_index is None or candidate_index <= base_index:
+            return False
+        if candidate_index - base_index > 2:
+            return False
+        if candidate.source_file != base_chunk.source_file:
+            return False
+        if base_chunk.chapter and candidate.chapter != base_chunk.chapter:
+            return False
+        if base_chunk.section:
+            if candidate.section != base_chunk.section:
+                return False
+        else:
+            base_page = base_chunk.page or -999
+            candidate_page = candidate.page or -999
+            if abs(candidate_page - base_page) > 1:
+                return False
+        return True
+
+    def _metadata_int(self, chunk: Chunk, key: str) -> int | None:
+        value = chunk.metadata.get(key)
+        if isinstance(value, int):
+            return value
+        if isinstance(value, str) and value.isdigit():
+            return int(value)
+        return None
 
     def _metadata_value(
         self,

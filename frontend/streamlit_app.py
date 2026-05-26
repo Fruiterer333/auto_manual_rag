@@ -30,12 +30,21 @@ if st.button("提交"):
             for citation in data.get("citations", []):
                 score = citation.get("score")
                 distance = citation.get("distance")
+                selection_score = citation.get("selection_score")
+                is_expanded_neighbor = citation.get("is_expanded_neighbor")
                 score_text = f"{score:.4f}" if isinstance(score, (int, float)) else "N/A"
                 distance_text = (
                     f"{distance:.4f}" if isinstance(distance, (int, float)) else "N/A"
                 )
+                selection_score_text = (
+                    f"{selection_score:.4f}"
+                    if isinstance(selection_score, (int, float))
+                    else "N/A"
+                )
                 st.markdown(
                     f"- score={score_text} | distance={distance_text} | "
+                    f"selection_score={selection_score_text} | "
+                    f"expanded_neighbor={is_expanded_neighbor or False} | "
                     f"page={citation.get('page')} | "
                     f"chapter={citation.get('chapter') or 'N/A'} | "
                     f"section={citation.get('section') or 'N/A'} | "

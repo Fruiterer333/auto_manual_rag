@@ -48,20 +48,54 @@ SECTION_HINTS = {
     "车门",
     "空调",
     "泊车",
+    "节能驾驶",
+    "冬季驾驶",
+    "斜坡驻车",
+    "充电安全警告",
+    "胎压低报警",
+    "使用安全带",
+    "系紧安全带",
+    "安全带清洁",
+    "快速充电",
+    "车载充电设备",
+    "松开安全带",
+    "安全带检查",
+    "安全带使用",
+    "正确使用安全带",
+}
+EXACT_SECTION_TITLES = {
+    "使用安全带",
+    "系紧安全带",
+    "松开安全带",
+    "安全带清洁",
+    "安全带检查",
+    "安全带使用",
+    "正确使用安全带",
+    "胎压低报警",
+    "胎压监测系统",
+    "儿童锁",
+    "涉水驾驶",
+    "充电安全警告",
+    "快速充电",
+    "车载充电设备",
+    "节能驾驶",
+    "冬季驾驶",
+    "斜坡驻车",
 }
 
 HIGH_RISK_KEYWORDS = {
-    "警告",
+    "警告！",
     "生命危险",
     "人身伤害",
     "高压",
     "安全气囊",
     "气囊",
-    "制动",
-    "儿童",
+    "制动失效",
     "充电安全",
     "禁止",
     "不得",
+    "切勿",
+    "儿童单独留在车内",
 }
 
 MEDIUM_RISK_KEYWORDS = {
@@ -76,6 +110,68 @@ MEDIUM_RISK_KEYWORDS = {
 }
 
 PROCEDURE_PATTERN = re.compile(r"(^|\n)\s*(?:■|-|•|\d+\.|（\d+）|[①②③④⑤⑥⑦⑧⑨⑩])")
+LIST_INTRO_TERMS = {
+    "下列检查",
+    "以下检查",
+    "执行下列",
+    "注意以下事项",
+    "应注意以下事项",
+    "包括以下",
+    "如下",
+}
+BODY_SECTION_REJECT_TERMS = {
+    "应",
+    "请",
+    "需要",
+    "建议",
+    "可以",
+    "确保",
+    "检查",
+    "注意以下",
+    "下列",
+    "如下",
+    "以下",
+    "点击",
+}
+EXPLANATORY_SECTION_REJECT_TERMS = {
+    "图标",
+    "警告灯图标",
+    "显示屏显示",
+    "组合仪表",
+    "指示灯",
+    "警告灯",
+}
+BODY_TONE_TERMS = {
+    "请",
+    "应",
+    "如果",
+    "当",
+    "为了",
+    "确保",
+    "建议",
+    "可以",
+    "需要",
+}
+OPERATION_VERBS = {
+    "按下",
+    "拉出",
+    "插入",
+    "转动",
+    "检查",
+    "启用",
+    "关闭",
+    "打开",
+    "调节",
+    "选择",
+    "点击",
+    "缓慢拉出",
+    "锁舌",
+    "锁扣",
+    "腰部安全带",
+    "肩部安全带",
+    "插入锁扣",
+    "拉紧",
+}
 
 
 class ManualStructureParser:
@@ -92,6 +188,8 @@ class ManualStructureParser:
         current_chapter: str | None = None
         current_section: str | None = None
         skipped_toc_pages = 0
+        section_rejected_count = 0
+        flushed_blocks_count = 0
 
         for document in documents:
             lines = self._extract_lines(document.text)
@@ -125,7 +223,14 @@ class ManualStructureParser:
                     current_section = None
                     continue
 
-                if not page_skips_heading and self._is_section_heading(line):
+                if not page_skips_heading:
+                    is_section, rejected = self._classify_section_heading(line)
+                    if rejected:
+                        section_rejected_count += 1
+                else:
+                    is_section = False
+
+                if is_section:
                     self._flush_buffer(
                         blocks,
                         buffer,
@@ -133,6 +238,7 @@ class ManualStructureParser:
                         current_chapter,
                         current_section,
                     )
+                    flushed_blocks_count += 1
                     buffer = []
                     current_section = self._normalize_heading(line)
                     continue
@@ -145,6 +251,7 @@ class ManualStructureParser:
                         current_chapter,
                         current_section,
                     )
+                    flushed_blocks_count += 1
                     buffer = []
 
                 buffer.append(line)
@@ -160,9 +267,11 @@ class ManualStructureParser:
         content_counter = Counter(block.content_type or "normal" for block in blocks)
         risk_counter = Counter(block.risk_level or "low" for block in blocks)
         logger.info(
-            "Manual parser finished: blocks=%s skipped_toc_pages=%s content_type=%s risk_level=%s elapsed=%.2fs",
+            "Manual parser finished: blocks=%s skipped_toc_pages=%s section_rejected=%s flushed_blocks=%s content_type=%s risk_level=%s elapsed=%.2fs",
             len(blocks),
             skipped_toc_pages,
+            section_rejected_count,
+            flushed_blocks_count,
             dict(content_counter),
             dict(risk_counter),
             perf_counter() - start_time,
@@ -185,26 +294,71 @@ class ManualStructureParser:
         return normalized in CHAPTER_TITLES
 
     def _is_section_heading(self, line: str) -> bool:
+        is_section, _ = self._classify_section_heading(line)
+        return is_section
+
+    def _classify_section_heading(self, line: str) -> tuple[bool, bool]:
         normalized = self._normalize_heading(line)
-        if len(normalized) < 3 or len(normalized) > 24:
-            return False
+        if len(normalized) < 3:
+            return False, False
+        if normalized in EXACT_SECTION_TITLES:
+            return True, False
+        if self._is_list_line(normalized):
+            return False, True
+        if any(term in normalized for term in EXPLANATORY_SECTION_REJECT_TERMS):
+            return False, True
+        if any(term in normalized for term in BODY_TONE_TERMS) and self._chinese_char_count(normalized) > 10:
+            return False, True
+        if self._looks_like_body_text(normalized):
+            return False, True
+        if self._has_body_section_reject_terms(normalized):
+            return False, True
+        if self._punctuation_count(normalized) >= 1:
+            return False, True
+        if self._starts_with_step_like_number(normalized):
+            return False, True
+        if self._chinese_char_count(normalized) > 18:
+            return False, True
+        if len(normalized) > 28:
+            return False, True
         if self._looks_like_body_text(normalized) or self._is_list_line(normalized):
-            return False
+            return False, True
         if normalized in CHAPTER_TITLES:
-            return False
-        return any(hint in normalized for hint in SECTION_HINTS)
+            return False, False
+        return any(hint in normalized for hint in SECTION_HINTS), False
 
     def _normalize_heading(self, line: str) -> str:
         return re.sub(r"\s+", " ", line).strip()
 
     def _looks_like_body_text(self, line: str) -> bool:
-        return line.endswith(("。", "；", "，", "、", "！", "？", ".", ";", ","))
+        if line.endswith(("。", "；", "，", "、", "！", "？", ".", ";", ",")):
+            return True
+        if line.endswith(("：", ":")) and self._is_list_intro(line):
+            return True
+        return False
 
     def _starts_new_semantic_block(self, line: str) -> bool:
         return line.startswith(("警告", "警告！", "注意", "注意！", "说明", "说明！"))
 
     def _is_list_line(self, line: str) -> bool:
         return bool(PROCEDURE_PATTERN.search(line))
+
+    def _is_list_intro(self, line: str) -> bool:
+        return any(term in line for term in LIST_INTRO_TERMS)
+
+    def _has_body_section_reject_terms(self, line: str) -> bool:
+        return any(term in line for term in BODY_SECTION_REJECT_TERMS)
+
+    def _punctuation_count(self, line: str) -> int:
+        return sum(line.count(mark) for mark in ("，", "、", "；", "。", "：", ":", ",", ";"))
+
+    def _chinese_char_count(self, line: str) -> int:
+        return len(re.findall(r"[\u4e00-\u9fff]", line))
+
+    def _starts_with_step_like_number(self, line: str) -> bool:
+        return bool(re.match(r"^\d{1,3}", line)) and any(
+            verb in line for verb in OPERATION_VERBS
+        )
 
     def _flush_buffer(
         self,
@@ -247,11 +401,11 @@ class ManualStructureParser:
 
 
 def detect_content_type(text: str) -> str:
-    if "警告" in text:
+    if _is_warning_block(text):
         return "warning"
-    if "注意" in text:
+    if _is_caution_block(text):
         return "caution"
-    if "说明" in text:
+    if _is_note_block(text):
         return "note"
     if is_procedure_text(text):
         return "procedure"
@@ -267,7 +421,33 @@ def detect_risk_level(text: str, content_type: str | None = None) -> str:
 
 
 def is_procedure_text(text: str) -> bool:
-    return bool(PROCEDURE_PATTERN.search(text)) or any(
-        keyword in text
-        for keyword in ("请", "应", "按下", "拉出", "插入", "检查")
+    return (
+        bool(PROCEDURE_PATTERN.search(text))
+        or any(term in text for term in ("步骤", "执行下列", "请按以下", "按以下", "如何"))
+        or sum(1 for keyword in OPERATION_VERBS if keyword in text) >= 1
     )
+
+
+def _first_meaningful_line(text: str) -> str:
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            return line
+    return text.strip()
+
+
+def _is_warning_block(text: str) -> bool:
+    first_line = _first_meaningful_line(text)
+    if "警告灯" in first_line or "警告图标" in first_line or "警告信息" in first_line:
+        return False
+    return first_line.startswith("警告！") or first_line == "警告" or first_line.startswith("警告 ")
+
+
+def _is_caution_block(text: str) -> bool:
+    first_line = _first_meaningful_line(text)
+    return first_line.startswith("注意！") or first_line == "注意" or first_line.startswith("注意 ")
+
+
+def _is_note_block(text: str) -> bool:
+    first_line = _first_meaningful_line(text)
+    return first_line.startswith("说明！") or first_line == "说明" or first_line.startswith("说明 ")

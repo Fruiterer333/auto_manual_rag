@@ -137,6 +137,84 @@ python scripts/query_manual.py --question "如何正确使用安全带？" --deb
 
 V2.0 仍然没有实现 hybrid search、rerank、query rewrite 或评估体系，这些属于后续版本。
 
+## V2.1 Parser 校准与 Context Selection
+
+V2.1 校准了 manual parser 规则，减少正文长句被误判为 section，并收紧 `warning`、`procedure` 和 `risk_level` 的规则。V2.1 还增加了可关闭的轻量 metadata-aware context selection：不做额外检索，不引入新模型，只在 Chroma 已召回的候选结果内部，根据 section/chapter/content_type/risk_level/text 关键词做小幅排序加权。
+
+配置项：
+
+```env
+ENABLE_METADATA_CONTEXT_SELECTION=true
+CONTEXT_SELECTION_CANDIDATE_K=10
+```
+
+普通 query 默认使用 context selection。debug retrieval 默认查看原始 Chroma 排序：
+
+```bash
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval
+```
+
+查看 selection 后排序：
+
+```bash
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --use-context-selection
+```
+
+V2.1 仍然没有实现 hybrid search、BM25、cross-encoder rerank 或评估体系，这些属于后续 V3。
+
+## V2.2 上下文质量修复
+
+V2.2 修复了 V2 相比 V1 的上下文质量退化问题：
+
+- 进一步收紧 section 识别，减少正文、图标说明、警告灯说明被误判为 section。
+- 新增 query-time dedup，减少重复 chunk 进入 prompt 和 citations。
+- 新增 neighbor context expansion，用于补全跨页或相邻的 warning/caution/procedure 内容。
+- 对最终回答做轻量 post-process，移除“资料4 / 片段1 / 上下文2”等内部上下文编号表达。
+
+新增配置项：
+
+```env
+ENABLE_NEIGHBOR_CONTEXT_EXPANSION=true
+MAX_CONTEXT_CHARS=6000
+NEIGHBOR_EXPANSION_MAX_PER_CHUNK=1
+```
+
+V2.2 仍未实现 hybrid search、BM25、cross-encoder rerank，这些属于 V3。
+
+验收命令：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval --use-context-selection
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --use-context-selection
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？"
+```
+
+## V2.3 Cleanup / Stabilize
+
+V2.3 是 cleanup/stabilize 版本。V2.2 中尝试的 neighbor context expansion 在实验中会引入弱相关上下文，因此默认关闭。V2.3 保留确实有效的 prompt 防内部编号泄漏修复，保留轻量 metadata-aware context selection，并将 dedup 简化为安全清理。
+
+推荐配置：
+
+```env
+ENABLE_METADATA_CONTEXT_SELECTION=true
+CONTEXT_SELECTION_CANDIDATE_K=10
+ENABLE_NEIGHBOR_CONTEXT_EXPANSION=false
+MAX_CONTEXT_CHARS=6000
+NEIGHBOR_EXPANSION_MAX_PER_CHUNK=1
+```
+
+V2.3 不再继续堆规则修安全带/充电问题。剩余问题，例如“安全带操作问题无法稳定优先命中最相关 chunk”“充电相关多义词导致弱相关召回”，交给 V3 的 hybrid retrieval / BM25 / rerank 处理。
+
+测试命令：
+
+```bash
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval --use-context-selection
+python scripts/query_manual.py --question "胎压报警后应该怎么办？"
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --use-context-selection
+python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什么？"
+```
+
 ## 启动 FastAPI
 
 ```bash

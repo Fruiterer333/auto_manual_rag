@@ -1,4 +1,5 @@
 from collections import Counter
+import re
 from statistics import mean
 from uuid import NAMESPACE_URL, uuid5
 
@@ -57,6 +58,7 @@ class ManualStructureSplitter:
                             "end_page": block.end_page,
                             "heading_path": block.heading_path,
                             "chunk_index": len(chunks),
+                            "block_piece_index": piece_index,
                             "split_strategy": "manual_structure",
                             "has_warning": "警告" in text,
                             "has_caution": "注意" in text,
@@ -119,14 +121,34 @@ class ManualStructureSplitter:
     def _find_boundary(self, text: str, start: int, target_end: int) -> int:
         if target_end >= len(text):
             return len(text)
-        boundary_chars = ("警告", "注意", "说明", "\n■", "\n-", "\n•", "。", "；", "\n")
         search_start = max(start + int(self.chunk_size * 0.55), start)
+        list_boundary = self._find_list_item_boundary(text, search_start, target_end)
+        if list_boundary is not None:
+            return list_boundary
+
+        boundary_chars = ("警告", "注意", "说明", "。", "；", "\n")
         best_index = -1
         for boundary in boundary_chars:
             index = text.rfind(boundary, search_start, target_end)
             if index > best_index:
                 best_index = index + len(boundary)
         return best_index if best_index > search_start else target_end
+
+    def _find_list_item_boundary(
+        self,
+        text: str,
+        search_start: int,
+        target_end: int,
+    ) -> int | None:
+        matches = list(
+            re.finditer(
+                r"\n\s*(?:■|-|•|\d+\.|（\d+）|[①②③④⑤⑥⑦⑧⑨⑩])",
+                text[search_start:target_end],
+            )
+        )
+        if not matches:
+            return None
+        return search_start + matches[-1].start()
 
     def _source_pages(self, block: ManualBlock) -> list[int]:
         pages = block.metadata.get("source_pages")

@@ -14,6 +14,11 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-zh-v1.5"
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str | None = None
+    ENABLE_METADATA_CONTEXT_SELECTION: bool = True
+    CONTEXT_SELECTION_CANDIDATE_K: int = 10
+    ENABLE_NEIGHBOR_CONTEXT_EXPANSION: bool = False
+    MAX_CONTEXT_CHARS: int = 6000
+    NEIGHBOR_EXPANSION_MAX_PER_CHUNK: int = 1
 
     model_config = SettingsConfigDict(
         env_file=".env",

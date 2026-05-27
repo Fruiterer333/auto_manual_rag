@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     ENABLE_NEIGHBOR_CONTEXT_EXPANSION: bool = False
     MAX_CONTEXT_CHARS: int = 6000
     NEIGHBOR_EXPANSION_MAX_PER_CHUNK: int = 1
+    RETRIEVAL_MODE: str = "hybrid"
+    BM25_INDEX_PATH: str = "data/processed/bm25_index.pkl"
+    DENSE_CANDIDATE_K: int = 10
+    SPARSE_CANDIDATE_K: int = 10
+    HYBRID_FUSION_TOP_K: int = 10
+    RRF_K: int = 60
+    BM25_CORE_TERM_PENALTY_FACTOR: float = 0.35
 
     model_config = SettingsConfigDict(
         env_file=".env",

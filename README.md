@@ -215,6 +215,101 @@ python scripts/query_manual.py --question "充电时有哪些安全注意事项�
 python scripts/query_manual.py --question "车辆涉水驾驶后需要检查什么？"
 ```
 
+## V3.0 Hybrid Retrieval
+
+V3.0 引入 BM25 sparse retrieval，并支持三种检索模式：
+
+- `dense`：只使用 Chroma dense retrieval。
+- `bm25`：只使用 BM25 sparse retrieval。
+- `hybrid`：使用 dense + BM25，并通过 RRF 融合结果。
+
+默认模式为 `hybrid`。RRF 是 rank-level fusion 方法，不依赖 dense 和 BM25 的分数尺度一致。V3.0 不包含 cross-encoder rerank，rerank 留给 V3.1。
+
+配置项：
+
+```env
+RETRIEVAL_MODE=hybrid
+BM25_INDEX_PATH=data/processed/bm25_index.pkl
+DENSE_CANDIDATE_K=10
+SPARSE_CANDIDATE_K=10
+HYBRID_FUSION_TOP_K=10
+RRF_K=60
+BM25_CORE_TERM_PENALTY_FACTOR=0.35
+```
+
+候选数量说明：
+
+- `DENSE_CANDIDATE_K` / `SPARSE_CANDIDATE_K`：dense 和 BM25 单路召回数量。
+- `HYBRID_FUSION_TOP_K`：RRF 融合后的候选数量。
+- `CONTEXT_SELECTION_CANDIDATE_K`：metadata-aware context selection 使用的候选数量。
+- API/CLI 的 `top_k`：最终进入 prompt 的上下文数量。
+
+新增 BM25 index 后需要重新构建索引：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+```
+
+对比三种检索：
+
+```bash
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval --retrieval-mode dense
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval --retrieval-mode bm25
+python scripts/query_manual.py --question "如何正确使用安全带？" --debug-retrieval --retrieval-mode hybrid
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --retrieval-mode hybrid --use-context-selection
+```
+
+V3.0 的目标是改善短关键词问题、相近小节区分和多义词召回，并让 debug retrieval 可以比较 dense / BM25 / hybrid。
+
+## V3.0.1 Index Hygiene / Diagnostics
+
+V3.0.1 是 V3.0 hybrid retrieval 的 index hygiene 和诊断增强版本，不包含 rerank、query rewrite 或完整评估框架。
+
+本版本新增：
+
+- `scripts/inspect_chunks.py`：检查当前 BM25 index 中保存的 chunk 内容和 metadata。
+- BM25 index 构建时过滤 TOC/noise chunks。
+- dense / BM25 / hybrid retrieval 后做兜底过滤，避免目录、前言泛说明和极短泛说明进入 selection 和 prompt。
+- BM25 query tokenizer 保守降低“如何、哪些、什么、需要、应该、有哪些”等泛词影响。
+- BM25 core term soft penalty：当 query 中存在核心词但 chunk 完全不包含核心词时，只降低 BM25 分数，不硬过滤。
+- prompt 对列表类问题增加覆盖要求，尽量保留上下文中直接相关的项目符号条目。
+
+TOC/noise 过滤是保守规则：不会因为文本包含“注意”就过滤，也不会过滤真实安全警告或真实操作步骤。可能误伤或漏过少量边界 chunk，debug retrieval 会显示 `filter_reason` 便于诊断。
+
+新增 BM25 query 调试字段：
+
+- `bm25_query_tokens_raw`
+- `bm25_query_tokens_filtered`
+- `bm25_query_filtered_terms`
+- `bm25_core_terms`
+- `bm25_penalty_applied`
+- `bm25_penalty_reason`
+- `bm25_score_before_penalty`
+- `bm25_score_after_penalty`
+
+因为 BM25 index 过滤逻辑变更，需要重新构建索引：
+
+```bash
+python scripts/ingest_manual.py --rebuild
+```
+
+检查 chunks：
+
+```bash
+python scripts/inspect_chunks.py --page-range 99 103 --show-full
+python scripts/inspect_chunks.py --page-range 288 289 --show-full
+python scripts/inspect_chunks.py --query "充电枪 锁止装置 匀速 插拔 长时间充电" --show-full
+```
+
+检索调试：
+
+```bash
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --retrieval-mode bm25
+python scripts/query_manual.py --question "充电时有哪些安全注意事项？" --debug-retrieval --retrieval-mode hybrid --use-context-selection
+```
+
+四个测试问题只作为 smoke tests。本版本不针对具体问题写死规则；完整评测集和自动评测脚本留给 V3.0.2，cross-encoder rerank 留给 V3.1。
+
 ## 启动 FastAPI
 
 ```bash

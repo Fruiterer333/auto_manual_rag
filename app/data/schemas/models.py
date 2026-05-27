@@ -52,6 +52,12 @@ class Citation(BaseModel):
     risk_level: str | None = None
     selection_score: float | None = None
     is_expanded_neighbor: bool = False
+    retrieval_source: str | None = None
+    dense_rank: int | None = None
+    bm25_rank: int | None = None
+    dense_score: float | None = None
+    bm25_score: float | None = None
+    rrf_score: float | None = None
 
 
 class RetrievedChunk(BaseModel):
@@ -65,9 +71,11 @@ class RetrievedChunk(BaseModel):
 class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1)
     top_k: int = Field(default=5, ge=1, le=20)
+    retrieval_mode: str | None = None
 
 
 class QueryResponse(BaseModel):
     question: str
     answer: str
     citations: list[Citation] = Field(default_factory=list)
+    retrieval_mode: str | None = None

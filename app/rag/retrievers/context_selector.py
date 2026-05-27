@@ -81,18 +81,23 @@ def select_contexts(
 
 
 def deduplicate_contexts(contexts: list[RetrievedChunk]) -> tuple[list[RetrievedChunk], int]:
-    best_by_key: dict[str, RetrievedChunk] = {}
-    for item in contexts:
-        key = _dedup_key(item)
-        existing = best_by_key.get(key)
-        if existing is None or _ranking_score(item) > _ranking_score(existing):
-            best_by_key[key] = item
-
-    deduped = sorted(
-        best_by_key.values(),
+    ranked = sorted(
+        contexts,
         key=lambda item: _ranking_score(item),
         reverse=True,
     )
+    seen_chunk_ids: set[str] = set()
+    seen_texts: set[str] = set()
+    deduped: list[RetrievedChunk] = []
+    for item in ranked:
+        normalized_text = normalize_text_for_dedup(item.chunk.text)
+        if item.chunk.chunk_id in seen_chunk_ids or normalized_text in seen_texts:
+            continue
+        seen_chunk_ids.add(item.chunk.chunk_id)
+        if normalized_text:
+            seen_texts.add(normalized_text)
+        deduped.append(item)
+
     removed = len(contexts) - len(deduped)
     logger.info(
         "Context dedup completed: before_dedup_count=%s after_dedup_count=%s removed_duplicate_count=%s",
@@ -163,14 +168,6 @@ def _ranking_score(item: RetrievedChunk) -> float:
     if item.score is not None:
         return item.score
     return -999.0
-
-
-def _dedup_key(item: RetrievedChunk) -> str:
-    chunk = item.chunk
-    if chunk.chunk_id:
-        return f"chunk_id:{chunk.chunk_id}"
-    normalized = normalize_text_for_dedup(chunk.text)
-    return f"text:{normalized}"
 
 
 def normalize_text_for_dedup(text: str) -> str:

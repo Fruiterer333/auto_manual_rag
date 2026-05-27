@@ -12,6 +12,7 @@ from app.data.splitters.manual_splitter import ManualTextSplitter
 from app.data.splitters.manual_structure_splitter import ManualStructureSplitter
 from app.data.schemas.models import Chunk
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
+from app.rag.retrievers.bm25_retriever import BM25Retriever
 from app.rag.retrievers.chroma_retriever import ChromaRetriever
 
 
@@ -91,6 +92,9 @@ def ingest_manual(
         retriever.reset_collection()
     retriever.add_chunks(chunks, embeddings)
     logger.info("Chroma write completed: chunks=%s", len(chunks))
+
+    bm25_retriever = BM25Retriever(settings)
+    bm25_retriever.build_index(chunks)
     logger.info("Ingest completed: elapsed=%.2fs", perf_counter() - start_time)
 
     return IngestResult(

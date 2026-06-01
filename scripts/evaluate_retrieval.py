@@ -2,6 +2,7 @@ import argparse
 import csv
 import json
 import sys
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from time import perf_counter
@@ -272,17 +273,47 @@ def _format_markdown_report(summary: EvalSummary, *, elapsed_seconds: float) -> 
         "",
         _retrieval_mode_table(summary.by_retrieval_mode),
         "",
-        "## By Category",
-        "",
-        _group_table(summary.by_category),
-        "",
-        "## By Intent Type",
-        "",
-        _group_table(summary.by_intent_type),
-        "",
-        "## Failure Cases",
-        "",
     ]
+    comparison_rows = _build_cross_mode_comparison(summary.results)
+    if comparison_rows:
+        lines.extend(
+            [
+                "## Mode Winners Summary",
+                "",
+                _mode_winners_summary_table(comparison_rows),
+                "",
+                "## Cross-mode Case Comparison",
+                "",
+                _cross_mode_comparison_table(comparison_rows),
+                "",
+                "## Hybrid Regressions",
+                "",
+                _hybrid_regressions_table(comparison_rows),
+                "",
+                "## Top-5 Hit but Not Top-1 Cases",
+                "",
+                _top5_not_top1_table(comparison_rows),
+                "",
+                "## Section Metadata Missing Cases",
+                "",
+                _section_metadata_missing_table(comparison_rows),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## By Category",
+            "",
+            _group_table(summary.by_category),
+            "",
+            "## By Intent Type",
+            "",
+            _group_table(summary.by_intent_type),
+            "",
+            "## Failure Cases",
+            "",
+        ]
+    )
     failures = [result for result in summary.results if result.failure_reasons]
     if not failures:
         lines.append("No failure cases by current coarse criteria.")
@@ -356,7 +387,255 @@ def _retrieval_mode_table(groups: dict[str, dict[str, float | int | None]]) -> s
     return "\n".join(lines)
 
 
-def _format_value(value: float | int | None) -> str:
+def _build_cross_mode_comparison(
+    results: list[RetrievalEvalResult],
+) -> list[dict[str, Any]]:
+    grouped: dict[str, list[RetrievalEvalResult]] = defaultdict(list)
+    for result in results:
+        grouped[result.case_id].append(result)
+    if len({result.retrieval_mode for result in results}) <= 1:
+        return []
+
+    rows: list[dict[str, Any]] = []
+    for case_id, case_results in grouped.items():
+        by_mode = {result.retrieval_mode: result for result in case_results}
+        ranks = {
+            mode: _first_hit_rank(by_mode.get(mode))
+            for mode in VALID_MODES
+        }
+        top_hits = {
+            mode: _top_hit(by_mode.get(mode))
+            for mode in VALID_MODES
+        }
+        notes = _comparison_notes(ranks, top_hits)
+        first_result = case_results[0]
+        rows.append(
+            {
+                "case_id": case_id,
+                "category": first_result.category,
+                "intent_type": first_result.intent_type,
+                "dense_rank": ranks["dense"],
+                "bm25_rank": ranks["bm25"],
+                "hybrid_rank": ranks["hybrid"],
+                "best_mode": _best_modes(ranks),
+                "worst_mode": _worst_modes(ranks),
+                "dense_top1_page": _hit_value(top_hits["dense"], "page"),
+                "bm25_top1_page": _hit_value(top_hits["bm25"], "page"),
+                "hybrid_top1_page": _hit_value(top_hits["hybrid"], "page"),
+                "dense_top1_section": _hit_value(top_hits["dense"], "section"),
+                "bm25_top1_section": _hit_value(top_hits["bm25"], "section"),
+                "hybrid_top1_section": _hit_value(top_hits["hybrid"], "section"),
+                "comparison_note": ",".join(notes),
+            }
+        )
+    return sorted(rows, key=_comparison_sort_key)
+
+
+def _comparison_notes(
+    ranks: dict[str, int | None],
+    top_hits: dict[str, Any],
+) -> list[str]:
+    notes: list[str] = []
+    available_ranks = [rank for rank in ranks.values() if rank is not None]
+    all_modes_present = all(mode in ranks and ranks[mode] is not None for mode in VALID_MODES)
+    if not available_ranks:
+        return ["all_failed"]
+    if all(rank == 1 for rank in ranks.values()):
+        notes.append("all_top1_hit")
+    elif all_modes_present:
+        notes.append("all_hit_within_top5")
+    if _is_worse(ranks["hybrid"], ranks["bm25"]):
+        notes.append("hybrid_worse_than_bm25")
+    if _is_worse(ranks["hybrid"], ranks["dense"]):
+        notes.append("hybrid_worse_than_dense")
+    best_modes = _best_modes(ranks)
+    if "," not in best_modes and best_modes != "N/A":
+        notes.append(f"{best_modes}_best")
+    if min(available_ranks) > 1:
+        notes.append("top5_hit_but_no_top1")
+    if any(hit is not None and not hit.section for hit in top_hits.values()):
+        notes.append("section_metadata_missing")
+    return notes
+
+
+def _first_hit_rank(result: RetrievalEvalResult | None) -> int | None:
+    if result is None:
+        return None
+    rank = result.metrics.get("first_evidence_hit_rank")
+    return int(rank) if isinstance(rank, (int, float)) else None
+
+
+def _top_hit(result: RetrievalEvalResult | None) -> Any:
+    if result is None or not result.raw_hits:
+        return None
+    return result.raw_hits[0]
+
+
+def _hit_value(hit: Any, field: str) -> Any:
+    return getattr(hit, field) if hit is not None else None
+
+
+def _best_modes(ranks: dict[str, int | None]) -> str:
+    hits = {mode: rank for mode, rank in ranks.items() if rank is not None}
+    if not hits:
+        return "N/A"
+    best_rank = min(hits.values())
+    return ",".join(mode for mode in VALID_MODES if hits.get(mode) == best_rank)
+
+
+def _worst_modes(ranks: dict[str, int | None]) -> str:
+    if all(rank is None for rank in ranks.values()):
+        return "all_failed"
+    missing_modes = [mode for mode in VALID_MODES if ranks[mode] is None]
+    if missing_modes:
+        return ",".join(missing_modes)
+    worst_rank = max(rank for rank in ranks.values() if rank is not None)
+    return ",".join(mode for mode in VALID_MODES if ranks[mode] == worst_rank)
+
+
+def _is_worse(candidate: int | None, baseline: int | None) -> bool:
+    return baseline is not None and (candidate is None or candidate > baseline)
+
+
+def _comparison_sort_key(row: dict[str, Any]) -> tuple[int, int, int, str]:
+    notes = row["comparison_note"].split(",")
+    return (
+        0 if "all_failed" in notes else 1,
+        0 if any(note.startswith("hybrid_worse_than_") for note in notes) else 1,
+        0 if "top5_hit_but_no_top1" in notes else 1,
+        row["case_id"],
+    )
+
+
+def _cross_mode_comparison_table(rows: list[dict[str, Any]]) -> str:
+    headers = [
+        "case_id",
+        "category",
+        "intent_type",
+        "dense_rank",
+        "bm25_rank",
+        "hybrid_rank",
+        "best_mode",
+        "worst_mode",
+        "dense_top1_page",
+        "bm25_top1_page",
+        "hybrid_top1_page",
+        "dense_top1_section",
+        "bm25_top1_section",
+        "hybrid_top1_section",
+        "comparison_note",
+    ]
+    return _comparison_rows_table(rows, headers)
+
+
+def _mode_winners_summary_table(rows: list[dict[str, Any]]) -> str:
+    items = [
+        "all_top1_hit",
+        "bm25_best",
+        "dense_best",
+        "hybrid_best",
+        "tied_best",
+        "hybrid_worse_than_bm25",
+        "hybrid_worse_than_dense",
+        "top5_hit_but_no_top1",
+        "all_failed",
+        "section_metadata_missing",
+    ]
+    counts = {item: 0 for item in items}
+    for row in rows:
+        notes = _row_notes(row)
+        for item in items:
+            if item in notes:
+                counts[item] += 1
+        if "," in row["best_mode"]:
+            counts["tied_best"] += 1
+    lines = ["| item | count |", "| --- | ---: |"]
+    for item in items:
+        lines.append(f"| {item} | {counts[item]} |")
+    return "\n".join(lines)
+
+
+def _hybrid_regressions_table(rows: list[dict[str, Any]]) -> str:
+    selected = [
+        row
+        for row in rows
+        if {"hybrid_worse_than_bm25", "hybrid_worse_than_dense"} & _row_notes(row)
+    ]
+    if not selected:
+        return "No hybrid regression cases found."
+    headers = [
+        "case_id",
+        "category",
+        "intent_type",
+        "dense_rank",
+        "bm25_rank",
+        "hybrid_rank",
+        "best_mode",
+        "dense_top1_page",
+        "bm25_top1_page",
+        "hybrid_top1_page",
+        "dense_top1_section",
+        "bm25_top1_section",
+        "hybrid_top1_section",
+        "comparison_note",
+    ]
+    return _comparison_rows_table(selected, headers)
+
+
+def _top5_not_top1_table(rows: list[dict[str, Any]]) -> str:
+    selected = [row for row in rows if "top5_hit_but_no_top1" in _row_notes(row)]
+    if not selected:
+        return "No top-5-hit-but-not-top-1 cases found."
+    headers = [
+        "case_id",
+        "category",
+        "intent_type",
+        "dense_rank",
+        "bm25_rank",
+        "hybrid_rank",
+        "best_mode",
+        "worst_mode",
+        "dense_top1_page",
+        "bm25_top1_page",
+        "hybrid_top1_page",
+        "comparison_note",
+    ]
+    return _comparison_rows_table(selected, headers)
+
+
+def _section_metadata_missing_table(rows: list[dict[str, Any]]) -> str:
+    selected = [row for row in rows if "section_metadata_missing" in _row_notes(row)]
+    if not selected:
+        return "No section metadata missing cases found."
+    headers = [
+        "case_id",
+        "category",
+        "intent_type",
+        "dense_top1_page",
+        "bm25_top1_page",
+        "hybrid_top1_page",
+        "dense_top1_section",
+        "bm25_top1_section",
+        "hybrid_top1_section",
+        "comparison_note",
+    ]
+    return _comparison_rows_table(selected, headers)
+
+
+def _row_notes(row: dict[str, Any]) -> set[str]:
+    return {note for note in row["comparison_note"].split(",") if note}
+
+
+def _comparison_rows_table(rows: list[dict[str, Any]], headers: list[str]) -> str:
+    lines = ["| " + " | ".join(headers) + " |"]
+    lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+    for row in rows:
+        values = [_format_value(row.get(header)) for header in headers]
+        lines.append("| " + " | ".join(values) + " |")
+    return "\n".join(lines)
+
+
+def _format_value(value: Any) -> str:
     if value is None:
         return "N/A"
     if isinstance(value, float):

@@ -1,12 +1,12 @@
 # Retrieval Evaluation Report
 
-- generated_at: 2026-06-01T19:47:48
+- generated_at: 2026-06-01T19:56:18
 - dataset: `data/eval/manual_eval_set.jsonl`
 - case_count: 29
 - retrieval_modes: hybrid
 - top_k: 5
 - use_context_selection: True
-- elapsed_seconds: 12.79
+- elapsed_seconds: 15.10
 
 ## Overall Metrics
 

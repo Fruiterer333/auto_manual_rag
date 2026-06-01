@@ -117,3 +117,6 @@ python scripts/evaluate_retrieval.py --dataset data/eval/manual_eval_set.jsonl -
 - `evidence.quote` 应尽量具体，并能追溯到真实 indexed chunk。避免使用过短、过泛或依赖图标语义的片段。
 - 当前项目是纯文本 RAG。默认不将需要图标识别、图片理解或其他多模态能力的问题纳入普通评测。
 - 不得根据单个 eval case 的失败直接修改 retrieval 规则。后续优化必须先确认问题是否具有通用性，再通过完整 dev set 和消融对比验证。
+
+## dataset changelog
+删除 seatbelt_after_collision_warning_001：该样例的 evidence 标注置信度不足，可能导致误判检索失败，因此暂时从 V3.0.2 eval set 中移除。

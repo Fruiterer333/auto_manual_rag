@@ -69,7 +69,7 @@ class EvalSummary(BaseModel):
     top_k: int
     use_context_selection: bool = False
     overall_metrics: dict[str, float | int | None] = Field(default_factory=dict)
+    by_retrieval_mode: dict[str, dict[str, float | int | None]] = Field(default_factory=dict)
     by_category: dict[str, dict[str, float | int | None]] = Field(default_factory=dict)
     by_intent_type: dict[str, dict[str, float | int | None]] = Field(default_factory=dict)
     results: list[RetrievalEvalResult] = Field(default_factory=list)
-

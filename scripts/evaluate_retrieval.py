@@ -96,6 +96,7 @@ def main() -> None:
         top_k=args.top_k,
         use_context_selection=args.use_context_selection,
         overall_metrics=aggregate_results(all_results),
+        by_retrieval_mode=group_aggregate(all_results, field="retrieval_mode"),
         by_category=group_aggregate(all_results, field="category"),
         by_intent_type=group_aggregate(all_results, field="intent_type"),
         results=all_results,
@@ -267,6 +268,10 @@ def _format_markdown_report(summary: EvalSummary, *, elapsed_seconds: float) -> 
         "",
         _metrics_table(summary.overall_metrics),
         "",
+        "## By Retrieval Mode",
+        "",
+        _retrieval_mode_table(summary.by_retrieval_mode),
+        "",
         "## By Category",
         "",
         _group_table(summary.by_category),
@@ -319,6 +324,35 @@ def _group_table(groups: dict[str, dict[str, float | int | None]]) -> str:
     for group, metrics in sorted(groups.items()):
         values = [_format_value(metrics.get(key)) for key in preferred]
         lines.append(f"| {group} | " + " | ".join(values) + " |")
+    return "\n".join(lines)
+
+
+def _retrieval_mode_table(groups: dict[str, dict[str, float | int | None]]) -> str:
+    if not groups:
+        return "_No retrieval modes._"
+    preferred = [
+        "case_count",
+        "evidence_hit@1",
+        "evidence_hit@3",
+        "evidence_hit@5",
+        "mrr",
+        "average_first_hit_rank",
+        "expected_section_hit@5",
+        "acceptable_section_hit@5",
+        "any_term_hit@5",
+        "all_terms_hit@5",
+        "term_coverage_ratio@5",
+        "noise_rate@5",
+        "duplicate_chunk_id_rate@5",
+        "same_page_duplicate_rate@5",
+        "cross_page_repeated_content_rate@5",
+        "final_context_hit",
+    ]
+    lines = ["| retrieval_mode | " + " | ".join(preferred) + " |"]
+    lines.append("| --- | " + " | ".join(["---:"] * len(preferred)) + " |")
+    for mode, metrics in sorted(groups.items()):
+        values = [_format_value(metrics.get(key)) for key in preferred]
+        lines.append(f"| {mode} | " + " | ".join(values) + " |")
     return "\n".join(lines)
 
 

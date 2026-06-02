@@ -68,6 +68,10 @@ class EvalSummary(BaseModel):
     retrieval_modes: list[str] = Field(default_factory=list)
     top_k: int
     use_context_selection: bool = False
+    rerank_enabled: bool = False
+    rerank_model_name: str | None = None
+    rerank_top_n: int | None = None
+    rerank_output_top_k: int | None = None
     overall_metrics: dict[str, float | int | None] = Field(default_factory=dict)
     by_retrieval_mode: dict[str, dict[str, float | int | None]] = Field(default_factory=dict)
     by_category: dict[str, dict[str, float | int | None]] = Field(default_factory=dict)

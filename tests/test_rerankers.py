@@ -59,16 +59,37 @@ def test_noop_reranker_limits_output_without_reordering() -> None:
     assert [item.chunk.chunk_id for item in result] == ["chunk-1", "chunk-2"]
 
 
-def test_reranker_factory_returns_noop_when_disabled() -> None:
+def test_reranker_factory_returns_noop_when_disabled(monkeypatch) -> None:
+    def fail_if_constructed(**kwargs):
+        raise AssertionError(f"CrossEncoderReranker should not be constructed: {kwargs}")
+
+    monkeypatch.setattr("app.rag.rerankers.CrossEncoderReranker", fail_if_constructed)
     settings = Settings(ENABLE_RERANK=False)
 
     assert isinstance(get_reranker(settings), NoopReranker)
 
 
-def test_reranker_factory_falls_back_to_noop_when_enabled() -> None:
+def test_reranker_factory_constructs_cross_encoder_when_enabled(monkeypatch) -> None:
+    calls = []
+
+    class FakeCrossEncoderReranker:
+        def __init__(self, **kwargs) -> None:
+            calls.append(kwargs)
+
+    monkeypatch.setattr("app.rag.rerankers.CrossEncoderReranker", FakeCrossEncoderReranker)
     settings = Settings(ENABLE_RERANK=True)
 
-    assert isinstance(get_reranker(settings), NoopReranker)
+    result = get_reranker(settings)
+
+    assert isinstance(result, FakeCrossEncoderReranker)
+    assert calls == [
+        {
+            "model_name": "BAAI/bge-reranker-base",
+            "device": "auto",
+            "batch_size": 8,
+            "max_length": 512,
+        }
+    ]
 
 
 class _FakeEmbeddingClient:
@@ -78,12 +99,13 @@ class _FakeEmbeddingClient:
 
 
 class _FakeRetriever:
-    def __init__(self, chunks: list[RetrievedChunk]) -> None:
+    def __init__(self, chunks: list[RetrievedChunk], expected_candidate_k: int = 2) -> None:
         self.chunks = chunks
+        self.expected_candidate_k = expected_candidate_k
 
     def search(self, **kwargs) -> list[RetrievedChunk]:
-        assert kwargs["top_k"] == 2
-        assert kwargs["candidate_k"] == 2
+        assert kwargs["top_k"] == self.expected_candidate_k
+        assert kwargs["candidate_k"] == self.expected_candidate_k
         return self.chunks
 
 
@@ -105,6 +127,21 @@ class _RecordingNoopReranker(NoopReranker):
     ) -> list[RetrievedChunk]:
         self.calls.append((query, [item.chunk.chunk_id for item in chunks], top_k))
         return super().rerank(query, chunks, top_k)
+
+
+class _RecordingReverseReranker(NoopReranker):
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, list[str], int | None]] = []
+
+    def rerank(
+        self,
+        query: str,
+        chunks: list[RetrievedChunk],
+        top_k: int | None = None,
+    ) -> list[RetrievedChunk]:
+        self.calls.append((query, [item.chunk.chunk_id for item in chunks], top_k))
+        reranked = list(reversed(chunks))
+        return reranked if top_k is None else reranked[:top_k]
 
 
 def test_qa_chain_noop_hook_preserves_default_candidate_order() -> None:
@@ -129,3 +166,30 @@ def test_qa_chain_noop_hook_preserves_default_candidate_order() -> None:
 
     assert reranker.calls == [("如何执行操作？", ["chunk-1", "chunk-2"], None)]
     assert [citation.chunk_id for citation in response.citations] == ["chunk-1", "chunk-2"]
+
+
+def test_qa_chain_rerank_hook_limits_candidates_when_enabled() -> None:
+    chunks = [
+        _retrieved_chunk("chunk-1", 0.9),
+        _retrieved_chunk("chunk-2", 0.8),
+        _retrieved_chunk("chunk-3", 0.7),
+    ]
+    reranker = _RecordingReverseReranker()
+    chain = QAChain(
+        settings=Settings(
+            ENABLE_RERANK=True,
+            RERANK_TOP_N=3,
+            RERANK_OUTPUT_TOP_K=2,
+            ENABLE_METADATA_CONTEXT_SELECTION=False,
+            ENABLE_NEIGHBOR_CONTEXT_EXPANSION=False,
+        ),
+        embedding_client=_FakeEmbeddingClient(),
+        retriever=_FakeRetriever(chunks, expected_candidate_k=3),
+        llm_client=_FakeLLMClient(),
+        reranker=reranker,
+    )
+
+    response = chain.answer("如何执行操作？", top_k=2, retrieval_mode="hybrid")
+
+    assert reranker.calls == [("如何执行操作？", ["chunk-1", "chunk-2", "chunk-3"], 2)]
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-3", "chunk-2"]

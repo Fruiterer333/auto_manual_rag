@@ -13,13 +13,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app.core.config import get_settings
+from app.core.config import Settings, get_settings
 from app.core.logger import get_logger
 from app.data.schemas.models import RetrievedChunk
 from app.evaluation.loader import load_eval_cases
 from app.evaluation.metrics import aggregate_results, evaluate_case_retrieval, group_aggregate
 from app.evaluation.schemas import EvalCase, EvalSummary, RetrievalEvalResult
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
+from app.rag.rerankers import get_reranker
+from app.rag.rerankers.base import BaseReranker
 from app.rag.retrievers.chunk_filters import (
     deduplicate_chunks_by_content,
     filter_retrieval_chunks,
@@ -43,6 +45,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--intent-type")
     parser.add_argument("--split", default="dev")
     parser.add_argument("--use-context-selection", action="store_true")
+    parser.add_argument("--enable-rerank", action="store_true")
+    parser.add_argument("--rerank-top-n", type=int)
+    parser.add_argument("--rerank-output-top-k", type=int)
+    parser.add_argument("--rerank-model-name")
+    parser.add_argument("--rerank-device", choices=("auto", "cpu", "mps", "cuda"))
     parser.add_argument("--output")
     parser.add_argument("--output-format", choices=("json", "csv", "md"))
     return parser.parse_args()
@@ -50,7 +57,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    settings = get_settings()
+    settings = _settings_with_rerank_overrides(get_settings(), args)
     modes = list(VALID_MODES) if args.all_modes else [args.retrieval_mode or settings.RETRIEVAL_MODE]
     _validate_modes(modes)
 
@@ -67,6 +74,7 @@ def main() -> None:
     start_time = perf_counter()
     retriever = HybridRetriever(settings)
     embedding_client = _maybe_load_embedding_client(modes, settings)
+    reranker = get_reranker(settings)
     all_results: list[RetrievalEvalResult] = []
     for mode in modes:
         for case in cases:
@@ -77,6 +85,7 @@ def main() -> None:
                 use_context_selection=args.use_context_selection,
                 retriever=retriever,
                 embedding_client=embedding_client,
+                reranker=reranker,
                 settings=settings,
             )
             all_results.append(
@@ -96,6 +105,10 @@ def main() -> None:
         retrieval_modes=modes,
         top_k=args.top_k,
         use_context_selection=args.use_context_selection,
+        rerank_enabled=settings.ENABLE_RERANK,
+        rerank_model_name=settings.RERANK_MODEL_NAME if settings.ENABLE_RERANK else None,
+        rerank_top_n=settings.RERANK_TOP_N if settings.ENABLE_RERANK else None,
+        rerank_output_top_k=settings.RERANK_OUTPUT_TOP_K if settings.ENABLE_RERANK else None,
         overall_metrics=aggregate_results(all_results),
         by_retrieval_mode=group_aggregate(all_results, field="retrieval_mode"),
         by_category=group_aggregate(all_results, field="category"),
@@ -117,12 +130,13 @@ def main() -> None:
         print(output_text)
 
     logger.info(
-        "Retrieval evaluation completed: dataset=%s cases=%s modes=%s top_k=%s context_selection=%s elapsed=%.2fs",
+        "Retrieval evaluation completed: dataset=%s cases=%s modes=%s top_k=%s context_selection=%s rerank_enabled=%s elapsed=%.2fs",
         args.dataset,
         len(cases),
         modes,
         args.top_k,
         args.use_context_selection,
+        settings.ENABLE_RERANK,
         elapsed,
     )
 
@@ -135,11 +149,14 @@ def _retrieve_for_case(
     use_context_selection: bool,
     retriever: HybridRetriever,
     embedding_client: LocalEmbeddingClient | None,
+    reranker: BaseReranker,
     settings,
 ) -> tuple[list[RetrievedChunk], list[RetrievedChunk] | None]:
     candidate_k = top_k
     if use_context_selection:
         candidate_k = max(top_k, settings.CONTEXT_SELECTION_CANDIDATE_K)
+    if settings.ENABLE_RERANK:
+        candidate_k = max(candidate_k, settings.RERANK_TOP_N)
     query_embedding: list[float] = []
     if mode in {"dense", "hybrid"}:
         if embedding_client is None:
@@ -153,17 +170,34 @@ def _retrieve_for_case(
         candidate_k=candidate_k,
         retrieval_mode=mode,
     )
+    if settings.ENABLE_RERANK:
+        filtered, _ = filter_retrieval_chunks(retrieved, stage="evaluation_rerank_pre")
+        deduped, _ = deduplicate_chunks_by_content(
+            filtered,
+            stage="evaluation_rerank_pre",
+        )
+        rerank_pool_size = max(top_k, settings.RERANK_TOP_N)
+        rerank_output_size = max(top_k, settings.RERANK_OUTPUT_TOP_K)
+        retrieved = reranker.rerank(
+            query=case.question,
+            chunks=deduped[:rerank_pool_size],
+            top_k=rerank_output_size,
+        )
     if not use_context_selection:
         return retrieved[:top_k], None
 
-    filtered, _ = filter_retrieval_chunks(retrieved, stage="evaluation_context_selection_pre")
-    deduped, _ = deduplicate_chunks_by_content(
-        filtered,
-        stage="evaluation_context_selection_pre",
-    )
+    if not settings.ENABLE_RERANK:
+        retrieved, _ = filter_retrieval_chunks(
+            retrieved,
+            stage="evaluation_context_selection_pre",
+        )
+        retrieved, _ = deduplicate_chunks_by_content(
+            retrieved,
+            stage="evaluation_context_selection_pre",
+        )
     selected = select_contexts(
         question=case.question,
-        retrieved=deduped,
+        retrieved=retrieved,
         top_k=top_k,
         enabled=True,
     )
@@ -180,6 +214,22 @@ def _maybe_load_embedding_client(
     if any(mode in {"dense", "hybrid"} for mode in modes):
         return LocalEmbeddingClient(settings)
     return None
+
+
+def _settings_with_rerank_overrides(
+    settings: Settings,
+    args: argparse.Namespace,
+) -> Settings:
+    updates: dict[str, Any] = {"ENABLE_RERANK": args.enable_rerank}
+    if args.rerank_top_n is not None:
+        updates["RERANK_TOP_N"] = args.rerank_top_n
+    if args.rerank_output_top_k is not None:
+        updates["RERANK_OUTPUT_TOP_K"] = args.rerank_output_top_k
+    if args.rerank_model_name:
+        updates["RERANK_MODEL_NAME"] = args.rerank_model_name
+    if args.rerank_device:
+        updates["RERANK_DEVICE"] = args.rerank_device
+    return settings.model_copy(update=updates)
 
 
 def _validate_modes(modes: list[str]) -> None:
@@ -263,6 +313,10 @@ def _format_markdown_report(summary: EvalSummary, *, elapsed_seconds: float) -> 
         f"- retrieval_modes: {', '.join(summary.retrieval_modes)}",
         f"- top_k: {summary.top_k}",
         f"- use_context_selection: {summary.use_context_selection}",
+        f"- rerank_enabled: {summary.rerank_enabled}",
+        f"- rerank_model_name: {summary.rerank_model_name or 'N/A'}",
+        f"- rerank_top_n: {_format_value(summary.rerank_top_n)}",
+        f"- rerank_output_top_k: {_format_value(summary.rerank_output_top_k)}",
         f"- elapsed_seconds: {elapsed_seconds:.2f}",
         "",
         "## Overall Metrics",

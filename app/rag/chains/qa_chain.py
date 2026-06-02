@@ -55,6 +55,8 @@ class QAChain:
         candidate_k = top_k
         if selection_enabled:
             candidate_k = max(top_k, self.settings.CONTEXT_SELECTION_CANDIDATE_K)
+        if self.settings.ENABLE_RERANK:
+            candidate_k = max(candidate_k, self.settings.RERANK_TOP_N)
         retrieved_candidates = self.retriever.search(
             question=question,
             query_embedding=query_embedding,
@@ -70,11 +72,20 @@ class QAChain:
             filtered_candidates,
             stage="context_selection_pre",
         )
-        reranked_candidates = self.reranker.rerank(
-            query=question,
-            chunks=filtered_candidates,
-            top_k=None,
-        )
+        if self.settings.ENABLE_RERANK:
+            rerank_pool_size = max(top_k, self.settings.RERANK_TOP_N)
+            rerank_output_size = max(top_k, self.settings.RERANK_OUTPUT_TOP_K)
+            reranked_candidates = self.reranker.rerank(
+                query=question,
+                chunks=filtered_candidates[:rerank_pool_size],
+                top_k=rerank_output_size,
+            )
+        else:
+            reranked_candidates = self.reranker.rerank(
+                query=question,
+                chunks=filtered_candidates,
+                top_k=None,
+            )
         retrieved_chunks = select_contexts(
             question=question,
             retrieved=reranked_candidates,

@@ -28,11 +28,12 @@
 - V1 已完成最小 RAG 闭环，包括文档导入、文本切分、向量索引、检索、基于上下文回答和引用返回。
 - V2 已完成汽车用户手册增强，包括 manual-aware chunking、metadata-aware context selection、基础引用质量优化和结构化日志。
 - V3.0 已完成 Hybrid Retrieval 的基础实现，包括 BM25 sparse retrieval、dense retrieval 和 RRF fusion，并支持 `dense` / `bm25` / `hybrid` 三种 `retrieval_mode`。
-- V3.0.1 已完成初版实现，内容包括 index hygiene、TOC/noise filtering、`inspect_chunks`、conservative BM25 query filtering 和 debug retrieval 增强；但 V3.0.1 尚未完成最终验收，也尚未 commit 为稳定版本。
-- 当前待执行阶段是 V3.0.1-fix，目标是修复 V3.0.1 审查中发现的通用工程问题，包括固定 `core_terms` 过于接近 smoke tests、filter 日志缺少 `stage` 字段、TOC fragment 识别不完整、hybrid / selection / final context 中仍可能出现 content-level duplicate，以及 debug retrieval 需要更清楚展示 filtering / dedup / coverage penalty 信息。
-- V3.0.1-fix 的目标不是继续优化四个 smoke tests 的回答效果，而是收尾通用工程卫生问题。
-- 只有在 V3.0.1-fix 验收通过并 commit 后，才进入 V3.0.2：构建 evaluation dataset、evaluation runner 和基础 retrieval / answer metrics。
-- 在评测体系建立之前，不应直接进入 cross-encoder rerank、query rewrite 或 agent workflow。
+- V3.0.1 已完成 index hygiene、TOC/noise filtering、`inspect_chunks`、conservative BM25 query filtering、content-level dedup 和 debug retrieval 增强。
+- V3.0.2 已完成 evaluation dataset、evaluation runner 和基础 retrieval metrics。
+- V3.0.3 已完成 cross-mode diagnostics。
+- V3.1 已完成可关闭的本地 cross-encoder rerank baseline 和 rerank on/off comparison。
+- V3.2 已将评测集扩展并清洗为 69 条 text-only dev cases，并完成 hybrid baseline 与 `BAAI/bge-reranker-base` 的复核。rerank 在当前 dev set 上明显改善 top-1 evidence ranking，但带来约 1.81x latency cost，因此 `ENABLE_RERANK=false` 仍为默认配置。
+- 当前重点是继续 review failure cases、latency 和模块边界。不要在缺少更广泛评测依据时默认开启 rerank、引入 query rewrite 或继续叠加规则。
 
 ## 2. AI 编程助手工作原则
 
@@ -166,7 +167,7 @@ V3.x 阶段必须进一步保持以下工程边界，避免逻辑散落和补丁
 5. 检索质量优化；
 6. rerank、query rewrite、agent workflow 等高级功能。
 
-在没有评测体系之前，不应优先引入复杂高级功能。
+当前已经具备 evaluation dataset 和 evaluation runner。后续引入复杂高级功能前，必须先通过现有评测体系和 failure analysis 证明必要性，并保留可关闭、可回滚路径。
 
 ## 3.7 新规则 / 新功能准入标准
 
@@ -303,51 +304,66 @@ Commit message 应描述真实改动，避免无意义提交信息，例如：
 - V1：最小 RAG 闭环
 - V2：汽车手册结构化解析、manual-aware chunking、metadata-aware context selection 和基础日志
 - V3.0：Hybrid Retrieval 基础实现，包括 dense retrieval、BM25 sparse retrieval 和 RRF fusion
-- V3.0.1：Index hygiene 与 diagnostics 初版，包括 TOC/noise filtering、inspect_chunks、conservative BM25 query filtering 和 debug retrieval 增强；当前尚未完成最终验收
-- V3.0.1-fix：当前待执行阶段，修复 V3.0.1 审查中发现的通用工程问题，包括 stage logging、TOC fragment detection、content-level dedup 和 dynamic query coverage；完成后再 commit 稳定版
-- V3.0.2：Evaluation dataset、evaluation runner 和基础 retrieval / answer metrics
-- V3.0.3：基于评测结果做消融实验、模块裁剪和架构收敛
-- V3.1：在评测体系建立后，再考虑 cross-encoder rerank
+- V3.0.1：Index hygiene 与 diagnostics，包括 TOC/noise filtering、inspect_chunks、conservative BM25 query filtering、content-level dedup 和 debug retrieval 增强
+- V3.0.2：Evaluation dataset、evaluation runner 和基础 retrieval metrics
+- V3.0.3：Cross-mode diagnostics 和 case-level failure analysis
+- V3.1：可关闭的本地 cross-encoder rerank baseline 和 rerank on/off comparison
+- V3.2：将评测集扩展并清洗为 69 条 text-only dev cases，复核 rerank 排序收益与 latency cost；rerank 继续作为 optional enhancement，默认关闭
+- V3.3：基于更广泛评测继续做 failure review、latency review、消融实验、模块裁剪和架构收敛
 - V4：安全回答策略强化、引用溯源强化和前端展示
 - V5：工程化打磨、部署、文档和简历包装
 
 ## 10. 反过拟合原则
 
-当前已有的四个测试问题只能作为 smoke tests / regression examples，不能作为训练集，也不能作为唯一优化目标：
+当前项目已经进入 69 条 text-only dev evaluation set、evaluation runner 和 rerank comparison 阶段。反过拟合原则适用于所有 dev cases、failure cases、rerank improved / regressed cases 和人工审查样例，不再只针对早期 smoke tests。
+
+必须遵守：
+
+- 不得为了单个 case 写死页码、section、chunk_id、答案或 query-specific if-else。
+- 不得根据单个 failed case 直接新增 retrieval rule、rerank rule、bonus / penalty 或 prompt 特例。
+- 不得为了提升 dev set 指标而删除困难样例、放宽 expected evidence、扩大 `acceptable_sections` 或修改 evidence。
+- 不得把当前 69 条 dev cases 当成 final benchmark。
+- 不得把 visual-dependent 问题混入当前 text-only retrieval / rerank 主评测。
+- 不得用 prompt 弥补 retrieval、chunking、metadata 或 evidence 标注问题。
+- 所有新增规则必须解决一类通用问题，并通过日志、debug metadata 或 evaluation runner 验证。
+- 宽泛问题和具体步骤问题必须区分意图，例如“如何正确使用安全带”和“如何系紧安全带”不是完全等价的问题。
+
+早期四个 smoke tests 仍可保留为回归检查样例：
 
 1. 如何正确使用安全带？
 2. 胎压报警后应该怎么办？
 3. 车辆涉水驾驶后需要检查什么？
 4. 充电时有哪些安全注意事项？
 
-必须遵守：
-
-- 不得为了这四个问题写死页码。
-- 不得为了这四个问题写死 section。
-- 不得为了这四个问题写死答案。
-- 不得为了这四个问题写 query-specific if-else。
-- 不得根据单个失败样例直接新增检索规则。
-- 不得将某个 smoke test 的人工预期答案当成唯一标准答案。
-- 宽泛问题和具体步骤问题必须区分意图，例如“如何正确使用安全带”和“如何系紧安全带”不是完全等价的问题。
-
-任何新增规则都必须解决一类通用问题，而不是只提升一两个样例的表现。
+这些 smoke tests 不是训练集，不是唯一优化目标，也不能代表系统整体效果。任何新增规则都必须解决一类通用问题，而不是只提升一两个样例的表现。
 
 ## 11. Smoke Tests 定位
 
-当前四个 smoke tests 的作用是发现明显回归，不是证明系统整体效果优秀。
+Smoke tests 用于快速发现明显崩溃或重大回归。
 
 必须明确：
 
-- 通过四个 smoke tests 不代表系统整体效果好。
-- 某一个 smoke test 失败，也不自动意味着应该新增规则。
-- smoke tests 只能作为回归检查。
-- 后续效果判断应以 evaluation dataset 和指标为准。
+- 通过 smoke tests 只说明主链路基本可运行，不说明系统效果可靠。
+- smoke tests 不应替代 evaluation runner。
+- smoke tests 不应作为 rerank、query rewrite 或 chunking 优化的唯一依据。
+- 某个 smoke test 失败时，应先查看 retrieval debug、chunk evidence、metadata 和 evaluation report，而不是立即新增规则。
+- 宽泛问题和具体步骤问题必须区分意图，例如“如何正确使用安全带”和“如何系紧安全带”不是完全等价问题。
+
+当前效果判断优先级：
+
+1. evaluation dataset 的整体指标；
+2. rerank / no-rerank comparison；
+3. case-level improved / regressed / unchanged 分析；
+4. failure case review；
+5. smoke tests 和人工 spot check。
 
 ## 12. 评测路线
 
-V3.0.2 的核心目标是建立 evaluation dataset 和 evaluation runner，而不是继续凭人工观察几个问题来判断系统效果。
+当前 V3.2 阶段已经建立并清洗了 69 条 text-only dev evaluation set。该评测集用于开发阶段的 retrieval、rerank、chunking、metadata 和 failure analysis。它不是 final benchmark。
 
-评测集建议包含字段：
+当前系统是 text-only RAG。核心答案依赖图标、按钮示意图、编号图例或视觉版面的问题，应删除、改写或单独标注为未来多模态扩展问题，不纳入当前 retrieval / rerank 主评测。
+
+每条 eval case 必须包含：
 
 - `id`
 - `question`
@@ -359,36 +375,64 @@ V3.0.2 的核心目标是建立 evaluation dataset 和 evaluation runner，而�
 - `must_contain_terms`
 - `answer_must_cover`
 - `forbidden_content`
+- `evidence`
 
 评测数据要求：
 
-- 评测问题必须标注意图。
-- 宽泛问题和具体步骤问题要分开。
-- `expected_sections` 不应过窄。
-- 应允许 `acceptable_sections`。
+- `category` 表示问题主任务类型，`intent_type` 表示用户意图的细粒度形式。
+- evidence 必须可追溯到 indexed chunk，quote 应能在 chunk 原文中匹配。
+- `answer_must_cover` 不得超出 evidence quote 能支撑的范围。
+- 宽泛问题和具体步骤问题必须分开标注。
+- `expected_sections` 不应过窄，必要时使用 `acceptable_sections` 表达合理相关章节。
+- section metadata 可能存在缺失或错位，评测时不能只看 `section_hit`，应结合 page、quote、chunk_id 和 `must_contain_terms`。
+- visual-dependent cases 不纳入当前 text-only 主评测。
 - 不能用单一标准答案误判合理回答。
 
-评测指标建议包含：
+当前核心 retrieval / rerank 指标：
 
-- Hit@1
-- Hit@3
-- Hit@5
-- MRR
-- expected section hit rate
+- `evidence_hit@1` / `evidence_hit@3` / `evidence_hit@5`
+- `page_hit@1`
+- `MRR`
+- `average_first_hit_rank`
+- `final_context_hit`
 - noise rate
 - duplicate rate
-- answer coverage
-- forbidden content rate
+- improved / regressed / unchanged cases
+- `lost_top1_hit`
+- `evidence_hit@5_regressions`
+- latency cost
+
+V3.2 rerank comparison 结论：
+
+- 在 69 条 text-only dev cases 上，hybrid + `BAAI/bge-reranker-base` 相比 hybrid baseline 明显提升 top-1 evidence ranking。
+- `evidence_hit@1` 从 `0.7681` 提升到 `0.9130`。
+- `MRR` 从 `0.8792` 提升到 `0.9541`。
+- `evidence_hit@3` 和 `evidence_hit@5` 均保持 `1.0000`。
+- 没有 `lost_top1_hit`，也没有 `evidence_hit@5` regression。
+- rerank 带来约 `1.81x` latency cost。
+- rerank 保留为 optional enhancement，`ENABLE_RERANK=false` 仍为默认配置。
 
 train / dev / test 原则：
 
 - train set 用于开发观察。
-- dev set 用于比较方案。
-- test set 必须冻结。
+- 当前 69 条数据是 dev set，用于方案比较和 failure analysis。
+- 未来如建立 test set，必须冻结。
 - 不得根据 test set 的具体失败样例直接调规则。
 - 避免把评测集变成新的训练集。
 
-后续 rerank、query rewrite、chunk 优化、metadata selection 调整，都必须通过 evaluation runner 做量化验证。
+后续评测路线：
+
+1. 对 regressed cases 和 unchanged non-top1 cases 做 failure case review。
+2. 区分 retrieval failure、rerank failure、chunk boundary 问题、section metadata 问题和 visual-dependent 问题。
+3. 在 failure review 之前，不引入 query rewrite。
+4. 在更大范围评测、参数对照和 latency review 完成前，不默认开启 rerank。
+5. 后续可对比 `rerank_top_n=10` 与 `rerank_top_n=20`。
+6. 后续可对比 `BAAI/bge-reranker-base` 与 `BAAI/bge-reranker-v2-m3`。
+7. 如果 rerank 进入用户请求链路，必须补充更细粒度 latency metrics。
+8. 如果继续扩充评测集，只应补充能增加覆盖面的 text-only cases，不为凑数量添加低质量样例。
+9. 后续 answer-level evaluation 可考虑 citation correctness、groundedness、completeness 和 forbidden content rate。
+
+所有后续 rerank、query rewrite、chunk 优化、metadata selection 调整，都必须通过 evaluation runner 做量化验证，并结合人工 failure analysis 解释结果。
 
 ## 13. 明确禁止事项
 
@@ -398,8 +442,8 @@ train / dev / test 原则：
 2. 为单个测试问题硬编码页码；
 3. 为单个测试问题硬编码 section；
 4. 为单个测试问题硬编码答案；
-5. 在没有评测体系前引入复杂 rerank；
-6. 在没有评测体系前引入 query rewrite；
+5. 在缺少 evaluation runner 量化依据和 failure analysis 时默认开启或扩大复杂 rerank；
+6. 在 failure review 之前引入 query rewrite；
 7. 无限制增加 penalty / bonus / if-else；
 8. 用 prompt 掩盖 retrieval 失败；
 9. 为了提高少数样例效果牺牲系统可维护性；

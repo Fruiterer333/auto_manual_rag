@@ -4,7 +4,9 @@
 
 当前项目已经完成 V3.0 Hybrid Retrieval、V3.0.1 index hygiene 与 diagnostics、V3.0.2 retrieval evaluation framework，以及 V3.0.3 case-level cross-mode diagnostics。
 
-当前 `dev` eval set 共 29 条。V3.0.3 报告显示：
+> 状态更新：本文档最初基于 29 条 dev cases 设计 V3.1 rerank baseline。当前 V3.2 已将评测集扩展并清洗为 69 条 text-only dev cases，并完成 rerank on/off 复核。最新结果见 [`docs/evaluation/rerank_evaluation_summary.md`](evaluation/rerank_evaluation_summary.md)。本文保留早期设计背景，但当前结论以 V3.2 总结为准。
+
+V3.0.3 的历史 diagnostics 基于当时的 29 条 `dev` cases，报告显示：
 
 - `dense`、`bm25`、`hybrid` 的 `evidence_hit@5` 均为 `1.0000`；
 - BM25 当前 `evidence_hit@1` 和 MRR 略高；
@@ -141,7 +143,7 @@ V3.1 第一版只验证一个本地 cross-encoder baseline。不要同时引入�
 
 ## 6. Model Candidates
 
-以下模型仅作为候选，必须在当前 MacBook M3 Pro 18GB 环境与 29 条 dev set 上实测。模型卡中的 benchmark 不能替代本项目评测。
+以下模型仅作为候选，必须在当前 MacBook M3 Pro 18GB 环境与 69 条 text-only dev set 上实测。模型卡中的 benchmark 不能替代本项目评测。
 
 | 模型 | 官方信息摘要 | 适用判断 | 风险与待验证项 |
 | --- | --- | --- | --- |

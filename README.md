@@ -88,6 +88,7 @@ User Query
 | V3.1.0 | Reranker interface | 增加 `BaseReranker`、`NoopReranker` 和 pipeline hook。 |
 | V3.1.1 | Cross-Encoder rerank | 接入本地 `CrossEncoderReranker` baseline。 |
 | V3.1.2 | Rerank comparison | 增加 rerank on/off JSON 对比报告。 |
+| V3.2 | Eval set cleanup and rerank review | 将评测集扩展并清洗为 69 条 text-only dev cases，复核 rerank 收益与延迟成本。 |
 
 ## 6. 评测体系
 
@@ -124,32 +125,32 @@ data/eval/manual_eval_set.jsonl
 
 ## 7. Rerank 阶段结果
 
-V3.1.2 使用当前 dev set 对比了 hybrid retrieval 在关闭和启用 cross-encoder rerank 时的表现：
+V3.2 使用清洗后的 text-only dev set 对比了 hybrid retrieval 在关闭和启用 cross-encoder rerank 时的表现：
 
 - eval set：`manual_eval_set.jsonl`
-- case count：29
+- case count：69
 - retrieval mode：`hybrid`
 - rerank model：`BAAI/bge-reranker-base`
 - `top_k`：5
 
-在当前 29 条 dev evaluation set 上，hybrid + cross-encoder rerank 将 evidence_hit@1 从 0.7931 提升到 0.8966，将 MRR 从 0.8908 提升到 0.9483，同时 evidence_hit@5 保持 1.0000。
+在当前 69 条 text-only dev evaluation set 上，hybrid + cross-encoder rerank 将 evidence_hit@1 从 0.7681 提升到 0.9130，将 MRR 从 0.8792 提升到 0.9541，同时 evidence_hit@5 保持 1.0000。
 
 | Metric | Hybrid no rerank | Hybrid + rerank | Delta |
 | --- | ---: | ---: | ---: |
-| `evidence_hit@1` | 0.7931 | 0.8966 | +0.1034 |
-| `MRR` | 0.8908 | 0.9483 | +0.0575 |
+| `evidence_hit@1` | 0.7681 | 0.9130 | +0.1449 |
+| `MRR` | 0.8792 | 0.9541 | +0.0749 |
 | `evidence_hit@5` | 1.0000 | 1.0000 | +0.0000 |
-| `elapsed_seconds` | 18.5248 | 33.0765 | +14.5517 |
-| `average_seconds_per_case` | 0.6388 | 1.1406 | +0.5018 |
+| `elapsed_seconds` | 23.7179 | 42.8940 | +19.1761 |
+| `average_seconds_per_case` | 0.3437 | 0.6217 | +0.2780 |
 
 Case movement：
 
 | Item | Count |
 | --- | ---: |
-| `improved_cases` | 4 |
-| `regressed_cases` | 0 |
-| `unchanged_cases` | 25 |
-| `newly_top1_hit` | 3 |
+| `improved_cases` | 11 |
+| `regressed_cases` | 1 |
+| `unchanged_cases` | 57 |
+| `newly_top1_hit` | 10 |
 | `lost_top1_hit` | 0 |
 | `evidence_hit@5_regressions` | 0 |
 
@@ -159,7 +160,7 @@ Case movement：
 - rerank 没有破坏 top-5 evidence recall；
 - rerank 增加了推理耗时；
 - rerank 仍应作为 optional precision-ranking module；
-- 在扩大 eval set 并继续 review latency 之前，不应默认开启。
+- 当前评测仍是单一手册 dev set，且 rerank 带来约 1.81x latency cost，因此不应默认开启。
 
 默认配置保持：
 
@@ -274,7 +275,7 @@ streamlit run frontend/streamlit_app.py
   --dataset data/eval/manual_eval_set.jsonl \
   --retrieval-mode hybrid \
   --top-k 5 \
-  --output /tmp/v3_1_2_hybrid_no_rerank.json \
+  --output /tmp/v3_2_hybrid_no_rerank.json \
   --output-format json
 ```
 
@@ -287,7 +288,7 @@ streamlit run frontend/streamlit_app.py
   --top-k 5 \
   --enable-rerank \
   --rerank-device cpu \
-  --output /tmp/v3_1_2_hybrid_rerank.json \
+  --output /tmp/v3_2_hybrid_rerank.json \
   --output-format json
 ```
 
@@ -297,9 +298,9 @@ streamlit run frontend/streamlit_app.py
 
 ```bash
 .venv/bin/python scripts/compare_rerank_evaluation.py \
-  --baseline /tmp/v3_1_2_hybrid_no_rerank.json \
-  --experiment /tmp/v3_1_2_hybrid_rerank.json \
-  --output reports/evaluation/v3_1_2_rerank_comparison.md \
+  --baseline /tmp/v3_2_hybrid_no_rerank.json \
+  --experiment /tmp/v3_2_hybrid_rerank.json \
+  --output reports/evaluation/v3_2_rerank_comparison.md \
   --output-format md
 ```
 
@@ -343,17 +344,17 @@ RERANK_DEVICE=auto
 
 ## 12. 当前限制
 
-- 当前 eval set 只有 29 条，结果来自 dev set，不是 final benchmark。
+- 当前 eval set 包含 69 条 text-only dev cases，结果来自单一手册 dev set，不是 final benchmark。
 - rerank 仍默认关闭，没有比较多个 reranker 模型。
 - latency 目前以整体运行时间和平均每 case 时间观察，还需要继续统计和优化。
 - 部分 section metadata 仍然缺失或存在解析偏差。
 - 仍有少数 case 未被 rerank 解决，例如部分非 top-1 操作题和警告题。
 - 当前项目是纯文本 RAG，不处理依赖图片、图标或 OCR 的问题。
-- 后续需要将 eval set 扩充到 50+，再决定 rerank 的默认策略。
+- 后续仅在增加覆盖面时继续扩充 text-only dev cases，并结合更广泛评测和 latency review 决定 rerank 的默认策略。
 
 ## 13. Roadmap
 
-- 扩充 eval set 至 50+，增强类别和意图覆盖。
+- 仅在增加覆盖面时继续扩充 text-only dev cases。
 - 增强 rerank latency 统计，评估 batch、device 和 `max_length` 的影响。
 - Review remaining non-top1 cases，区分 retrieval、metadata 和 chunk quality 问题。
 - 在更大 dev set 上比较不同 reranker 模型。

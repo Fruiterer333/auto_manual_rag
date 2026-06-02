@@ -4,7 +4,7 @@
 
 `data/eval/manual_eval_set.jsonl` 是 development evaluation set，用于比较 retrieval、rerank、chunking 和 failure analysis 方案。它不是最终 benchmark，也不应被当作训练集或唯一优化目标。
 
-本轮将评测集从 29 条扩展到 70 条。扩展目标是增加可诊断性和覆盖面，不是让某个检索方案的指标更好看。
+本轮将评测集从 29 条扩展到 69 条。扩展目标是增加可诊断性和覆盖面，不是让某个检索方案的指标更好看。
 
 ## 2. Coverage
 
@@ -69,7 +69,7 @@
 
 ## 5. Current Scale
 
-- case count：70
+- case count：69
 - split：当前统一为 `dev`
 - source：单一本地汽车用户手册的 indexed chunks
 

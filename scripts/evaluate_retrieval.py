@@ -598,6 +598,9 @@ def _top5_not_top1_table(rows: list[dict[str, Any]]) -> str:
         "dense_top1_page",
         "bm25_top1_page",
         "hybrid_top1_page",
+        "dense_top1_section",
+        "bm25_top1_section",
+        "hybrid_top1_section",
         "comparison_note",
     ]
     return _comparison_rows_table(selected, headers)

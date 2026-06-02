@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     HYBRID_FUSION_TOP_K: int = 10
     RRF_K: int = 60
     BM25_CORE_TERM_PENALTY_FACTOR: float = 0.35
+    ENABLE_RERANK: bool = False
+    RERANK_MODEL_NAME: str = "BAAI/bge-reranker-base"
+    RERANK_TOP_N: int = 10
+    RERANK_OUTPUT_TOP_K: int = 5
+    RERANK_DEVICE: str = "auto"
+    RERANK_BATCH_SIZE: int = 8
+    RERANK_MAX_LENGTH: int = 512
 
     model_config = SettingsConfigDict(
         env_file=".env",

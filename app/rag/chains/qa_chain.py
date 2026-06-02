@@ -6,6 +6,8 @@ from app.data.schemas.models import Citation, QueryRequest, QueryResponse
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
 from app.rag.llms.ollama_client import OllamaClient
 from app.rag.prompts.answer_prompt import build_answer_prompt
+from app.rag.rerankers import get_reranker
+from app.rag.rerankers.base import BaseReranker
 from app.rag.retrievers.context_selector import (
     enforce_max_context_chars,
     expand_neighbor_contexts,
@@ -31,11 +33,13 @@ class QAChain:
         embedding_client: LocalEmbeddingClient | None = None,
         retriever: HybridRetriever | None = None,
         llm_client: OllamaClient | None = None,
+        reranker: BaseReranker | None = None,
     ) -> None:
         self.settings = settings or get_settings()
         self.embedding_client = embedding_client or LocalEmbeddingClient(self.settings)
         self.retriever = retriever or HybridRetriever(self.settings)
         self.llm_client = llm_client or OllamaClient(self.settings)
+        self.reranker = reranker or get_reranker(self.settings)
 
     def answer(
         self,
@@ -66,9 +70,14 @@ class QAChain:
             filtered_candidates,
             stage="context_selection_pre",
         )
+        reranked_candidates = self.reranker.rerank(
+            query=question,
+            chunks=filtered_candidates,
+            top_k=None,
+        )
         retrieved_chunks = select_contexts(
             question=question,
-            retrieved=filtered_candidates,
+            retrieved=reranked_candidates,
             top_k=top_k,
             enabled=selection_enabled,
         )
@@ -105,11 +114,14 @@ class QAChain:
             max_chars=self.settings.MAX_CONTEXT_CHARS,
         )
         logger.info(
-            "Retrieved chunks: candidate_count=%s candidate_after_filter=%s candidate_filter=%s candidate_dedup=%s selected=%s selection_dedup=%s expansion_enabled=%s expanded=%s expansion_dedup=%s final_filter=%s final_dedup=%s final_context_count=%s selection_enabled=%s candidate_k=%s",
+            "Retrieved chunks: candidate_count=%s candidate_after_filter=%s candidate_filter=%s candidate_dedup=%s rerank_enabled=%s rerank_strategy=%s reranked=%s selected=%s selection_dedup=%s expansion_enabled=%s expanded=%s expansion_dedup=%s final_filter=%s final_dedup=%s final_context_count=%s selection_enabled=%s candidate_k=%s",
             len(retrieved_candidates),
             len(filtered_candidates),
             candidate_filter_summary,
             candidate_dedup_summary,
+            self.settings.ENABLE_RERANK,
+            self.reranker.__class__.__name__,
+            len(reranked_candidates),
             selected_count,
             selection_dedup_summary,
             expansion_enabled,

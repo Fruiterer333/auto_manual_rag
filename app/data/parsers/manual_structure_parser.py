@@ -62,6 +62,15 @@ SECTION_HINTS = {
     "安全带检查",
     "安全带使用",
     "正确使用安全带",
+    "自动驻车",
+    "危险警告灯",
+    "前机舱盖",
+    "低压蓄电池",
+    "雨刮",
+    "轮辋",
+    "加油",
+    "外部塑料饰件",
+    "转向助力",
 }
 EXACT_SECTION_TITLES = {
     "使用安全带",
@@ -139,7 +148,6 @@ EXPLANATORY_SECTION_REJECT_TERMS = {
     "显示屏显示",
     "组合仪表",
     "指示灯",
-    "警告灯",
 }
 BODY_TONE_TERMS = {
     "请",
@@ -151,6 +159,7 @@ BODY_TONE_TERMS = {
     "建议",
     "可以",
     "需要",
+    "位于",
 }
 OPERATION_VERBS = {
     "按下",
@@ -171,6 +180,48 @@ OPERATION_VERBS = {
     "肩部安全带",
     "插入锁扣",
     "拉紧",
+}
+ACTION_HEADING_PREFIXES = (
+    "使用",
+    "打开",
+    "关闭",
+    "开启",
+    "启用",
+    "释放",
+    "检查",
+    "保养",
+    "维护",
+    "更换",
+    "调节",
+    "连接",
+    "断开",
+    "清洁",
+    "加油",
+)
+TITLE_SUFFIXES = (
+    "系统",
+    "功能",
+    "设备",
+    "装置",
+    "工具",
+    "警告",
+    "安全警告",
+    "冲洗",
+    "清洗",
+    "维护",
+    "保养",
+    "车灯",
+    "雨刮片",
+    "轮辋",
+    "前机舱盖",
+)
+GENERIC_SECTION_REJECT_TITLES = {
+    "功能状态说明",
+    "操作步骤",
+    "注意事项",
+    "说明",
+    "警告",
+    "注意",
 }
 
 
@@ -198,7 +249,8 @@ class ManualStructureParser:
                 skipped_toc_pages += 1
 
             buffer: list[str] = []
-            for line in lines:
+            for index, line in enumerate(lines):
+                next_line = self._next_meaningful_line(lines, index)
                 if not line:
                     self._flush_buffer(
                         blocks,
@@ -224,7 +276,7 @@ class ManualStructureParser:
                     continue
 
                 if not page_skips_heading:
-                    is_section, rejected = self._classify_section_heading(line)
+                    is_section, rejected = self._classify_section_heading(line, next_line)
                     if rejected:
                         section_rejected_count += 1
                 else:
@@ -297,15 +349,21 @@ class ManualStructureParser:
         is_section, _ = self._classify_section_heading(line)
         return is_section
 
-    def _classify_section_heading(self, line: str) -> tuple[bool, bool]:
+    def _classify_section_heading(
+        self,
+        line: str,
+        next_line: str | None = None,
+    ) -> tuple[bool, bool]:
         normalized = self._normalize_heading(line)
-        if len(normalized) < 3:
+        if len(normalized) < 2:
             return False, False
+        if normalized in GENERIC_SECTION_REJECT_TITLES:
+            return False, True
         if normalized in EXACT_SECTION_TITLES:
             return True, False
         if self._is_list_line(normalized):
             return False, True
-        if any(term in normalized for term in EXPLANATORY_SECTION_REJECT_TERMS):
+        if self._looks_like_explanatory_label(normalized):
             return False, True
         if any(term in normalized for term in BODY_TONE_TERMS) and self._chinese_char_count(normalized) > 10:
             return False, True
@@ -325,7 +383,9 @@ class ManualStructureParser:
             return False, True
         if normalized in CHAPTER_TITLES:
             return False, False
-        return any(hint in normalized for hint in SECTION_HINTS), False
+        if any(hint in normalized for hint in SECTION_HINTS):
+            return True, False
+        return self._looks_like_contextual_section_heading(normalized, next_line), False
 
     def _normalize_heading(self, line: str) -> str:
         return re.sub(r"\s+", " ", line).strip()
@@ -340,6 +400,13 @@ class ManualStructureParser:
     def _starts_new_semantic_block(self, line: str) -> bool:
         return line.startswith(("警告", "警告！", "注意", "注意！", "说明", "说明！"))
 
+    def _next_meaningful_line(self, lines: list[str], index: int) -> str | None:
+        for candidate in lines[index + 1:]:
+            candidate = candidate.strip()
+            if candidate:
+                return candidate
+        return None
+
     def _is_list_line(self, line: str) -> bool:
         return bool(PROCEDURE_PATTERN.search(line))
 
@@ -347,7 +414,65 @@ class ManualStructureParser:
         return any(term in line for term in LIST_INTRO_TERMS)
 
     def _has_body_section_reject_terms(self, line: str) -> bool:
+        if (
+            line.startswith(ACTION_HEADING_PREFIXES)
+            and self._chinese_char_count(line) <= 14
+            and not self._looks_like_body_text(line)
+        ):
+            return False
         return any(term in line for term in BODY_SECTION_REJECT_TERMS)
+
+    def _looks_like_explanatory_label(self, line: str) -> bool:
+        if any(term in line for term in EXPLANATORY_SECTION_REJECT_TERMS):
+            return True
+        if "警告灯" in line and not line.startswith(ACTION_HEADING_PREFIXES):
+            return True
+        return False
+
+    def _looks_like_contextual_section_heading(
+        self,
+        line: str,
+        next_line: str | None,
+    ) -> bool:
+        if not next_line:
+            return False
+        chinese_count = self._chinese_char_count(line)
+        if chinese_count < 2 or chinese_count > 14:
+            return False
+        if not self._has_heading_following_context(next_line):
+            return False
+        if line.startswith(ACTION_HEADING_PREFIXES):
+            return True
+        if line.endswith(TITLE_SUFFIXES):
+            return True
+        return self._looks_like_short_noun_heading(line)
+
+    def _has_heading_following_context(self, next_line: str) -> bool:
+        normalized = self._normalize_heading(next_line)
+        if not normalized:
+            return False
+        if self._starts_new_semantic_block(normalized) or self._is_list_line(normalized):
+            return True
+        if self._looks_like_body_text(normalized):
+            return True
+        if self._starts_with_step_like_number(normalized):
+            return True
+        if any(term in normalized for term in BODY_TONE_TERMS):
+            return True
+        if any(verb in normalized for verb in OPERATION_VERBS):
+            return True
+        return self._chinese_char_count(normalized) >= 8
+
+    def _looks_like_short_noun_heading(self, line: str) -> bool:
+        if re.search(r"[A-Za-z0-9]", line):
+            return False
+        if any(term in line for term in BODY_TONE_TERMS):
+            return False
+        if any(verb in line for verb in OPERATION_VERBS):
+            return False
+        if "，" in line or "。" in line or "；" in line or "：" in line:
+            return False
+        return 2 <= self._chinese_char_count(line) <= 8
 
     def _punctuation_count(self, line: str) -> int:
         return sum(line.count(mark) for mark in ("，", "、", "；", "。", "：", ":", ",", ";"))

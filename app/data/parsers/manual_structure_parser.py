@@ -61,7 +61,7 @@ EXACT_SECTION_TITLES = {
     "查看行车记录仪视频", "行车记录仪内存卡", "相机", "Lynk&Co App", "创建和删除蓝牙钥匙", "高压警告标签",
     "混合动力电池", "充电安全警告", "车载充电设备充电", "随车设备快速充电", "预约充电", "车辆供电", "存放车辆",
     "更换遥控钥匙电池", "保养和维护动力电池", "保养和维护低压蓄电池", "新车磨合", "更换保险丝", "使用诊断工具读取VIN码",
-    "打开前机舱盖", "检查发动机机油", "检查制动液", "检查冷却液", "添加洗涤液", "更换雨刮片", "胎压标签", "保养轮胎",
+    "打开前机舱盖","关闭前机舱盖","检查发动机机油", "检查制动液", "检查冷却液", "添加洗涤液", "更换雨刮片", "胎压标签", "保养轮胎",
     "清洁车辆", "保养漆面", "车身防腐", "保养内饰", "保养项目", "车辆远程升级（OTA）", "车辆检测", "处理车辆故障",
     "紧急救援", "道路救援求助服务指导", "应急解锁和锁止车门", "应急打开尾门", "应急解锁充电枪", "牵引车辆",
     "安全背心和三角警示牌", "补胎套装", "电池电量较低", "车辆标识", "车辆参数", "缩略语和术语"
@@ -259,6 +259,14 @@ class ManualStructureParser:
                     continue
 
                 if kind == LineKind.CHAPTER:
+
+                    normalized = self._normalize_heading(line)
+
+                    # 重复章标题大概率是页眉，不应该清空 section/subsection
+
+                    if normalized == state.current_chapter:
+                        continue
+
                     self._flush_state(blocks, state, end_page=document.page)
                     flushed_blocks_count += 1
                     state.current_chapter = self._normalize_heading(line)

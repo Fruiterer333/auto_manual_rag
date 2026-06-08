@@ -20,6 +20,7 @@ class Chunk(BaseModel):
     page: int | None = None
     chapter: str | None = None
     section: str | None = None
+    subsection: str | None = None
     content_type: str | None = None
     risk_level: str | None = None
     metadata: dict[str, MetadataValue] = Field(default_factory=dict)
@@ -33,6 +34,7 @@ class ManualBlock(BaseModel):
     end_page: int | None = None
     chapter: str | None = None
     section: str | None = None
+    subsection: str | None = None
     heading_path: list[str] = Field(default_factory=list)
     content_type: str | None = None
     risk_level: str | None = None
@@ -48,6 +50,7 @@ class Citation(BaseModel):
     distance: float | None = None
     chapter: str | None = None
     section: str | None = None
+    subsection: str | None = None
     content_type: str | None = None
     risk_level: str | None = None
     selection_score: float | None = None

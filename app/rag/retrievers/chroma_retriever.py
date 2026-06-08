@@ -166,6 +166,7 @@ class ChromaRetriever:
             "doc_id": chunk.doc_id,
             "chapter": chunk.chapter or "",
             "section": chunk.section or "",
+            "subsection": chunk.subsection or "",
             "content_type": chunk.content_type or "",
             "risk_level": chunk.risk_level or "",
             "start_page": self._metadata_value(chunk, "start_page", -1),
@@ -199,6 +200,7 @@ class ChromaRetriever:
             text=text,
             chapter=str(metadata.get("chapter") or "") or None,
             section=str(metadata.get("section") or "") or None,
+            subsection=str(metadata.get("subsection") or "") or None,
             content_type=str(metadata.get("content_type") or "") or None,
             risk_level=str(metadata.get("risk_level") or "") or None,
             metadata={

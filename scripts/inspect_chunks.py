@@ -94,6 +94,7 @@ def _print_chunk(index: int, chunk: Chunk, show_full: bool) -> None:
     print(f"page={chunk.page}")
     print(f"chapter={chunk.chapter or 'N/A'}")
     print(f"section={chunk.section or 'N/A'}")
+    print(f"subsection={chunk.subsection or chunk.metadata.get('subsection') or 'N/A'}")
     print(f"content_type={chunk.content_type or 'N/A'}")
     print(f"risk_level={chunk.risk_level or 'N/A'}")
     print(f"source_file={chunk.source_file}")

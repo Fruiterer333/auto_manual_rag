@@ -67,6 +67,11 @@ EXACT_SECTION_TITLES = {
     "安全背心和三角警示牌", "补胎套装", "电池电量较低", "车辆标识", "车辆参数", "缩略语和术语"
 }
 
+EXACT_SUBSECTION_TITLES = {
+    "EPB AUTO功能",
+    "熄火时解除电子驻车制动（EPB）",
+}
+
 HIGH_RISK_KEYWORDS = {
     "警告！",
     "生命危险",
@@ -119,13 +124,14 @@ BODY_SECTION_REJECT_TERMS = {
     "以下",
     "点击",
 }
-EXPLANATORY_SECTION_REJECT_TERMS = {
+"""EXPLANATORY_SECTION_REJECT_TERMS = {
     "图标",
     "警告灯图标",
     "显示屏显示",
     "组合仪表",
     "指示灯",
 }
+"""
 BODY_TONE_TERMS = {
     "请",
     "应",
@@ -192,13 +198,11 @@ TITLE_SUFFIXES = (
     "轮辋",
     "前机舱盖",
 )
-GENERIC_SECTION_REJECT_TITLES = {
-    "功能状态说明",
-    "操作步骤",
-    "注意事项",
+SUB_SECTION_REJECT_TITLES = {
     "说明",
     "警告",
     "注意",
+    "欢迎",
 }
 
 
@@ -387,6 +391,8 @@ class ManualStructureParser:
             return True
         if page_skips_heading and normalized in CHAPTER_TITLES:
             return True
+        if page_skips_heading and normalized in {"目录","目 录"}:
+            return True
         if normalized.lower() in {"copyright", "all rights reserved"}:
             return True
         return False
@@ -413,7 +419,7 @@ class ManualStructureParser:
         return any(term in line for term in LIST_INTRO_TERMS)
 
     def _is_subsection_heading(self, line: str, next_line: str | None) -> bool:
-        if line in GENERIC_SECTION_REJECT_TITLES:
+        if line in SUB_SECTION_REJECT_TITLES:
             return False
         if line in CHAPTER_TITLES or line in EXACT_SECTION_TITLES:
             return False
@@ -421,8 +427,10 @@ class ManualStructureParser:
             return False
         if self._is_list_line(line) or self._starts_with_step_like_number(line):
             return False
-        if self._looks_like_explanatory_label(line):
-            return False
+        if line in EXACT_SUBSECTION_TITLES:
+            return True
+        # if self._looks_like_explanatory_label(line):
+        #     return False
         if self._looks_like_body_text(line):
             return False
         if self._looks_like_fragment(line):
@@ -432,7 +440,7 @@ class ManualStructureParser:
         if self._punctuation_count(line) > 0:
             return False
         chinese_count = self._chinese_char_count(line)
-        if chinese_count < 2 or chinese_count > 14:
+        if chinese_count < 2 or chinese_count > 18:
             return False
         if len(line) > 24:
             return False
@@ -447,18 +455,18 @@ class ManualStructureParser:
         return self._looks_like_short_noun_heading(line)
 
     def _has_body_section_reject_terms(self, line: str) -> bool:
-        if line.startswith(ACTION_HEADING_PREFIXES) and self._chinese_char_count(line) <= 14:
+        if line.startswith(ACTION_HEADING_PREFIXES) and self._chinese_char_count(line) <= 18:
             return False
         return any(term in line for term in BODY_SECTION_REJECT_TERMS)
 
-    def _looks_like_explanatory_label(self, line: str) -> bool:
-        if any(term in line for term in EXPLANATORY_SECTION_REJECT_TERMS):
-            return True
-        if "警告灯" in line and not line.startswith(ACTION_HEADING_PREFIXES):
-            return True
-        if line in {"人身伤害", "车辆损坏风险", "显示文本"}:
-            return True
-        return False
+    # def _looks_like_explanatory_label(self, line: str) -> bool:
+    #     if any(term in line for term in EXPLANATORY_SECTION_REJECT_TERMS):
+    #         return True
+    #     if "警告灯" in line and not line.startswith(ACTION_HEADING_PREFIXES):
+    #         return True
+    #     if line in {"人身伤害", "车辆损坏风险", "显示文本"}:
+    #         return True
+    #     return False
 
     def _looks_like_fragment(self, line: str) -> bool:
         if re.search(r"[A-Za-z0-9]", line) and self._chinese_char_count(line) <= 3:
@@ -505,10 +513,10 @@ class ManualStructureParser:
             return False
         if "，" in line or "。" in line or "；" in line or "：" in line:
             return False
-        return 2 <= self._chinese_char_count(line) <= 8
+        return 2 <= self._chinese_char_count(line) <= 20
 
     def _punctuation_count(self, line: str) -> int:
-        return sum(line.count(mark) for mark in ("，", "、", "；", "。", "：", ":", ",", ";"))
+        return sum(line.count(mark) for mark in ("，", "、", "；", "。", "：", ":", ",", ";", ".", "!", "！"))
 
     def _chinese_char_count(self, line: str) -> int:
         return len(re.findall(r"[\u4e00-\u9fff]", line))

@@ -573,12 +573,17 @@ class ManualStructureParser:
         *,
         end_page: int | None = None,
     ) -> None:
-        text = "\n".join(line for line in buffer if line).strip()
-        if len(text) < 4:
+        raw_text = "\n".join(line for line in buffer if line).strip()
+        if len(raw_text) < 4:
             return
 
-        content_type = detect_content_type(text)
-        risk_level = detect_risk_level(text, content_type)
+        classification_text = raw_text
+        text = raw_text
+        if subsection and not raw_text.startswith(subsection):
+            text = f"{subsection}\n{raw_text}"
+
+        content_type = detect_content_type(classification_text)
+        risk_level = detect_risk_level(classification_text, content_type)
         heading_path = [heading for heading in (chapter, section, subsection) if heading]
         block_index = len(blocks)
         block_id = str(uuid5(NAMESPACE_URL, f"{document.doc_id}:{block_index}:{text[:40]}"))
@@ -598,10 +603,10 @@ class ManualStructureParser:
                 metadata={
                     "source_pages": self._source_pages(document.page, end_page or document.page),
                     "subsection": subsection,
-                    "has_warning": "警告" in text,
-                    "has_caution": "注意" in text,
-                    "has_note": "说明" in text,
-                    "is_procedure": is_procedure_text(text),
+                    "has_warning": "警告" in classification_text,
+                    "has_caution": "注意" in classification_text,
+                    "has_note": "说明" in classification_text,
+                    "is_procedure": is_procedure_text(classification_text),
                 },
             )
         )

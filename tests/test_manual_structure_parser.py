@@ -86,6 +86,75 @@ def test_non_whitelist_heading_becomes_subsection_not_section() -> None:
     assert blocks[0].section == "安全系统"
     assert blocks[0].subsection == "系紧安全带"
     assert blocks[0].heading_path == ["安全系统", "系紧安全带"]
+    assert blocks[0].text.startswith("系紧安全带\n")
+    assert not blocks[0].text.startswith("安全系统\n")
+
+
+def test_flush_buffer_does_not_duplicate_existing_subsection_prefix() -> None:
+    parser = ManualStructureParser(skip_toc_pages_enabled=False)
+    blocks: list[ManualBlock] = []
+
+    parser._flush_buffer(
+        blocks,
+        ["系紧安全带", "缓慢拉出安全带，将锁舌插入锁扣中。"],
+        _document("系紧安全带\n缓慢拉出安全带，将锁舌插入锁扣中。"),
+        None,
+        "使用安全带",
+        "系紧安全带",
+    )
+
+    assert len(blocks) == 1
+    assert blocks[0].text.startswith("系紧安全带\n")
+    assert blocks[0].text.count("系紧安全带") == 1
+
+
+def test_subsection_note_block_keeps_note_classification_from_raw_text() -> None:
+    parser = ManualStructureParser(skip_toc_pages_enabled=False)
+    blocks = parser.parse(
+        [
+            _document(
+                "\n".join(
+                    [
+                        "电子驻车制动（EPB）",
+                        "释放电子驻车制动（EPB）",
+                        "说明！",
+                        "车辆启动后，踩下制动踏板可释放EPB。",
+                    ]
+                )
+            )
+        ]
+    )
+
+    assert len(blocks) == 1
+    assert blocks[0].subsection == "释放电子驻车制动（EPB）"
+    assert blocks[0].text.startswith("释放电子驻车制动（EPB）\n说明！")
+    assert blocks[0].content_type == "note"
+    assert blocks[0].metadata["has_note"] is True
+
+
+def test_subsection_warning_block_keeps_warning_classification_from_raw_text() -> None:
+    parser = ManualStructureParser(skip_toc_pages_enabled=False)
+    blocks = parser.parse(
+        [
+            _document(
+                "\n".join(
+                    [
+                        "清洁车辆",
+                        "高压冲洗",
+                        "警告！",
+                        "■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。",
+                    ]
+                )
+            )
+        ]
+    )
+
+    assert len(blocks) == 1
+    assert blocks[0].subsection == "高压冲洗"
+    assert blocks[0].text.startswith("高压冲洗\n警告！")
+    assert blocks[0].content_type == "warning"
+    assert blocks[0].risk_level == "high"
+    assert blocks[0].metadata["has_warning"] is True
 
 
 def test_section_hint_in_body_sentence_is_not_heading() -> None:
@@ -140,9 +209,9 @@ def test_warning_block_stops_at_new_heading_and_preserves_bullets() -> None:
     assert "外部开闭件" in blocks[0].text
     assert "底部接插件" in blocks[0].text
     assert blocks[1].subsection == "雨刮片"
-    assert blocks[1].text == "首先将雨刮片置于维修位置，然后清洁雨刮片。"
+    assert blocks[1].text == "雨刮片\n首先将雨刮片置于维修位置，然后清洁雨刮片。"
     assert blocks[2].subsection == "轮辋"
-    assert blocks[2].text == "请使用软刷清洁轮辋并用水枪冲洗。"
+    assert blocks[2].text == "轮辋\n请使用软刷清洁轮辋并用水枪冲洗。"
 
 
 def test_adjacent_epb_and_autohold_sections_do_not_share_section() -> None:
@@ -163,7 +232,7 @@ def test_adjacent_epb_and_autohold_sections_do_not_share_section() -> None:
     )
 
     assert [(block.section, block.subsection, block.text) for block in blocks] == [
-        (None, "手动紧急制动", "车辆行驶过程中如出现紧急情况，您可以拉住电子驻车制动器开关。"),
+        (None, "手动紧急制动", "手动紧急制动\n车辆行驶过程中如出现紧急情况，您可以拉住电子驻车制动器开关。"),
         ("自动驻车系统", None, "自动驻车（Auto Hold）可以在正常驾驶过程中的短暂停车时提供制动。"),
     ]
 
@@ -187,7 +256,7 @@ def test_front_hood_open_and_close_sections_do_not_inherit_wrong_section() -> No
 
     assert [(block.section, block.subsection, block.text) for block in blocks] == [
         ("打开前机舱盖", None, "打开前机舱盖前，确保前机舱盖打开区域无障碍物。"),
-        ("打开前机舱盖", "关闭前机舱盖", "1 缓慢降低前机舱盖，直至前机舱盖接触到闩锁。"),
+        ("关闭前机舱盖", None, "1 缓慢降低前机舱盖，直至前机舱盖接触到闩锁。"),
     ]
 
 
@@ -256,6 +325,7 @@ def test_mixed_alphanumeric_line_fragment_is_not_section() -> None:
     assert len(blocks) == 1
     assert blocks[0].section is None
     assert blocks[0].subsection == "释放电子驻车制动（EPB）"
+    assert blocks[0].text.startswith("释放电子驻车制动（EPB）\n")
     assert "红色EPB\n指示灯自动熄灭。" in blocks[0].text
 
 
@@ -323,6 +393,7 @@ def test_caution_marker_at_page_end_merges_with_next_page_bullets() -> None:
     assert blocks[0].content_type == "caution"
     assert blocks[0].section is None
     assert blocks[0].subsection == "高压冲洗"
+    assert blocks[0].text.startswith("高压冲洗\n注意！")
     assert "■请勿单手" in blocks[0].text
 
 
@@ -338,7 +409,7 @@ def test_warning_marker_does_not_swallow_next_page_section_heading() -> None:
     assert len(blocks) == 1
     assert blocks[0].section is None
     assert blocks[0].subsection == "雨刮片"
-    assert blocks[0].text == "首先将雨刮片置于维修位置。"
+    assert blocks[0].text == "雨刮片\n首先将雨刮片置于维修位置。"
 
 
 def test_parser_skips_page_numbers_and_toc_noise_lines() -> None:

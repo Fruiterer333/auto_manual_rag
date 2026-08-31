@@ -5,14 +5,21 @@ from app.rag.rerankers.noop import NoopReranker
 from app.rag.chains.qa_chain import QAChain
 
 
-def _retrieved_chunk(chunk_id: str, score: float) -> RetrievedChunk:
+def _retrieved_chunk(
+    chunk_id: str,
+    score: float,
+    *,
+    text: str | None = None,
+    content_type: str | None = None,
+) -> RetrievedChunk:
     return RetrievedChunk(
         chunk=Chunk(
             chunk_id=chunk_id,
             doc_id=f"doc-{chunk_id}",
             source_file="manual.pdf",
             page=1,
-            text=f"text-{chunk_id}",
+            text=text or f"text-{chunk_id}",
+            content_type=content_type,
             metadata={"section": f"section-{chunk_id}"},
         ),
         score=score,
@@ -110,8 +117,12 @@ class _FakeRetriever:
 
 
 class _FakeLLMClient:
+    def __init__(self) -> None:
+        self.prompts: list[str] = []
+
     def generate(self, prompt: str) -> str:
         assert "如何执行操作？" in prompt
+        self.prompts.append(prompt)
         return "按照手册执行操作。"
 
 
@@ -193,3 +204,99 @@ def test_qa_chain_rerank_hook_limits_candidates_when_enabled() -> None:
 
     assert reranker.calls == [("如何执行操作？", ["chunk-1", "chunk-2", "chunk-3"], 2)]
     assert [citation.chunk_id for citation in response.citations] == ["chunk-3", "chunk-2"]
+
+
+def test_answer_postprocess_removes_explicit_evidence_reference_only() -> None:
+    chain = QAChain.__new__(QAChain)
+
+    assert chain._post_process_answer("根据 Evidence E1，执行该操作。") == "执行该操作。"
+    assert chain._post_process_answer("车辆显示故障代码 E1") == "车辆显示故障代码 E1"
+
+
+class _NeighborFakeRetriever(_FakeRetriever):
+    def __init__(
+        self,
+        chunks: list[RetrievedChunk],
+        neighbors: dict[str, list[RetrievedChunk]],
+    ) -> None:
+        super().__init__(chunks, expected_candidate_k=len(chunks))
+        self.neighbors = neighbors
+
+    def find_neighbor_chunks(self, chunk: Chunk, max_per_chunk: int) -> list[RetrievedChunk]:
+        return self.neighbors.get(chunk.chunk_id, [])[:max_per_chunk]
+
+
+def test_qa_chain_uses_same_count_limited_contexts_for_prompt_and_citations() -> None:
+    chunks = [
+        _retrieved_chunk(
+            f"chunk-{index}",
+            1.0 - index / 10,
+            text=f"第{index}条原始证据内容。",
+            content_type="procedure",
+        )
+        for index in range(1, 6)
+    ]
+    neighbors = {
+        item.chunk.chunk_id: [
+            _retrieved_chunk(
+                f"neighbor-{index}",
+                0.1,
+                text=f"第{index}条扩展证据内容。",
+            )
+        ]
+        for index, item in enumerate(chunks, start=1)
+    }
+    llm_client = _FakeLLMClient()
+    chain = QAChain(
+        settings=Settings(
+            ENABLE_RERANK=False,
+            ENABLE_METADATA_CONTEXT_SELECTION=False,
+            ENABLE_NEIGHBOR_CONTEXT_EXPANSION=True,
+            NEIGHBOR_EXPANSION_MAX_PER_CHUNK=1,
+            MAX_CONTEXT_CHARS=6000,
+        ),
+        embedding_client=_FakeEmbeddingClient(),
+        retriever=_NeighborFakeRetriever(chunks, neighbors),
+        llm_client=llm_client,
+        reranker=NoopReranker(),
+    )
+
+    response = chain.answer("如何执行操作？", top_k=5, retrieval_mode="hybrid")
+    prompt = llm_client.prompts[0]
+    citation_ids = [citation.chunk_id for citation in response.citations]
+
+    assert citation_ids == [f"chunk-{index}" for index in range(1, 6)]
+    assert len(citation_ids) == 5
+    assert prompt.count("[EVIDENCE E") == 5
+    for index in range(1, 6):
+        assert f"第{index}条原始证据内容。" in prompt
+        assert f"第{index}条扩展证据内容。" not in prompt
+
+
+def test_qa_chain_excludes_char_budgeted_contexts_from_prompt_and_citations() -> None:
+    chunks = [
+        _retrieved_chunk("chunk-1", 0.9, text="第一证据。"),
+        _retrieved_chunk("chunk-2", 0.8, text="第二条证据超过剩余字符预算。"),
+        _retrieved_chunk("chunk-3", 0.7, text="第三证据。"),
+    ]
+    llm_client = _FakeLLMClient()
+    chain = QAChain(
+        settings=Settings(
+            ENABLE_RERANK=False,
+            ENABLE_METADATA_CONTEXT_SELECTION=False,
+            ENABLE_NEIGHBOR_CONTEXT_EXPANSION=False,
+            MAX_CONTEXT_CHARS=8,
+        ),
+        embedding_client=_FakeEmbeddingClient(),
+        retriever=_FakeRetriever(chunks, expected_candidate_k=3),
+        llm_client=llm_client,
+        reranker=NoopReranker(),
+    )
+
+    response = chain.answer("如何执行操作？", top_k=3, retrieval_mode="hybrid")
+    prompt = llm_client.prompts[0]
+
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-1"]
+    assert "第一证据。" in prompt
+    assert "第二条证据超过剩余字符预算。" not in prompt
+    assert "第三证据。" not in prompt

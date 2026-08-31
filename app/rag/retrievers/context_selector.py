@@ -162,6 +162,20 @@ def enforce_max_context_chars(
     return selected
 
 
+def assemble_final_answer_contexts(
+    contexts: list[RetrievedChunk],
+    *,
+    max_contexts: int,
+    max_chars: int,
+) -> list[RetrievedChunk]:
+    """Apply the final answer budget without changing context order."""
+    if max_contexts <= 0:
+        return []
+
+    count_limited = contexts[:max_contexts]
+    return enforce_max_context_chars(count_limited, max_chars=max_chars)
+
+
 def _ranking_score(item: RetrievedChunk) -> float:
     if item.selection_score is not None:
         return item.selection_score

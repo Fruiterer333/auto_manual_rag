@@ -5,11 +5,11 @@ from app.core.logger import get_logger
 from app.data.schemas.models import Citation, QueryRequest, QueryResponse
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
 from app.rag.llms.ollama_client import OllamaClient
-from app.rag.prompts.answer_prompt import build_answer_prompt
+from app.rag.prompts.answer_prompt import DEFAULT_MAX_CONTEXTS, build_answer_prompt
 from app.rag.rerankers import get_reranker
 from app.rag.rerankers.base import BaseReranker
 from app.rag.retrievers.context_selector import (
-    enforce_max_context_chars,
+    assemble_final_answer_contexts,
     expand_neighbor_contexts,
     select_contexts,
 )
@@ -52,6 +52,7 @@ class QAChain:
         logger.info("QA started: question=%s top_k=%s retrieval_mode=%s", question, top_k, mode)
         query_embedding = self.embedding_client.embed_query(question)
         selection_enabled = self.settings.ENABLE_METADATA_CONTEXT_SELECTION
+        answer_context_limit = min(top_k, DEFAULT_MAX_CONTEXTS)
         candidate_k = top_k
         if selection_enabled:
             candidate_k = max(top_k, self.settings.CONTEXT_SELECTION_CANDIDATE_K)
@@ -89,7 +90,7 @@ class QAChain:
         retrieved_chunks = select_contexts(
             question=question,
             retrieved=reranked_candidates,
-            top_k=top_k,
+            top_k=answer_context_limit,
             enabled=selection_enabled,
         )
         selected_count = len(retrieved_chunks)
@@ -120,8 +121,9 @@ class QAChain:
             retrieved_chunks,
             stage="final_context_pre_prompt",
         )
-        retrieved_chunks = enforce_max_context_chars(
+        retrieved_chunks = assemble_final_answer_contexts(
             retrieved_chunks,
+            max_contexts=answer_context_limit,
             max_chars=self.settings.MAX_CONTEXT_CHARS,
         )
         logger.info(
@@ -161,7 +163,12 @@ class QAChain:
             )
 
         chunks = [retrieved.chunk for retrieved in retrieved_chunks]
-        prompt = build_answer_prompt(question=question, chunks=chunks)
+        prompt = build_answer_prompt(
+            question=question,
+            chunks=chunks,
+            max_contexts=answer_context_limit,
+            max_context_chars=self.settings.MAX_CONTEXT_CHARS,
+        )
         raw_answer = self.llm_client.generate(prompt)
         answer = self._post_process_answer(raw_answer)
         citations = [
@@ -220,6 +227,12 @@ class QAChain:
             r"(参见|参考|根据)?\s*(手册片段|资料|片段|上下文|context|source id)\s*\d+\s*(中|里|内)?",
             "",
             answer,
+            flags=re.IGNORECASE,
+        )
+        cleaned = re.sub(
+            r"(参见|参考|根据)?\s*Evidence(?:\s*ID)?\s*E\d+\s*(中|里|内)?",
+            "",
+            cleaned,
             flags=re.IGNORECASE,
         )
         cleaned = re.sub(r"(参见|参考|根据)\s*[,，:：]?", "", cleaned)

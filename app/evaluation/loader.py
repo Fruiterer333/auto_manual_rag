@@ -15,6 +15,7 @@ def load_eval_cases(
     intent_type: str | None = None,
     split: str | None = None,
     limit: int | None = None,
+    include_excluded: bool = False,
 ) -> list[EvalCase]:
     path = Path(dataset_path)
     if not path.exists():
@@ -41,6 +42,8 @@ def load_eval_cases(
                 continue
             if split and case.split != split:
                 continue
+            if case.excluded and not include_excluded:
+                continue
 
             _warn_if_case_is_hard_to_evaluate(case)
             cases.append(case)
@@ -48,13 +51,14 @@ def load_eval_cases(
                 break
 
     logger.info(
-        "Evaluation dataset loaded: path=%s cases=%s category=%s intent_type=%s split=%s limit=%s",
+        "Evaluation dataset loaded: path=%s cases=%s category=%s intent_type=%s split=%s limit=%s include_excluded=%s",
         path,
         len(cases),
         category,
         intent_type,
         split,
         limit,
+        include_excluded,
     )
     return cases
 
@@ -76,4 +80,3 @@ def _warn_if_case_is_hard_to_evaluate(case: EvalCase) -> None:
     )
     if not has_retrieval_anchor:
         logger.warning("Eval case has weak retrieval anchors: id=%s", case.id)
-

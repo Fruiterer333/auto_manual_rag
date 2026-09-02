@@ -131,11 +131,21 @@ def test_compare_reports_renders_optional_values_as_na() -> None:
     comparison = _comparison()
     markdown = format_markdown_report(comparison)
 
-    assert "# V3.1.2 Rerank Evaluation Comparison" in markdown
+    assert "# Rerank Evaluation Comparison" in markdown
+    assert "V3.1.2 Rerank Evaluation Comparison" not in markdown
     assert "## 6. Regressed Cases" in markdown
     assert "| unchanged | procedure | specific_operation | 2 | 2 | N/A | N/A |" in markdown
     assert "| final_context_hit | N/A | N/A | N/A |" in markdown
     assert "| elapsed_seconds | 10.0000 | 50.0000 | +40.0000 | 5.00x |" in markdown
+
+
+def test_compare_reports_supports_custom_markdown_title() -> None:
+    markdown = format_markdown_report(
+        _comparison(),
+        report_title="V3.4 Rerank Evaluation Comparison",
+    )
+
+    assert markdown.startswith("# V3.4 Rerank Evaluation Comparison\n")
 
 
 def test_compare_reports_rejects_mismatched_case_ids() -> None:

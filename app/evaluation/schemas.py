@@ -5,7 +5,10 @@ from pydantic import BaseModel, Field
 
 class EvalEvidence(BaseModel):
     page: int | None = None
+    chapter: str | None = None
     section: str | None = None
+    subsection: str | None = None
+    heading_path: list[str] = Field(default_factory=list)
     chunk_id: str | None = None
     quote: str = ""
 
@@ -25,6 +28,8 @@ class EvalCase(BaseModel):
     evidence: list[EvalEvidence] = Field(default_factory=list)
     split: str = "dev"
     notes: str = ""
+    excluded: bool = False
+    exclusion_reason: str = ""
 
 
 class RetrievalHitDetail(BaseModel):

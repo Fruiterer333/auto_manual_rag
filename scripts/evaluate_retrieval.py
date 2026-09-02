@@ -17,6 +17,7 @@ from app.core.config import Settings, get_settings
 from app.core.logger import get_logger
 from app.data.schemas.models import RetrievedChunk
 from app.evaluation.loader import load_eval_cases
+from app.evaluation.benchmark_validation import ensure_retrieval_benchmark_valid
 from app.evaluation.metrics import aggregate_results, evaluate_case_retrieval, group_aggregate
 from app.evaluation.schemas import EvalCase, EvalSummary, RetrievalEvalResult
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
@@ -73,6 +74,11 @@ def main() -> None:
 
     start_time = perf_counter()
     retriever = HybridRetriever(settings)
+    retriever.bm25_retriever.load_index()
+    ensure_retrieval_benchmark_valid(
+        cases,
+        retriever.bm25_retriever.chunks,
+    )
     embedding_client = _maybe_load_embedding_client(modes, settings)
     reranker = get_reranker(settings)
     all_results: list[RetrievalEvalResult] = []

@@ -155,6 +155,11 @@ def _first_evidence_hit_rank(case: EvalCase, chunks: list[RetrievedChunk]) -> in
 def _is_evidence_hit(case: EvalCase, item: RetrievedChunk) -> bool:
     chunk = item.chunk
     text = chunk.text
+    gold_chunk_ids = {
+        evidence.chunk_id for evidence in case.evidence if evidence.chunk_id
+    }
+    if gold_chunk_ids:
+        return chunk.chunk_id in gold_chunk_ids
     if _quote_hit(case, text):
         return True
     if _matches_any_section(chunk.section, case.expected_sections) and _any_term_in_text(

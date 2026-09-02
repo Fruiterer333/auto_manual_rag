@@ -33,6 +33,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--experiment", required=True)
     parser.add_argument("--output")
     parser.add_argument("--output-format", choices=("md", "json"), default="md")
+    parser.add_argument(
+        "--report-title",
+        default="Rerank Evaluation Comparison",
+        help="Markdown report title. Defaults to a version-neutral title.",
+    )
     return parser.parse_args()
 
 
@@ -45,7 +50,7 @@ def main() -> None:
         experiment_path=args.experiment,
     )
     output_text = (
-        format_markdown_report(comparison)
+        format_markdown_report(comparison, report_title=args.report_title)
         if args.output_format == "md"
         else json.dumps(comparison, ensure_ascii=False, indent=2)
     )
@@ -170,9 +175,13 @@ def compare_reports(
     }
 
 
-def format_markdown_report(comparison: dict[str, Any]) -> str:
+def format_markdown_report(
+    comparison: dict[str, Any],
+    *,
+    report_title: str = "Rerank Evaluation Comparison",
+) -> str:
     lines = [
-        "# V3.1.2 Rerank Evaluation Comparison",
+        f"# {report_title}",
         "",
         f"- generated_at: {comparison['generated_at']}",
         f"- baseline: `{comparison['baseline_path']}`",

@@ -6,6 +6,8 @@
 
 本轮将评测集从 29 条扩展到 69 条。扩展目标是增加可诊断性和覆盖面，不是让某个检索方案的指标更好看。
 
+> 当前状态：V3.5 已将该数据集校准并冻结为 69 records / 68 active / 1 excluded 的 chunk-level retrieval dev benchmark。本文保留 29 → 69 的设计历史；当前正式指标和 gold semantics 见 [`docs/evaluation.md`](../evaluation.md) 与 [`v3_5_retrieval_benchmark_summary.md`](../../reports/evaluation/v3_5_retrieval_benchmark_summary.md)。
+
 ## 2. Coverage
 
 当前 dev set 覆盖以下问题类型：

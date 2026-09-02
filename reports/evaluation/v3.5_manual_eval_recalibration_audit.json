@@ -1,0 +1,3741 @@
+{
+  "generated_at": "2026-09-01T21:10:47",
+  "dataset_path": "data/eval/manual_eval_set.jsonl",
+  "index_chunk_count": 981,
+  "case_count": 69,
+  "summary": {
+    "classification_counts": {
+      "UNCHANGED": 0,
+      "CHUNK_ID_CHANGED": 19,
+      "METADATA_CHANGED": 27,
+      "BOUNDARY_CHANGED": 18,
+      "MULTI_GOLD_CHANGED": 2,
+      "STALE_OR_INVALID": 0,
+      "AMBIGUOUS": 3
+    },
+    "requires_manual_review_count": 3
+  },
+  "cases": [
+    {
+      "case_id": "seatbelt_usage_001",
+      "question": "如何正确使用安全带？",
+      "old_gold_chunk_ids": [
+        "9017ca04-f93d-5e4f-affd-a5ee141ccc43",
+        "c9bde71b-4fc7-5ca3-ac20-976c822094c6"
+      ],
+      "candidate_current_chunk_ids": [
+        "746f7091-15d9-5778-9a15-fb5fbe7ff733",
+        "9319427a-ed1b-55d4-a335-29a87f01f9ed"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "9017ca04-f93d-5e4f-affd-a5ee141ccc43",
+          "old_expected_text": "缓慢拉出安全带，将锁舌插入锁扣中，直到听见“咔哒”声。",
+          "old_page": 101,
+          "old_chapter": null,
+          "old_section": "系紧安全带",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "746f7091-15d9-5778-9a15-fb5fbe7ff733",
+              "text": "系紧安全带\n1 调节座椅到合适位置。\n2 缓慢拉出安全带，将锁舌插入锁扣中，直到听见“咔哒”声。\n使腰部安全带应尽可能低的横跨于胯部。\n确保肩部安全带斜跨整个肩部，穿过胸部。\n4 将前排座椅安全带高度调整至合适的位置。\n捏住调节机构，上下调节安全带高度至合适位置。",
+              "page": 101,
+              "chapter": "安全出行",
+              "section": "使用安全带",
+              "subsection": "系紧安全带",
+              "heading_path": [
+                "安全出行",
+                "使用安全带",
+                "系紧安全带"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "c9bde71b-4fc7-5ca3-ac20-976c822094c6",
+          "old_expected_text": "乘坐时，安全带必须拉紧，防止松垮，并确保其牢固贴身，无扭 曲。",
+          "old_page": 101,
+          "old_chapter": null,
+          "old_section": "系紧安全带",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "9319427a-ed1b-55d4-a335-29a87f01f9ed",
+              "text": "系紧安全带\n警告！\n■请勿将座椅靠背太过向后倾斜。\n■请在系紧安全带前检查锁扣插口是否存在异物（如：食物残渣\n等），若存在异物请及时取出。\n■为确保安全带正常工作，请务必将安全带插入与之匹配的锁扣\n中。\n■乘坐时，安全带必须拉紧，防止松垮，并确保其牢固贴身，无扭\n曲。\n■切勿将安全带从您的后背绕过、从您的胳膊下面绕过或绕过您的\n颈部。安全带应远离您的面部和颈部，但不得从肩部滑落。\n■如果安全带无法正常使用，请联系Lynk & Co领克中心进行处理。",
+              "page": 101,
+              "chapter": "安全出行",
+              "section": "使用安全带",
+              "subsection": "系紧安全带",
+              "heading_path": [
+                "安全出行",
+                "使用安全带",
+                "系紧安全带"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "seatbelt_fastening_001",
+      "question": "如何系紧安全带？",
+      "old_gold_chunk_ids": [
+        "9017ca04-f93d-5e4f-affd-a5ee141ccc43"
+      ],
+      "candidate_current_chunk_ids": [
+        "746f7091-15d9-5778-9a15-fb5fbe7ff733"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "9017ca04-f93d-5e4f-affd-a5ee141ccc43",
+          "old_expected_text": "缓慢拉出安全带，将锁舌插入锁扣中，直到听见“咔哒”声。",
+          "old_page": 101,
+          "old_chapter": null,
+          "old_section": "系紧安全带",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "746f7091-15d9-5778-9a15-fb5fbe7ff733",
+              "text": "系紧安全带\n1 调节座椅到合适位置。\n2 缓慢拉出安全带，将锁舌插入锁扣中，直到听见“咔哒”声。\n使腰部安全带应尽可能低的横跨于胯部。\n确保肩部安全带斜跨整个肩部，穿过胸部。\n4 将前排座椅安全带高度调整至合适的位置。\n捏住调节机构，上下调节安全带高度至合适位置。",
+              "page": 101,
+              "chapter": "安全出行",
+              "section": "使用安全带",
+              "subsection": "系紧安全带",
+              "heading_path": [
+                "安全出行",
+                "使用安全带",
+                "系紧安全带"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "seatbelt_check_001",
+      "question": "如何检查安全带锁扣是否固定？",
+      "old_gold_chunk_ids": [
+        "58905e58-cfce-57ab-a580-6ab3f7e67528"
+      ],
+      "candidate_current_chunk_ids": [
+        "5db17d9f-11fe-58c4-912c-57bf5715610f"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "58905e58-cfce-57ab-a580-6ab3f7e67528",
+          "old_expected_text": "将安全带锁舌插入锁扣，直到听到“咔哒”声，反方向拉锁舌， 检查安全带锁扣固定情况。",
+          "old_page": 100,
+          "old_chapter": null,
+          "old_section": "安全带检查",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "5db17d9f-11fe-58c4-912c-57bf5715610f",
+              "text": "依然持\n说明！\n□请勿在副驾驶座椅上放置重物，系统可能会误认为车内乘员未系\n安全带。\n□后排座椅无安全带未系提醒，请及时提醒乘员正确佩戴安全带。\n安全带检查\n安全带属于重要安全部件，请每次行车前按照以下步骤对安全带进行\n检查。若存在异常情况，请立即联系Lynk & Co领克中心。\n■检查安全带是否存在扭曲、脏污的情况。\n■检查安全带是否存在严重磨损、割伤、烧伤的情况。\n■将安全带锁舌插入锁扣，直到听到“咔哒”声，反方向拉锁舌，\n检查安全带锁扣固定情况。\n■快速拉动安全带，检查安全带自动缩回/拉紧情况。",
+              "page": 100,
+              "chapter": "安全出行",
+              "section": "安全带",
+              "subsection": "依然持",
+              "heading_path": [
+                "安全出行",
+                "安全带",
+                "依然持"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_pressure_alarm_001",
+      "question": "胎压报警后应该怎么办？",
+      "old_gold_chunk_ids": [
+        "89593b26-5c7d-5467-b7b5-06f51f81a0a7"
+      ],
+      "candidate_current_chunk_ids": [
+        "9843960b-73c9-5d17-9c48-04352a7b90f3"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "89593b26-5c7d-5467-b7b5-06f51f81a0a7",
+          "old_expected_text": "在冷态充气至标准胎压值后，以30 km/h以上的车速行驶 几分钟，胎压过低报警解除。",
+          "old_page": 62,
+          "old_chapter": null,
+          "old_section": "胎压低报警",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "9843960b-73c9-5d17-9c48-04352a7b90f3",
+              "text": "胎压低报警\n当胎压低报警被激活时，对应报警轮胎开始闪烁，胎压监测系统状态\n指示灯持续点亮直到报警消除，伴有声音报警，同时仪表显示屏弹出\n提示信息。在冷态充气至标准胎压值后，以30 km/h以上的车速行驶\n几分钟，胎压过低报警解除。",
+              "page": 62,
+              "chapter": "驾驶前的准备",
+              "section": "胎压监测系统",
+              "subsection": "胎压低报警",
+              "heading_path": [
+                "驾驶前的准备",
+                "胎压监测系统",
+                "胎压低报警"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_pressure_monitoring_001",
+      "question": "胎压监测系统是如何监测轮胎压力的？",
+      "old_gold_chunk_ids": [
+        "65b3e6eb-44b6-5e0c-9bc9-30f13938501c"
+      ],
+      "candidate_current_chunk_ids": [
+        "12106cb5-8d82-5686-ac4b-03dd46f08fa0"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "65b3e6eb-44b6-5e0c-9bc9-30f13938501c",
+          "old_expected_text": "您的车辆配备主动式胎压监测系统（D-TPMS），该系统通过安装在 各车轮气阀上的传感器，监测轮胎压力。",
+          "old_page": 61,
+          "old_chapter": null,
+          "old_section": "胎压监测系统",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "12106cb5-8d82-5686-ac4b-03dd46f08fa0",
+              "text": "您的车辆配备主动式胎压监测系统（D-TPMS），该系统通过安装在\n各车轮气阀上的传感器，监测轮胎压力。",
+              "page": 61,
+              "chapter": "驾驶前的准备",
+              "section": "胎压监测系统",
+              "subsection": null,
+              "heading_path": [
+                "驾驶前的准备",
+                "胎压监测系统"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_pressure_label_001",
+      "question": "推荐胎压值在哪里查看？",
+      "old_gold_chunk_ids": [
+        "a09f011a-2e96-5ba8-80e7-ba799d8f421f"
+      ],
+      "candidate_current_chunk_ids": [
+        "5a261ec5-cc7b-560c-b50c-20fe7616564b"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "a09f011a-2e96-5ba8-80e7-ba799d8f421f",
+          "old_expected_text": "请经常检查胎压，尤其是开始长距离行驶前。您可以查看胎压标签 （位于驾驶员侧B柱上）的技术数据部分，找到推荐的胎压规格。",
+          "old_page": 314,
+          "old_chapter": null,
+          "old_section": "胎压标签",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "5a261ec5-cc7b-560c-b50c-20fe7616564b",
+              "text": "请经常检查胎压，尤其是开始长距离行驶前。您可以查看胎压标签\n（位于驾驶员侧B柱上）的技术数据部分，找到推荐的胎压规格。",
+              "page": 314,
+              "chapter": "保养和维护",
+              "section": "胎压标签",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "胎压标签"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "wading_after_check_001",
+      "question": "车辆涉水驾驶后需要检查什么？",
+      "old_gold_chunk_ids": [
+        "dfd56974-9aae-52e4-9b44-9bc7c7947387"
+      ],
+      "candidate_current_chunk_ids": [
+        "2a0c6a17-3a18-5cbd-bf19-aad195e97ade"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "dfd56974-9aae-52e4-9b44-9bc7c7947387",
+          "old_expected_text": "涉水驾驶之后，应在车辆安全时立即执行下列检查： ■轻踩制动踏板使制动器干燥，并检查制动器是否正常工作。 ■检查喇叭是否正常工作。 ■转动方向盘以检查转向助力是否正常工作。 ■检查外部车灯是否正常工作。",
+          "old_page": 164,
+          "old_chapter": null,
+          "old_section": "涉水驾驶",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "2a0c6a17-3a18-5cbd-bf19-aad195e97ade",
+              "text": "涉水行驶前，应注意以下事项：\n■涉水行驶前先确定水深，水位最高不得超过车身下边缘。\n■应低速通过积水路段，任何情况下都不要在水中停车、倒车。\n涉水驾驶之后，应在车辆安全时立即执行下列检查：\n■轻踩制动踏板使制动器干燥，并检查制动器是否正常工作。\n■检查喇叭是否正常工作。\n■转动方向盘以检查转向助力是否正常工作。\n■检查外部车灯是否正常工作。",
+              "page": 164,
+              "chapter": "启动和驾驶",
+              "section": "涉水驾驶",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "涉水驾驶"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "wading_before_notice_001",
+      "question": "涉水行驶前有哪些注意事项？",
+      "old_gold_chunk_ids": [
+        "dfd56974-9aae-52e4-9b44-9bc7c7947387"
+      ],
+      "candidate_current_chunk_ids": [
+        "2a0c6a17-3a18-5cbd-bf19-aad195e97ade"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "dfd56974-9aae-52e4-9b44-9bc7c7947387",
+          "old_expected_text": "涉水行驶前，应注意以下事项： ■涉水行驶前先确定水深，水位最高不得超过车身下边缘。 ■应低速通过积水路段，任何情况下都不要在水中停车、倒车。",
+          "old_page": 164,
+          "old_chapter": null,
+          "old_section": "涉水驾驶",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "2a0c6a17-3a18-5cbd-bf19-aad195e97ade",
+              "text": "涉水行驶前，应注意以下事项：\n■涉水行驶前先确定水深，水位最高不得超过车身下边缘。\n■应低速通过积水路段，任何情况下都不要在水中停车、倒车。\n涉水驾驶之后，应在车辆安全时立即执行下列检查：\n■轻踩制动踏板使制动器干燥，并检查制动器是否正常工作。\n■检查喇叭是否正常工作。\n■转动方向盘以检查转向助力是否正常工作。\n■检查外部车灯是否正常工作。",
+              "page": 164,
+              "chapter": "启动和驾驶",
+              "section": "涉水驾驶",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "涉水驾驶"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "charging_safety_001",
+      "question": "充电时有哪些安全注意事项？",
+      "old_gold_chunk_ids": [
+        "b45e9f87-cba5-5461-8fc0-8e5837491824",
+        "2e5ec7e7-3d5e-5165-8c32-71fad7ff928c"
+      ],
+      "candidate_current_chunk_ids": [
+        "49ec2573-e88f-5c4e-9463-6192c24710cd",
+        "6385421b-0530-5c64-89d2-b9518d40efdd"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "b45e9f87-cba5-5461-8fc0-8e5837491824",
+          "old_expected_text": "充电前请检查充电电缆，禁止使用表皮、外壳有破损的充电电 缆。",
+          "old_page": 288,
+          "old_chapter": null,
+          "old_section": "充电安全警告",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "49ec2573-e88f-5c4e-9463-6192c24710cd",
+              "text": "警告！\n■充电前请检查充电电缆，禁止使用表皮、外壳有破损的充电电\n缆。\n■充电前请确保车辆、供电设备和充电连接装置的充电端口内没有\n水或异物，金属端子没有生锈或者腐蚀。\n■请在相对较安全的环境下充电，避免雨淋、水浸，远离火源。\n■切勿私自拆卸或改装充电设备及相关端口。\n■请选择干燥通风的充电环境，不要在有汽油、涂料、易燃易爆物\n品使用或存放的环境下使用充电设备。\n■严禁在阴暗潮湿的场地使用充电线缆。\n■切勿让儿童进行充电作业。\n■切勿触摸充电口。\n■雨天情况下，如果没有遮雨棚，请勿进行充电操作。\n■充电过程中如遇天气突发变化（大风、雨雪、雷暴），应及时检\n查充电插头是否牢固并处于干燥状态；打雷闪电时，禁止触摸充\n电线缆和车身。\n■充电过程中如果充电口附近受潮，请在确保安全情况下先断开供\n电电源，然后断开供电端插头（手或身体其他部位不要触碰充电\n插头金属片，以免引起安全事故），再拔出充电枪，必要时请使\n用绝缘手套，并尽快联系Lynk & Co领克中心检测确认。\n■如果在充电时发现车辆散发出异味，请立即停止充电。\n■充电时，请勿挤压充电线缆。\n■充电结束后，请勿在手湿或站立在地面积水中断开充电连接装\n置。\n■车辆行驶前请确保充电连接装置已脱开车辆充电口。",
+              "page": 288,
+              "chapter": "高压系统",
+              "section": "充电安全警告",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "充电安全警告"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "b45e9f87-cba5-5461-8fc0-8e5837491824",
+          "old_expected_text": "请在相对较安全的环境下充电，避免雨淋、水浸，远离火源。",
+          "old_page": 288,
+          "old_chapter": null,
+          "old_section": "充电安全警告",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "49ec2573-e88f-5c4e-9463-6192c24710cd",
+              "text": "警告！\n■充电前请检查充电电缆，禁止使用表皮、外壳有破损的充电电\n缆。\n■充电前请确保车辆、供电设备和充电连接装置的充电端口内没有\n水或异物，金属端子没有生锈或者腐蚀。\n■请在相对较安全的环境下充电，避免雨淋、水浸，远离火源。\n■切勿私自拆卸或改装充电设备及相关端口。\n■请选择干燥通风的充电环境，不要在有汽油、涂料、易燃易爆物\n品使用或存放的环境下使用充电设备。\n■严禁在阴暗潮湿的场地使用充电线缆。\n■切勿让儿童进行充电作业。\n■切勿触摸充电口。\n■雨天情况下，如果没有遮雨棚，请勿进行充电操作。\n■充电过程中如遇天气突发变化（大风、雨雪、雷暴），应及时检\n查充电插头是否牢固并处于干燥状态；打雷闪电时，禁止触摸充\n电线缆和车身。\n■充电过程中如果充电口附近受潮，请在确保安全情况下先断开供\n电电源，然后断开供电端插头（手或身体其他部位不要触碰充电\n插头金属片，以免引起安全事故），再拔出充电枪，必要时请使\n用绝缘手套，并尽快联系Lynk & Co领克中心检测确认。\n■如果在充电时发现车辆散发出异味，请立即停止充电。\n■充电时，请勿挤压充电线缆。\n■充电结束后，请勿在手湿或站立在地面积水中断开充电连接装\n置。\n■车辆行驶前请确保充电连接装置已脱开车辆充电口。",
+              "page": 288,
+              "chapter": "高压系统",
+              "section": "充电安全警告",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "充电安全警告"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 2,
+          "old_chunk_id": "b45e9f87-cba5-5461-8fc0-8e5837491824",
+          "old_expected_text": "切勿让儿童进行充电作业。",
+          "old_page": 288,
+          "old_chapter": null,
+          "old_section": "充电安全警告",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "49ec2573-e88f-5c4e-9463-6192c24710cd",
+              "text": "警告！\n■充电前请检查充电电缆，禁止使用表皮、外壳有破损的充电电\n缆。\n■充电前请确保车辆、供电设备和充电连接装置的充电端口内没有\n水或异物，金属端子没有生锈或者腐蚀。\n■请在相对较安全的环境下充电，避免雨淋、水浸，远离火源。\n■切勿私自拆卸或改装充电设备及相关端口。\n■请选择干燥通风的充电环境，不要在有汽油、涂料、易燃易爆物\n品使用或存放的环境下使用充电设备。\n■严禁在阴暗潮湿的场地使用充电线缆。\n■切勿让儿童进行充电作业。\n■切勿触摸充电口。\n■雨天情况下，如果没有遮雨棚，请勿进行充电操作。\n■充电过程中如遇天气突发变化（大风、雨雪、雷暴），应及时检\n查充电插头是否牢固并处于干燥状态；打雷闪电时，禁止触摸充\n电线缆和车身。\n■充电过程中如果充电口附近受潮，请在确保安全情况下先断开供\n电电源，然后断开供电端插头（手或身体其他部位不要触碰充电\n插头金属片，以免引起安全事故），再拔出充电枪，必要时请使\n用绝缘手套，并尽快联系Lynk & Co领克中心检测确认。\n■如果在充电时发现车辆散发出异味，请立即停止充电。\n■充电时，请勿挤压充电线缆。\n■充电结束后，请勿在手湿或站立在地面积水中断开充电连接装\n置。\n■车辆行驶前请确保充电连接装置已脱开车辆充电口。",
+              "page": 288,
+              "chapter": "高压系统",
+              "section": "充电安全警告",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "充电安全警告"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 3,
+          "old_chunk_id": "2e5ec7e7-3d5e-5165-8c32-71fad7ff928c",
+          "old_expected_text": "插入/拔出充电枪时应匀速插拔，切勿倾斜或晃动充电枪。",
+          "old_page": 289,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "6385421b-0530-5c64-89d2-b9518d40efdd",
+              "text": "注意！\n■插入充电枪时，确保锁止装置可以正常回位。当充电枪锁止装置\n工作异常时，请不要将充电枪插入车辆充电插座。\n■插入/拔出充电枪时应匀速插拔，切勿倾斜或晃动充电枪。",
+              "page": 289,
+              "chapter": "高压系统",
+              "section": "充电安全警告",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "充电安全警告"
+              ],
+              "content_type": "caution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "charging_gun_handling_001",
+      "question": "插入或拔出充电枪时要注意什么？",
+      "old_gold_chunk_ids": [
+        "2e5ec7e7-3d5e-5165-8c32-71fad7ff928c"
+      ],
+      "candidate_current_chunk_ids": [
+        "6385421b-0530-5c64-89d2-b9518d40efdd"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "2e5ec7e7-3d5e-5165-8c32-71fad7ff928c",
+          "old_expected_text": "插入充电枪时，确保锁止装置可以正常回位。当充电枪锁止装置 工作异常时，请不要将充电枪插入车辆充电插座。",
+          "old_page": 289,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "6385421b-0530-5c64-89d2-b9518d40efdd",
+              "text": "注意！\n■插入充电枪时，确保锁止装置可以正常回位。当充电枪锁止装置\n工作异常时，请不要将充电枪插入车辆充电插座。\n■插入/拔出充电枪时应匀速插拔，切勿倾斜或晃动充电枪。",
+              "page": 289,
+              "chapter": "高压系统",
+              "section": "充电安全警告",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "充电安全警告"
+              ],
+              "content_type": "caution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "onboard_charging_steps_001",
+      "question": "如何使用车载充电设备给车辆充电？",
+      "old_gold_chunk_ids": [
+        "cc985ecb-44ca-52bd-9ef8-0f3212481b51"
+      ],
+      "candidate_current_chunk_ids": [
+        "341d7144-ad0b-59ce-84dc-87943e9f9415"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "cc985ecb-44ca-52bd-9ef8-0f3212481b51",
+          "old_expected_text": "确认车辆已经处于熄火状态。",
+          "old_page": 289,
+          "old_chapter": null,
+          "old_section": "车载充电设备充电",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "341d7144-ad0b-59ce-84dc-87943e9f9415",
+              "text": "操作步骤\n1 确认车辆已经处于熄火状态。\n2 长按仪表板上的\n按钮，解锁充电盖。\n3 打开充电盖，并取下充电插座保护盖。\n4 将三脚插头插合在家用220 V电源插座上。\n按住充电枪上的按钮。\n取下充电枪保护盖。\n按住充电枪上的按钮，将充电枪完全插入车辆充电插座后松开\n按钮，充电枪被锁止后，车辆开始自动充电。\n6 充电结束后，解锁车辆，按住充电枪上的按钮，拔出充电枪。\n7 从家用220 V电源插座上拔下三脚插头。\n8 装回充电插座保护盖并关上充电盖，将充电设备放回原位。",
+              "page": 289,
+              "chapter": "高压系统",
+              "section": "车载充电设备充电",
+              "subsection": "操作步骤",
+              "heading_path": [
+                "高压系统",
+                "车载充电设备充电",
+                "操作步骤"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "cc985ecb-44ca-52bd-9ef8-0f3212481b51",
+          "old_expected_text": "将充电枪完全插入车辆充电插座后松开 按钮，充电枪被锁止后，车辆开始自动充电。",
+          "old_page": 289,
+          "old_chapter": null,
+          "old_section": "车载充电设备充电",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "341d7144-ad0b-59ce-84dc-87943e9f9415",
+              "text": "操作步骤\n1 确认车辆已经处于熄火状态。\n2 长按仪表板上的\n按钮，解锁充电盖。\n3 打开充电盖，并取下充电插座保护盖。\n4 将三脚插头插合在家用220 V电源插座上。\n按住充电枪上的按钮。\n取下充电枪保护盖。\n按住充电枪上的按钮，将充电枪完全插入车辆充电插座后松开\n按钮，充电枪被锁止后，车辆开始自动充电。\n6 充电结束后，解锁车辆，按住充电枪上的按钮，拔出充电枪。\n7 从家用220 V电源插座上拔下三脚插头。\n8 装回充电插座保护盖并关上充电盖，将充电设备放回原位。",
+              "page": 289,
+              "chapter": "高压系统",
+              "section": "车载充电设备充电",
+              "subsection": "操作步骤",
+              "heading_path": [
+                "高压系统",
+                "车载充电设备充电",
+                "操作步骤"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "high_voltage_label_001",
+      "question": "高压警告标签提示不要做什么？",
+      "old_gold_chunk_ids": [
+        "577797f4-4ee4-58ac-b08a-a12b54b54ff8"
+      ],
+      "candidate_current_chunk_ids": [
+        "9483bddf-8a95-5eb9-899f-062b3dab1d86"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "577797f4-4ee4-58ac-b08a-a12b54b54ff8",
+          "old_expected_text": "高电压部件上贴有标签。切勿触摸、拆解或更换此类部件。",
+          "old_page": 287,
+          "old_chapter": null,
+          "old_section": "高压警告标签",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "9483bddf-8a95-5eb9-899f-062b3dab1d86",
+              "text": "高电压部件上贴有标签。切勿触摸、拆解或更换此类部件。",
+              "page": 287,
+              "chapter": "高压系统",
+              "section": "高压警告标签",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "高压警告标签"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "high_voltage_state_001",
+      "question": "车辆使用过程中高压系统可能处于什么状态？",
+      "old_gold_chunk_ids": [
+        "61f0165b-adf8-5459-adaf-2c177b81be4f"
+      ],
+      "candidate_current_chunk_ids": [
+        "7bea67b0-8d46-545d-8673-326a51122352"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "61f0165b-adf8-5459-adaf-2c177b81be4f",
+          "old_expected_text": "在车辆使用过程中，高压系统均可能处于高电压和高温的状态。",
+          "old_page": 287,
+          "old_chapter": null,
+          "old_section": "高压警告标签",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "7bea67b0-8d46-545d-8673-326a51122352",
+              "text": "警告！\n■在车辆使用过程中，高压系统均可能处于高电压和高温的状态。\n请遵守标签说明，避免高电压和高温伤害。\n■应严格避免您本人或救援人员与高电压部件发生物理接触。救援\n人员应采取所有预防措施（包括穿戴绝缘服、绝缘鞋、绝缘手套\n等）。",
+              "page": 287,
+              "chapter": "高压系统",
+              "section": "高压警告标签",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "高压警告标签"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_repair_kit_location_001",
+      "question": "补胎套装在哪里？",
+      "old_gold_chunk_ids": [
+        "a143f8e9-4034-53fa-91b9-5a07fffe02b1"
+      ],
+      "candidate_current_chunk_ids": [
+        "c086ee79-5f3f-5c5e-b6ca-9abdf7d2cea4"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "a143f8e9-4034-53fa-91b9-5a07fffe02b1",
+          "old_expected_text": "补胎套装位于后备厢盖板下方。补胎套装配备有： ■补胎液罐。 ■电动充气泵。",
+          "old_page": 340,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "c086ee79-5f3f-5c5e-b6ca-9abdf7d2cea4",
+              "text": "说明！\n□补胎套装仅适用于胎面上存在刺穿的密封轮胎。如果轮胎有较大\n裂缝、裂痕或类似损坏时，无法使用补胎套装密封轮胎。\n补胎套装位于后备厢盖板下方。补胎套装配备有：\n■补胎液罐。\n■电动充气泵。\n01 电源接头\n02充气泵卡槽\n03补胎液气门嘴\n04补胎液气管\n05补胎液罐\n06减压阀\n07压力表\n08开关\n09充气泵气管",
+              "page": 340,
+              "chapter": "紧急情况下",
+              "section": "补胎套装",
+              "subsection": null,
+              "heading_path": [
+                "紧急情况下",
+                "补胎套装"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_repair_before_001",
+      "question": "使用补胎套装修补轮胎前要先做什么？",
+      "old_gold_chunk_ids": [
+        "8d87305e-3d00-5149-bd86-a4e8e1310d6b"
+      ],
+      "candidate_current_chunk_ids": [
+        "b462dc8d-6b14-570d-ade5-e30af2b69f70"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "8d87305e-3d00-5149-bd86-a4e8e1310d6b",
+          "old_expected_text": "使用补胎套装修补轮胎前： ■确保车辆停放安全，远离车流。将挡位切换至驻车挡（P）。",
+          "old_page": 341,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "b462dc8d-6b14-570d-ade5-e30af2b69f70",
+              "text": "使用补胎套装注意事项\n警告！\n使用补胎套装修补轮胎前：\n■确保车辆停放安全，远离车流。将挡位切换至驻车挡（P）。\n■在道路上修补轮胎时，请按规定放置三角警示牌并开启危险\n警告灯。",
+              "page": 341,
+              "chapter": "紧急情况下",
+              "section": "补胎套装",
+              "subsection": "使用补胎套装注意事项",
+              "heading_path": [
+                "紧急情况下",
+                "补胎套装",
+                "使用补胎套装注意事项"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tire_repair_after_limits_001",
+      "question": "使用补胎套装修后车速和行驶距离有什么限制？",
+      "old_gold_chunk_ids": [
+        "e537ae6c-0aae-565a-ad0d-e8e8774a7572"
+      ],
+      "candidate_current_chunk_ids": [
+        "0a00012d-27a0-5399-acf0-1a2d3a18e319"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "e537ae6c-0aae-565a-ad0d-e8e8774a7572",
+          "old_expected_text": "车辆驾驶速度不得超过80 km/h。 ■车辆驾驶距离不得超过200 km。",
+          "old_page": 342,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "0a00012d-27a0-5399-acf0-1a2d3a18e319",
+              "text": "使用补胎套装注意事项\n警告！\n使用补胎套装修补轮胎之后：\n■以不超过80 km/h时速平稳行驶3 km后，下车检查轮胎是否\n漏气，若轮胎仍然漏气，请联系Lynk &amp; Co领克中心寻求\n帮助。\n■车辆驾驶速度不得超过80 km/h。\n■车辆驾驶距离不得超过200 km。\n■小心驾驶，避免生硬的转向操纵和紧急停车。\n■尽快开往Lynk &amp; Co领克中心，对轮胎进行修复或更换，\n同时需对残留在轮胎、车轮、胎压传感器上的补胎液进行清\n理并使其干燥。\n■驾驶时，如果感受到不正常的振动或噪音，请减速并安全停\n车。",
+              "page": 342,
+              "chapter": "紧急情况下",
+              "section": "补胎套装",
+              "subsection": "使用补胎套装注意事项",
+              "heading_path": [
+                "紧急情况下",
+                "补胎套装",
+                "使用补胎套装注意事项"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "child_lock_enable_001",
+      "question": "儿童锁启用后后门能从车内打开吗？",
+      "old_gold_chunk_ids": [
+        "e10410b4-75f7-5265-a142-a52d92b55614",
+        "9be465bc-785b-5502-8f65-0ac381e3505e"
+      ],
+      "candidate_current_chunk_ids": [
+        "582e35dd-492e-5d3f-9ac8-b5b1fe8821eb",
+        "4438b312-5f20-5299-964c-b725c569e179"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "e10410b4-75f7-5265-a142-a52d92b55614",
+          "old_expected_text": "儿童锁已启用，不能从车内打开后门。",
+          "old_page": 122,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "582e35dd-492e-5d3f-9ac8-b5b1fe8821eb",
+              "text": "儿童在后排乘坐时，为防止儿童意外打开后门，您可以启用后排儿童\n锁功能。\n01 儿童锁已停用，可以从车内和车外打开后门。\n02儿童锁已启用，不能从车内打开后门。\n儿童锁位于后门的后缘，后门打开时方可触及儿童锁。\n可单独启用后排儿童锁：\n使用可分开的机械钥匙，顺时针转动控制器90°（左后门）。",
+              "page": 121,
+              "chapter": "安全出行",
+              "section": "儿童锁",
+              "subsection": null,
+              "heading_path": [
+                "安全出行",
+                "儿童锁"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "9be465bc-785b-5502-8f65-0ac381e3505e",
+          "old_expected_text": "儿童锁启用后，只能通过相应的车门外把手打开后车门。",
+          "old_page": 45,
+          "old_chapter": null,
+          "old_section": "车门内把手",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "4438b312-5f20-5299-964c-b725c569e179",
+              "text": "车门内把手\n说明！\n□在中控锁锁止的情况下，拉动一次前门内把手，可打开前门；连\n续拉动两次后门内把手，可打开后门。\n□儿童锁启用后，只能通过相应的车门外把手打开后车门。",
+              "page": 45,
+              "chapter": "上车和下车",
+              "section": "车内打开/关闭车门",
+              "subsection": "车门内把手",
+              "heading_path": [
+                "上车和下车",
+                "车内打开/关闭车门",
+                "车门内把手"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "child_safety_seat_001",
+      "question": "儿童乘车时应如何保证乘坐安全？",
+      "old_gold_chunk_ids": [
+        "215b2494-1519-5b95-80e7-3ceb31c97ad2"
+      ],
+      "candidate_current_chunk_ids": [
+        "d0ba3d28-2cd5-583e-80ec-7dc4e23c1eeb"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "215b2494-1519-5b95-80e7-3ceb31c97ad2",
+          "old_expected_text": "婴儿和儿童必须乘坐在适合其年龄和体型的儿童安全座椅中。",
+          "old_page": 122,
+          "old_chapter": null,
+          "old_section": "儿童座椅固定装置",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "d0ba3d28-2cd5-583e-80ec-7dc4e23c1eeb",
+              "text": "儿童安全\n儿童乘车时，请务必时刻确保儿童乘坐安全。\n婴儿和儿童必须乘坐在适合其年龄和体型的儿童安全座椅中。",
+              "page": 122,
+              "chapter": "安全出行",
+              "section": "儿童座椅固定装置",
+              "subsection": "儿童安全",
+              "heading_path": [
+                "安全出行",
+                "儿童座椅固定装置",
+                "儿童安全"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "isofix_install_001",
+      "question": "如何安装 ISOFIX 儿童安全座椅？",
+      "old_gold_chunk_ids": [
+        "37112f4d-8d2c-575b-8576-ad59b0b0ec37"
+      ],
+      "candidate_current_chunk_ids": [
+        "f77304cf-25b2-5d12-a968-9ef387d75b49"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "37112f4d-8d2c-575b-8576-ad59b0b0ec37",
+          "old_expected_text": "打开固定装置罩盖。 2 按照儿童安全座椅安装说明书，将儿童安全座椅安装在ISOFIX固 定装置中。 3 向外拉动并左右摇晃儿童安全座椅，以确保其已固定到位。",
+          "old_page": 123,
+          "old_chapter": null,
+          "old_section": "安装ISOFIX儿童安全座椅",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f77304cf-25b2-5d12-a968-9ef387d75b49",
+              "text": "ISOFIX固定装置\n1 打开固定装置罩盖。\n2 按照儿童安全座椅安装说明书，将儿童安全座椅安装在ISOFIX固\n定装置中。\n3 向外拉动并左右摇晃儿童安全座椅，以确保其已固定到位。",
+              "page": 123,
+              "chapter": "安全出行",
+              "section": "儿童座椅固定装置",
+              "subsection": "ISOFIX固定装置",
+              "heading_path": [
+                "安全出行",
+                "儿童座椅固定装置",
+                "ISOFIX固定装置"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "airbag_explanation_001",
+      "question": "安全气囊的作用是什么？",
+      "old_gold_chunk_ids": [
+        "89dc878f-f3fa-5f11-8bbd-f9da6edc01d5"
+      ],
+      "candidate_current_chunk_ids": [
+        "cb2b623c-130b-5886-a81c-fd097a9a31e9"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "89dc878f-f3fa-5f11-8bbd-f9da6edc01d5",
+          "old_expected_text": "安全气囊是一种被动式辅助保护装置，与安全带配合使用，为乘员头 部和胸部提供附加保护。",
+          "old_page": 102,
+          "old_chapter": null,
+          "old_section": "安全气囊",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "cb2b623c-130b-5886-a81c-fd097a9a31e9",
+              "text": "安全气囊是一种被动式辅助保护装置，与安全带配合使用，为乘员头\n部和胸部提供附加保护。\n只有在车辆启动的情况下，安全气囊系统才会运行。安全带和安全气\n囊协同工作，如果您未使用或未正确使用安全带，安全气囊在碰撞事\n故中提供的保护作用会减小或失效。\n安全气囊控制模块监控各个装置运行状况，当安全气囊控制模块检测\n到碰撞事件发生时，控制气囊展开和安全带预紧。在碰撞过程中如果\n安全气囊展开，气囊会迅速充气而膨胀，在受到挤压后短时间内泄气\n收缩。",
+              "page": 102,
+              "chapter": "安全出行",
+              "section": "安全气囊",
+              "subsection": null,
+              "heading_path": [
+                "安全出行",
+                "安全气囊"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "airbag_warning_001",
+      "question": "安全气囊相关部件可以私自拆卸或改装吗？",
+      "old_gold_chunk_ids": [
+        "cb5a127d-f228-54bc-8664-2a284dc83029"
+      ],
+      "candidate_current_chunk_ids": [
+        "535d0a07-19c6-56f4-aab0-60714321ab71"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "cb5a127d-f228-54bc-8664-2a284dc83029",
+          "old_expected_text": "严禁私自更改、拆卸、安装安全气囊及相关部件。",
+          "old_page": 103,
+          "old_chapter": null,
+          "old_section": "安全气囊注意事项",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "535d0a07-19c6-56f4-aab0-60714321ab71",
+              "text": "安全气囊注意事项\n警告！\n■请勿在装有安全气囊的位置安装或放置任何附件（杯托、盒架、\n贴纸等）。\n■严禁私自更改、拆卸、安装安全气囊及相关部件。\n■所有驾乘人员必须正确佩带安全带并保持正确坐姿。成人应使用\n安全带，年龄过小的儿童应使用合适的儿童安全座椅。\n■请勿在安全气囊装置部件或电器件附近使用任何电气测试设备或\n装置。\n■安全气囊装置只能提供一次性的事故防护功能。如果安全气囊已\n触发，则必须更换安全气囊装置部件。\n■安全气囊展开后，请勿驾驶车辆。请立即联系Lynk & Co领克中\n心。\n■安全气囊展开后，请勿立即触摸安全气囊组件和安全气囊存放区\n域（方向盘，仪表板和/或车顶纵梁两侧）周围的车内部件。\n■长时间接触安全气囊起爆时产生的粉尘（烟雾）可能会引起皮肤\n或眼睛不适。如果眼睛和皮肤擦伤处受到烟雾和粉尘感染，请立\n即用大量清水冲洗；若清洗后依旧感觉不适，请立即就医。",
+              "page": 103,
+              "chapter": "安全出行",
+              "section": "安全气囊",
+              "subsection": "安全气囊注意事项",
+              "heading_path": [
+                "安全出行",
+                "安全气囊",
+                "安全气囊注意事项"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "front_hood_open_001",
+      "question": "如何打开前机舱盖？",
+      "old_gold_chunk_ids": [
+        "6ffc10fb-d313-5fa7-a467-a6e150f93880",
+        "071008b5-ba4b-58c8-8186-5ca3ad280350"
+      ],
+      "candidate_current_chunk_ids": [
+        "fcf74d44-3feb-545f-ab25-b6d36eccb609"
+      ],
+      "classification": "MULTI_GOLD_CHANGED",
+      "reason": "The number of unique gold chunks changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "6ffc10fb-d313-5fa7-a467-a6e150f93880",
+          "old_expected_text": "打开前机舱盖前，确保前机舱盖打开区域无障碍物。 1 连续拉两次位于驾驶员侧仪表板左下方的前机舱盖开启拉手。",
+          "old_page": 307,
+          "old_chapter": null,
+          "old_section": "驾驶员座椅下方的保险丝盒",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "fcf74d44-3feb-545f-ab25-b6d36eccb609",
+              "text": "打开前机舱盖前，确保前机舱盖打开区域无障碍物。\n1 连续拉两次位于驾驶员侧仪表板左下方的前机舱盖开启拉手。\n2 抬起前机舱盖。",
+              "page": 307,
+              "chapter": "保养和维护",
+              "section": "打开前机舱盖",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "打开前机舱盖"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "071008b5-ba4b-58c8-8186-5ca3ad280350",
+          "old_expected_text": "抬起前机舱盖。",
+          "old_page": 308,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "fcf74d44-3feb-545f-ab25-b6d36eccb609",
+              "text": "打开前机舱盖前，确保前机舱盖打开区域无障碍物。\n1 连续拉两次位于驾驶员侧仪表板左下方的前机舱盖开启拉手。\n2 抬起前机舱盖。",
+              "page": 307,
+              "chapter": "保养和维护",
+              "section": "打开前机舱盖",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "打开前机舱盖"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "front_hood_close_warning_001",
+      "question": "关闭前机舱盖前需要确认什么？",
+      "old_gold_chunk_ids": [
+        "59718a8f-d59c-5645-9689-a3585193d7cd"
+      ],
+      "candidate_current_chunk_ids": [
+        "8fe1fba4-c81e-5881-a57e-dfb5525d4732"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "59718a8f-d59c-5645-9689-a3585193d7cd",
+          "old_expected_text": "关闭前机舱盖前，请确保前机舱盖关闭区域无障碍物，且发动机 舱内未遗留手套、抹布或其他任何易燃物。",
+          "old_page": 308,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "8fe1fba4-c81e-5881-a57e-dfb5525d4732",
+              "text": "警告！\n■关闭前机舱盖前，请确保前机舱盖关闭区域无障碍物，且发动机\n舱内未遗留手套、抹布或其他任何易燃物。\n■驾车前，确保前机舱盖完全关闭锁止。",
+              "page": 308,
+              "chapter": "保养和维护",
+              "section": "关闭前机舱盖",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "关闭前机舱盖"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "wiper_caution_001",
+      "question": "冬季使用雨刮前要注意什么？",
+      "old_gold_chunk_ids": [
+        "1d21f69e-fe54-5afa-8a48-047651ade8f3"
+      ],
+      "candidate_current_chunk_ids": [
+        "32e9fad8-2056-5ffd-99b5-74871d62d66a"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "1d21f69e-fe54-5afa-8a48-047651ade8f3",
+          "old_expected_text": "冬季使用雨刮前，请先清除挡风玻璃上的冰和积雪并确认雨刮片 没有冻结在挡风玻璃上。",
+          "old_page": 63,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "32e9fad8-2056-5ffd-99b5-74871d62d66a",
+              "text": "注意！\n■冬季使用雨刮前，请先清除挡风玻璃上的冰和积雪并确认雨刮片\n没有冻结在挡风玻璃上。\n■当挡风玻璃上有尘沙、鸟粪、昆虫、树浆等异物时，请先清洁挡\n风玻璃，否则会损坏雨刮片/影响雨刮片清洁效果。\n■避免在挡风玻璃干燥的情况下开启雨刮，否则可能导致雨刮片和\n挡风玻璃损坏。\n■定期清洁和检查雨刮片，否则雨刮片使用寿命可能会缩短。\n■应使用合格的洗涤液，不合格的洗涤液可能导致洗涤器损坏。\n■如果发现雨刮片橡胶硬化或有裂纹、雨刮片在挡风玻璃上留下划\n痕或不能刮洗某个区域，则需要更换雨刮片。\n雨量感应式自动雨刷\n旋转雨刮拨杆上的滚轮，调节雨刮刮刷速度\n雨量光线传感器安装在挡风玻璃上部，内后视镜三角区域。当拨杆位\n于自动挡位（AUTO）时，雨量光线传感器会根据降雨强度自动开启/\n关闭雨刮及调节雨刮刮刷速度。向上旋转滚轮，增加自动雨刷灵敏\n度；向下旋转滚轮，降低自动雨刷灵敏度。",
+              "page": 63,
+              "chapter": "驾驶前的准备",
+              "section": "前雨刮和洗涤器",
+              "subsection": null,
+              "heading_path": [
+                "驾驶前的准备",
+                "前雨刮和洗涤器"
+              ],
+              "content_type": "caution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "defrost_enable_location_001",
+      "question": "前除霜或除雾功能可以通过哪里启用？",
+      "old_gold_chunk_ids": [
+        "5f4802ed-a17d-56c2-ac29-d5ed0eb32a17"
+      ],
+      "candidate_current_chunk_ids": [
+        "95452398-a1ad-59ca-83d3-ba58fb877706"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "5f4802ed-a17d-56c2-ac29-d5ed0eb32a17",
+          "old_expected_text": "您可以通过空调系统面板启用前除霜/除雾功能，可迅速除去挡风玻 璃上的结冰或雾气。",
+          "old_page": 256,
+          "old_chapter": null,
+          "old_section": "空调除霜/除雾",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "95452398-a1ad-59ca-83d3-ba58fb877706",
+              "text": "前除霜/除雾\n您可以通过空调系统面板启用前除霜/除雾功能，可迅速除去挡风玻\n璃上的结冰或雾气。\n操作这个按钮可迅速除去挡风玻璃和车窗上的结冰或雾气。\n按下该按钮，启动最大除霜功能。该功能启用后，按钮上的指示灯点\n亮。\n您也可以通过中央显示屏空调控制面板启用前除霜/除雾功能。\n在中央显示屏上唤起空调控制界面。\n01 点击开启/关闭前除霜/除雾功能。",
+              "page": 256,
+              "chapter": "空调",
+              "section": "空调除霜/除雾",
+              "subsection": "前除霜/除雾",
+              "heading_path": [
+                "空调",
+                "空调除霜/除雾",
+                "前除霜/除雾"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "5f4802ed-a17d-56c2-ac29-d5ed0eb32a17",
+          "old_expected_text": "您也可以通过中央显示屏空调控制面板启用前除霜/除雾功能。",
+          "old_page": 256,
+          "old_chapter": null,
+          "old_section": "空调除霜/除雾",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "95452398-a1ad-59ca-83d3-ba58fb877706",
+              "text": "前除霜/除雾\n您可以通过空调系统面板启用前除霜/除雾功能，可迅速除去挡风玻\n璃上的结冰或雾气。\n操作这个按钮可迅速除去挡风玻璃和车窗上的结冰或雾气。\n按下该按钮，启动最大除霜功能。该功能启用后，按钮上的指示灯点\n亮。\n您也可以通过中央显示屏空调控制面板启用前除霜/除雾功能。\n在中央显示屏上唤起空调控制界面。\n01 点击开启/关闭前除霜/除雾功能。",
+              "page": 256,
+              "chapter": "空调",
+              "section": "空调除霜/除雾",
+              "subsection": "前除霜/除雾",
+              "heading_path": [
+                "空调",
+                "空调除霜/除雾",
+                "前除霜/除雾"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "fuel_safety_001",
+      "question": "加油时有哪些安全注意事项？",
+      "old_gold_chunk_ids": [
+        "48a1ab7b-d328-5dea-b5ca-7abdfa92c95a"
+      ],
+      "candidate_current_chunk_ids": [
+        "70fb02a0-4742-537c-8a9b-d3ec30f0bed5"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "48a1ab7b-d328-5dea-b5ca-7abdfa92c95a",
+          "old_expected_text": "燃油具有高度易燃性。如果您不正确处理燃油，则存在火灾和爆 炸的风险。",
+          "old_page": 162,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "70fb02a0-4742-537c-8a9b-d3ec30f0bed5",
+              "text": "警告！\n■燃油具有高度易燃性。如果您不正确处理燃油，则存在火灾和爆\n炸的风险。\n■必须远离火源、明火，不得产生火花，亦不得抽烟。加油前，关\n闭发动机。\n■避免吸入燃油蒸气或让燃油溅到您的皮肤或眼睛。让儿童远离燃\n油。\n■静电的积聚会产生火花并点燃燃油蒸汽，因此存在火灾和爆炸的\n风险。\n■在接触加油枪之前，务必先接触远离加油管口、加油枪或其他燃\n油来源的车辆的其他金属部位。这样便可以释放任何积聚的静\n电。\n■加油时不要使用手机。手机信号会造成静电积聚并点燃燃油蒸\n汽，造成火灾和人身伤害。",
+              "page": 162,
+              "chapter": "启动和驾驶",
+              "section": "加油",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "加油"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "48a1ab7b-d328-5dea-b5ca-7abdfa92c95a",
+          "old_expected_text": "加油时不要使用手机。手机信号会造成静电积聚并点燃燃油蒸 汽，造成火灾和人身伤害。",
+          "old_page": 162,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "70fb02a0-4742-537c-8a9b-d3ec30f0bed5",
+              "text": "警告！\n■燃油具有高度易燃性。如果您不正确处理燃油，则存在火灾和爆\n炸的风险。\n■必须远离火源、明火，不得产生火花，亦不得抽烟。加油前，关\n闭发动机。\n■避免吸入燃油蒸气或让燃油溅到您的皮肤或眼睛。让儿童远离燃\n油。\n■静电的积聚会产生火花并点燃燃油蒸汽，因此存在火灾和爆炸的\n风险。\n■在接触加油枪之前，务必先接触远离加油管口、加油枪或其他燃\n油来源的车辆的其他金属部位。这样便可以释放任何积聚的静\n电。\n■加油时不要使用手机。手机信号会造成静电积聚并点燃燃油蒸\n汽，造成火灾和人身伤害。",
+              "page": 162,
+              "chapter": "启动和驾驶",
+              "section": "加油",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "加油"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "fuel_steps_001",
+      "question": "如何打开燃油加注口盖板并加油？",
+      "old_gold_chunk_ids": [
+        "b0776f69-b2b0-5550-9512-fa3cd025d7e5",
+        "f534d3bc-51f9-5507-809d-d1ef70e61bf7"
+      ],
+      "candidate_current_chunk_ids": [
+        "882013b3-5cdf-5054-ad64-7afb1025c3e1"
+      ],
+      "classification": "MULTI_GOLD_CHANGED",
+      "reason": "The number of unique gold chunks changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "b0776f69-b2b0-5550-9512-fa3cd025d7e5",
+          "old_expected_text": "打开燃油加注口盖板前，车辆应处于熄火且解锁的状态。 2 短按仪表板上左侧的油箱盖板开启按钮 。",
+          "old_page": 162,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "882013b3-5cdf-5054-ad64-7afb1025c3e1",
+              "text": "1 打开燃油加注口盖板前，车辆应处于熄火且解锁的状态。\n2 短按仪表板上左侧的油箱盖板开启按钮\n。\n3 轻按燃油加注口盖板的后部，将其打开。\n4 将加油枪直接插入燃油加注口，开始加油。\n5 加油完成后，关闭燃油加注口盖板。",
+              "page": 162,
+              "chapter": "启动和驾驶",
+              "section": "加油",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "加油"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "f534d3bc-51f9-5507-809d-d1ef70e61bf7",
+          "old_expected_text": "将加油枪直接插入燃油加注口，开始加油。",
+          "old_page": 163,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "882013b3-5cdf-5054-ad64-7afb1025c3e1",
+              "text": "1 打开燃油加注口盖板前，车辆应处于熄火且解锁的状态。\n2 短按仪表板上左侧的油箱盖板开启按钮\n。\n3 轻按燃油加注口盖板的后部，将其打开。\n4 将加油枪直接插入燃油加注口，开始加油。\n5 加油完成后，关闭燃油加注口盖板。",
+              "page": 162,
+              "chapter": "启动和驾驶",
+              "section": "加油",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "加油"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "low_voltage_battery_maintenance_001",
+      "question": "如何保养低压蓄电池以延长寿命？",
+      "old_gold_chunk_ids": [
+        "b476fa43-f86e-52ae-bb9e-5831c95dc3df"
+      ],
+      "candidate_current_chunk_ids": [
+        "0851f0bb-dff7-58cb-8bc7-8302929f8ae9"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "b476fa43-f86e-52ae-bb9e-5831c95dc3df",
+          "old_expected_text": "检查低压蓄电池的电缆是否正确连接且适当紧固。",
+          "old_page": 304,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "0851f0bb-dff7-58cb-8bc7-8302929f8ae9",
+              "text": "低压蓄电池位于后备厢中部\n低压蓄电池的使用寿命和功能受很多因素影响，如起动次数、放电、\n驾驶风格、行驶条件、气候条件等。\n■检查低压蓄电池的电缆是否正确连接且适当紧固。\n■如果低压蓄电池多次完全放电，可能缩短其使用寿命。保持蓄电\n池电量充足有助于延长其使用寿命。",
+              "page": 304,
+              "chapter": "保养和维护",
+              "section": "保养和维护低压蓄电池",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "保养和维护低压蓄电池"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "b476fa43-f86e-52ae-bb9e-5831c95dc3df",
+          "old_expected_text": "如果低压蓄电池多次完全放电，可能缩短其使用寿命。保持蓄电 池电量充足有助于延长其使用寿命。",
+          "old_page": 304,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "0851f0bb-dff7-58cb-8bc7-8302929f8ae9",
+              "text": "低压蓄电池位于后备厢中部\n低压蓄电池的使用寿命和功能受很多因素影响，如起动次数、放电、\n驾驶风格、行驶条件、气候条件等。\n■检查低压蓄电池的电缆是否正确连接且适当紧固。\n■如果低压蓄电池多次完全放电，可能缩短其使用寿命。保持蓄电\n池电量充足有助于延长其使用寿命。",
+              "page": 304,
+              "chapter": "保养和维护",
+              "section": "保养和维护低压蓄电池",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "保养和维护低压蓄电池"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "epb_enable_release_001",
+      "question": "电子驻车制动如何启用和释放？",
+      "old_gold_chunk_ids": [
+        "af7eb4df-64a3-52d0-a788-f919e56e7a59",
+        "c0b51df6-b5e6-5a78-bdf5-8c7d8090d77f"
+      ],
+      "candidate_current_chunk_ids": [
+        "a485ba75-07d4-5a0d-9722-249ce1b12c75",
+        "dcdde351-4cfb-5c8f-b659-66d7f8f4bc21"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "af7eb4df-64a3-52d0-a788-f919e56e7a59",
+          "old_expected_text": "当车辆处于静止状态时，沿箭头方向拉起EPB开关，启用EPB功能。",
+          "old_page": 157,
+          "old_chapter": null,
+          "old_section": "启用电子驻车制动（EPB）",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "a485ba75-07d4-5a0d-9722-249ce1b12c75",
+              "text": "启用电子驻车制动（EPB）\n当车辆处于静止状态时，沿箭头方向拉起EPB开关，启用EPB功能。启\n用EPB功能后，仪表显示屏点亮红色EPB\n指示灯。",
+              "page": 157,
+              "chapter": "启动和驾驶",
+              "section": "电子驻车制动（EPB）",
+              "subsection": "启用电子驻车制动（EPB）",
+              "heading_path": [
+                "启动和驾驶",
+                "电子驻车制动（EPB）",
+                "启用电子驻车制动（EPB）"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "c0b51df6-b5e6-5a78-bdf5-8c7d8090d77f",
+          "old_expected_text": "踩下制动踏板并启动车辆，沿箭头方向按下EPB开关，释放EPB功能， 红色EPB 指示灯自动熄灭。",
+          "old_page": 158,
+          "old_chapter": null,
+          "old_section": "释放电子驻车制动（EPB）",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "dcdde351-4cfb-5c8f-b659-66d7f8f4bc21",
+              "text": "释放电子驻车制动（EPB）\n踩下制动踏板并启动车辆，沿箭头方向按下EPB开关，释放EPB功能，\n红色EPB\n指示灯自动熄灭。",
+              "page": 158,
+              "chapter": "启动和驾驶",
+              "section": "电子驻车制动（EPB）",
+              "subsection": "释放电子驻车制动（EPB）",
+              "heading_path": [
+                "启动和驾驶",
+                "电子驻车制动（EPB）",
+                "释放电子驻车制动（EPB）"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "keyless_unlock_mode_001",
+      "question": "无钥匙解锁设置为单门和全车时有什么区别？",
+      "old_gold_chunk_ids": [
+        "f9edd7b0-99ba-5937-94ee-40f09ce69a63"
+      ],
+      "candidate_current_chunk_ids": [
+        "e67c7bcc-e784-546d-a537-2f12676ec003"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "f9edd7b0-99ba-5937-94ee-40f09ce69a63",
+          "old_expected_text": "单门：当无钥匙解锁设置为单门时，触摸前门外把手上的内部传感器 区域仅解锁当前车门。 全车：当无钥匙解锁设置为全车时，触摸前门外把手上的内部传感器 区域解锁全车车门。",
+          "old_page": 43,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e67c7bcc-e784-546d-a537-2f12676ec003",
+              "text": "设置无钥匙解锁模式\n在中央显示屏中点击\n-车辆设置-门锁，进入门锁设置界面。\n01 设置无钥匙解锁（单门、全车）。\n单门：当无钥匙解锁设置为单门时，触摸前门外把手上的内部传感器\n区域仅解锁当前车门。\n全车：当无钥匙解锁设置为全车时，触摸前门外把手上的内部传感器\n区域解锁全车车门。",
+              "page": 42,
+              "chapter": "上车和下车",
+              "section": "无钥匙进入系统",
+              "subsection": "设置无钥匙解锁模式",
+              "heading_path": [
+                "上车和下车",
+                "无钥匙进入系统",
+                "设置无钥匙解锁模式"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "keyless_entry_unlock_001",
+      "question": "使用无钥匙进入系统解锁车辆需要满足什么条件？",
+      "old_gold_chunk_ids": [
+        "052a862e-4e44-55f4-a212-9625a04bf4da"
+      ],
+      "candidate_current_chunk_ids": [
+        "53d79a26-fec7-5cff-a618-677fed1cbd43"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "052a862e-4e44-55f4-a212-9625a04bf4da",
+          "old_expected_text": "解锁：车辆闭锁状态下，携带遥控钥匙/蓝牙钥匙，触摸前门外把手 上的内部传感器区域，车辆解锁。",
+          "old_page": 43,
+          "old_chapter": null,
+          "old_section": "使用无钥匙进入系统解锁和闭锁",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "53d79a26-fec7-5cff-a618-677fed1cbd43",
+              "text": "使用无钥匙进入系统解锁和闭锁\n解锁：车辆闭锁状态下，携带遥控钥匙/蓝牙钥匙，触摸前门外把手\n上的内部传感器区域，车辆解锁。\n闭锁：关闭所有车门，携带遥控钥匙/蓝牙钥匙，触摸前门外把手上\n的外部感应区域，车辆闭锁。",
+              "page": 43,
+              "chapter": "上车和下车",
+              "section": "无钥匙进入系统",
+              "subsection": "使用无钥匙进入系统解锁和闭锁",
+              "heading_path": [
+                "上车和下车",
+                "无钥匙进入系统",
+                "使用无钥匙进入系统解锁和闭锁"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "keyless_entry_lock_001",
+      "question": "使用无钥匙进入系统闭锁车辆需要满足什么条件？",
+      "old_gold_chunk_ids": [
+        "ef84a2e7-9171-5876-87a9-6403a8415de3"
+      ],
+      "candidate_current_chunk_ids": [
+        "53d79a26-fec7-5cff-a618-677fed1cbd43"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "ef84a2e7-9171-5876-87a9-6403a8415de3",
+          "old_expected_text": "闭锁：关闭所有车门，携带遥控钥匙/蓝牙钥匙，触摸前门外把手上 的外部感应区域，车辆闭锁。",
+          "old_page": 44,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "53d79a26-fec7-5cff-a618-677fed1cbd43",
+              "text": "使用无钥匙进入系统解锁和闭锁\n解锁：车辆闭锁状态下，携带遥控钥匙/蓝牙钥匙，触摸前门外把手\n上的内部传感器区域，车辆解锁。\n闭锁：关闭所有车门，携带遥控钥匙/蓝牙钥匙，触摸前门外把手上\n的外部感应区域，车辆闭锁。",
+              "page": 43,
+              "chapter": "上车和下车",
+              "section": "无钥匙进入系统",
+              "subsection": "使用无钥匙进入系统解锁和闭锁",
+              "heading_path": [
+                "上车和下车",
+                "无钥匙进入系统",
+                "使用无钥匙进入系统解锁和闭锁"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lock_auto_window_close_001",
+      "question": "锁车自动关窗功能开启后，锁止车辆时会同时关闭哪些部件？",
+      "old_gold_chunk_ids": [
+        "1177c184-be31-50e7-b29d-3b0165c7910f"
+      ],
+      "candidate_current_chunk_ids": [
+        "f047d391-3396-5e79-850e-c31fb4a27da7"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "1177c184-be31-50e7-b29d-3b0165c7910f",
+          "old_expected_text": "通过中央显示屏 -车辆设置-车窗和遮阳帘，打开锁车自动关窗功 能，短按遥控钥匙上的 按钮，锁止车辆的同时关闭所有车窗和全景 天窗。",
+          "old_page": 108,
+          "old_chapter": null,
+          "old_section": "使用遥控钥匙打开/关闭车窗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f047d391-3396-5e79-850e-c31fb4a27da7",
+              "text": "通过中央显示屏\n-车辆设置-车窗和遮阳帘，打开锁车自动关窗功\n能，短按遥控钥匙上的\n按钮，锁止车辆的同时关闭所有车窗和全景\n天窗。",
+              "page": 108,
+              "chapter": "安全出行",
+              "section": "打开/关闭车窗",
+              "subsection": "通过中央显示屏",
+              "heading_path": [
+                "安全出行",
+                "打开/关闭车窗",
+                "通过中央显示屏"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "seat_heating_duration_001",
+      "question": "前排座椅加热时间可以设置为哪些时长？",
+      "old_gold_chunk_ids": [
+        "f41e9026-a6d6-5555-ba41-f681ed632f2c"
+      ],
+      "candidate_current_chunk_ids": [
+        "91a041a8-89eb-5082-a4d4-079ffd8b40e9"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "f41e9026-a6d6-5555-ba41-f681ed632f2c",
+          "old_expected_text": "01 设置驾驶员侧座椅加热时间（5 分钟、15 分钟、30 分钟和持 续）。 02设置副驾驶员侧座椅加热时间（5 分钟、15 分钟、30 分钟和持 续）。",
+          "old_page": 115,
+          "old_chapter": null,
+          "old_section": "设置前排座椅加热时间",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "91a041a8-89eb-5082-a4d4-079ffd8b40e9",
+              "text": "设置前排座椅加热时间\n在中央显示屏中唤起空调控制界面，然后点击\n-舒适。\n01 设置驾驶员侧座椅加热时间（5 分钟、15 分钟、30 分钟和持\n续）。\n02设置副驾驶员侧座椅加热时间（5 分钟、15 分钟、30 分钟和持\n续）。",
+              "page": 115,
+              "chapter": "安全出行",
+              "section": "前排座椅加热",
+              "subsection": "设置前排座椅加热时间",
+              "heading_path": [
+                "安全出行",
+                "前排座椅加热",
+                "设置前排座椅加热时间"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "automatic_wiper_sensor_001",
+      "question": "雨量感应式自动雨刷如何根据降雨工作？",
+      "old_gold_chunk_ids": [
+        "15e2322f-3658-54c9-b77c-e6e41b9b56de"
+      ],
+      "candidate_current_chunk_ids": [
+        "32e9fad8-2056-5ffd-99b5-74871d62d66a"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "15e2322f-3658-54c9-b77c-e6e41b9b56de",
+          "old_expected_text": "当拨杆位 于自动挡位（AUTO）时，雨量光线传感器会根据降雨强度自动开启/ 关闭雨刮及调节雨刮刮刷速度。向上旋转滚轮，增加自动雨刷灵敏 度；向下旋转滚轮，降低自动雨刷灵敏度。",
+          "old_page": 64,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "32e9fad8-2056-5ffd-99b5-74871d62d66a",
+              "text": "注意！\n■冬季使用雨刮前，请先清除挡风玻璃上的冰和积雪并确认雨刮片\n没有冻结在挡风玻璃上。\n■当挡风玻璃上有尘沙、鸟粪、昆虫、树浆等异物时，请先清洁挡\n风玻璃，否则会损坏雨刮片/影响雨刮片清洁效果。\n■避免在挡风玻璃干燥的情况下开启雨刮，否则可能导致雨刮片和\n挡风玻璃损坏。\n■定期清洁和检查雨刮片，否则雨刮片使用寿命可能会缩短。\n■应使用合格的洗涤液，不合格的洗涤液可能导致洗涤器损坏。\n■如果发现雨刮片橡胶硬化或有裂纹、雨刮片在挡风玻璃上留下划\n痕或不能刮洗某个区域，则需要更换雨刮片。\n雨量感应式自动雨刷\n旋转雨刮拨杆上的滚轮，调节雨刮刮刷速度\n雨量光线传感器安装在挡风玻璃上部，内后视镜三角区域。当拨杆位\n于自动挡位（AUTO）时，雨量光线传感器会根据降雨强度自动开启/\n关闭雨刮及调节雨刮刮刷速度。向上旋转滚轮，增加自动雨刷灵敏\n度；向下旋转滚轮，降低自动雨刷灵敏度。",
+              "page": 63,
+              "chapter": "驾驶前的准备",
+              "section": "前雨刮和洗涤器",
+              "subsection": null,
+              "heading_path": [
+                "驾驶前的准备",
+                "前雨刮和洗涤器"
+              ],
+              "content_type": "caution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "rear_wiper_enable_001",
+      "question": "如何启动后挡风玻璃雨刮和洗涤器？",
+      "old_gold_chunk_ids": [
+        "2b5f1292-6f81-532f-9b82-865c5d8a2f9a"
+      ],
+      "candidate_current_chunk_ids": [
+        "4d7f832a-a23b-50f5-aca4-2f16df14d69b"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "2b5f1292-6f81-532f-9b82-865c5d8a2f9a",
+          "old_expected_text": "后雨刮和洗涤器 将拨杆沿远离方向盘的方向推动，启动后挡风玻璃雨刮和洗涤器。 按压拨杆末端上方区域，启动后挡风玻璃间歇性刮刷模 式。 按压拨杆末端下方区域，启动后挡风玻璃连续刮刷模式。",
+          "old_page": 65,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "quote_phrase",
+          "candidates": [
+            {
+              "chunk_id": "4d7f832a-a23b-50f5-aca4-2f16df14d69b",
+              "text": "将拨杆沿远离方向盘的方向推动，启动后挡风玻璃雨刮和洗涤器。\n按压拨杆末端上方区域，启动后挡风玻璃间歇性刮刷模\n式。\n按压拨杆末端下方区域，启动后挡风玻璃连续刮刷模式。",
+              "page": 65,
+              "chapter": "驾驶前的准备",
+              "section": "后雨刮和洗涤器",
+              "subsection": null,
+              "heading_path": [
+                "驾驶前的准备",
+                "后雨刮和洗涤器"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "washer_freezing_warning_001",
+      "question": "洗涤液冻结在挡风玻璃上时可以使用洗涤器吗？",
+      "old_gold_chunk_ids": [
+        "e74acdde-5b14-551a-8b60-21d531f7f682"
+      ],
+      "candidate_current_chunk_ids": [
+        "98cb302d-6fc4-5535-8434-0e8ded7594af"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "e74acdde-5b14-551a-8b60-21d531f7f682",
+          "old_expected_text": "如果洗涤液在挡风玻璃上冻结，请勿使用洗涤器，否则可能导致 视线受阻。",
+          "old_page": 64,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "98cb302d-6fc4-5535-8434-0e8ded7594af",
+              "text": "前挡风玻璃洗涤器\n注意！\n■如果洗涤液在挡风玻璃上冻结，请勿使用洗涤器，否则可能导致\n视线受阻。",
+              "page": 64,
+              "chapter": "驾驶前的准备",
+              "section": "前雨刮和洗涤器",
+              "subsection": "前挡风玻璃洗涤器",
+              "heading_path": [
+                "驾驶前的准备",
+                "前雨刮和洗涤器",
+                "前挡风玻璃洗涤器"
+              ],
+              "content_type": "caution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "automatic_headlight_001",
+      "question": "前大灯自动开启或关闭功能如何工作？",
+      "old_gold_chunk_ids": [
+        "06e891da-6d00-548b-b855-e3508e1225b2"
+      ],
+      "candidate_current_chunk_ids": [
+        "e03557d7-3419-5baa-ad78-acc52e289ab7"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "06e891da-6d00-548b-b855-e3508e1225b2",
+          "old_expected_text": "前大灯自动开启/关闭功能通过雨量光线传感器监测外界环境光照强 度。光线较暗时，此功能可以自动打开近光灯；光线充足时则自动关 闭近光灯。",
+          "old_page": 84,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e03557d7-3419-5baa-ad78-acc52e289ab7",
+              "text": "滚轮旋转到该位置时，开启前大灯自动开启/关闭功能。\n前大灯自动开启/关闭功能通过雨量光线传感器监测外界环境光照强\n度。光线较暗时，此功能可以自动打开近光灯；光线充足时则自动关\n闭近光灯。\n雨量光线传感器位于前挡风玻璃上部",
+              "page": 84,
+              "chapter": "仪表和灯光",
+              "section": "打开/关闭自动大灯",
+              "subsection": null,
+              "heading_path": [
+                "仪表和灯光",
+                "打开/关闭自动大灯"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "overtaking_light_001",
+      "question": "超车时如何使用超车灯提醒前方车辆？",
+      "old_gold_chunk_ids": [
+        "40a3c4c1-fea5-56a0-a460-831bf5d24a74"
+      ],
+      "candidate_current_chunk_ids": [
+        "32608a4f-42a4-538a-aaed-b150df9ee066"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "40a3c4c1-fea5-56a0-a460-831bf5d24a74",
+          "old_expected_text": "超车时，您可将拨杆朝向自身方向拉动然后松开，此时远光灯闪烁一 次，以提醒前方车辆。",
+          "old_page": 89,
+          "old_chapter": null,
+          "old_section": "使用超车灯",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "32608a4f-42a4-538a-aaed-b150df9ee066",
+              "text": "超车时，您可将拨杆朝向自身方向拉动然后松开，此时远光灯闪烁一\n次，以提醒前方车辆。",
+              "page": 89,
+              "chapter": "仪表和灯光",
+              "section": "使用超车灯",
+              "subsection": null,
+              "heading_path": [
+                "仪表和灯光",
+                "使用超车灯"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hazard_light_emergency_001",
+      "question": "什么情况下应启用危险警告灯？",
+      "old_gold_chunk_ids": [
+        "40a3c4c1-fea5-56a0-a460-831bf5d24a74"
+      ],
+      "candidate_current_chunk_ids": [
+        "1406233a-0017-5b32-8bfd-f7f94f16ea9d"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "40a3c4c1-fea5-56a0-a460-831bf5d24a74",
+          "old_expected_text": "车辆遇到交通事故或其他紧急情况时，按下危险警告灯按键，启用危 险警告灯。",
+          "old_page": 89,
+          "old_chapter": null,
+          "old_section": "使用超车灯",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "1406233a-0017-5b32-8bfd-f7f94f16ea9d",
+              "text": "危险警告灯按键\n车辆遇到交通事故或其他紧急情况时，按下危险警告灯按键，启用危\n险警告灯。",
+              "page": 89,
+              "chapter": "仪表和灯光",
+              "section": "使用危险警告灯",
+              "subsection": "危险警告灯按键",
+              "heading_path": [
+                "仪表和灯光",
+                "使用危险警告灯",
+                "危险警告灯按键"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "remote_key_start_001",
+      "question": "如何使用遥控钥匙启动车辆？",
+      "old_gold_chunk_ids": [
+        "17b921d7-f4b9-5be3-91d9-6af204a6adfe"
+      ],
+      "candidate_current_chunk_ids": [
+        "a0a38bbc-82c9-5f5c-b6b0-0b38a8326e10"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "17b921d7-f4b9-5be3-91d9-6af204a6adfe",
+          "old_expected_text": "2 请将挡位置于驻车挡（P）。 3 将遥控钥匙放置于车内。 4 将制动踏板踩到底。 5 长按START/STOP按钮，车辆启动后松开按钮。",
+          "old_page": 143,
+          "old_chapter": null,
+          "old_section": "通过遥控钥匙启动车辆",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "a0a38bbc-82c9-5f5c-b6b0-0b38a8326e10",
+              "text": "说明！\n□只有经过正确编码的遥控钥匙才能启动车辆。\n2 请将挡位置于驻车挡（P）。\n3 将遥控钥匙放置于车内。\n4 将制动踏板踩到底。\n5 长按START/STOP按钮，车辆启动后松开按钮。",
+              "page": 143,
+              "chapter": "启动和驾驶",
+              "section": "通过遥控钥匙启动车辆",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "通过遥控钥匙启动车辆"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "remote_start_blocked_001",
+      "question": "哪些情况下无法远程启动发动机？",
+      "old_gold_chunk_ids": [
+        "7edbdaad-2f0d-5a87-aabc-c14e938aa4e1"
+      ],
+      "candidate_current_chunk_ids": [
+        "5f81b96e-8136-552a-9ce1-2783904a6b53"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "7edbdaad-2f0d-5a87-aabc-c14e938aa4e1",
+          "old_expected_text": "出现以下任一情况时，无法远程启动发动机： □挡位不在驻车挡（P）。 □冷却液液位较低。 □燃油油位较低。 □车内有遥控钥匙。 □网络信号丢失。 □发动机机舱盖/车门未锁定。 □发动机出现故障（例如出现发动机关键故障代码）。 □车辆设置为维修模式。",
+          "old_page": 143,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "5f81b96e-8136-552a-9ce1-2783904a6b53",
+              "text": "通过网络远程启动发动机\n说明！\n出现以下任一情况时，无法远程启动发动机：\n□挡位不在驻车挡（P）。\n□冷却液液位较低。\n□燃油油位较低。\n□车内有遥控钥匙。\n□网络信号丢失。\n□发动机机舱盖/车门未锁定。\n□发动机出现故障（例如出现发动机关键故障代码）。\n□车辆设置为维修模式。\n□连续两次远程启动车辆后，未手动启动车辆。",
+              "page": 143,
+              "chapter": "启动和驾驶",
+              "section": "通过手机APP启动车辆",
+              "subsection": "通过网络远程启动发动机",
+              "heading_path": [
+                "启动和驾驶",
+                "通过手机APP启动车辆",
+                "通过网络远程启动发动机"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "abs_explanation_001",
+      "question": "制动防抱死系统有什么作用？",
+      "old_gold_chunk_ids": [
+        "f2e616a9-c14f-5b9f-bd17-2f120df8e4c8"
+      ],
+      "candidate_current_chunk_ids": [
+        "b6c3943e-cd2e-528f-883e-313f1fab8062"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "f2e616a9-c14f-5b9f-bd17-2f120df8e4c8",
+          "old_expected_text": "车辆配有制动防抱死系统，可在您施加最大制动力时，防止车轮抱 死。在大多数路况下，可改善紧急制动情况下车辆的转向控制性能。",
+          "old_page": 157,
+          "old_chapter": null,
+          "old_section": "制动防抱死系统",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "b6c3943e-cd2e-528f-883e-313f1fab8062",
+              "text": "车辆配有制动防抱死系统，可在您施加最大制动力时，防止车轮抱\n死。在大多数路况下，可改善紧急制动情况下车辆的转向控制性能。",
+              "page": 157,
+              "chapter": "启动和驾驶",
+              "section": "制动防抱死系统",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "制动防抱死系统"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "abs_fault_handling_001",
+      "question": "制动防抱死系统发生故障时应该怎么办？",
+      "old_gold_chunk_ids": [
+        "067d62fc-314a-5d0d-803e-adf700c9597e"
+      ],
+      "candidate_current_chunk_ids": [
+        "7ec78836-badf-5bb4-9c66-ecfe4997b4c0"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "067d62fc-314a-5d0d-803e-adf700c9597e",
+          "old_expected_text": "防抱死制动系统存在故障时，请立刻在安全区域停车并联系Lynk & Co领克中心。",
+          "old_page": 157,
+          "old_chapter": null,
+          "old_section": "制动防抱死系统",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "7ec78836-badf-5bb4-9c66-ecfe4997b4c0",
+              "text": "功能状态说明\n警告！\n■防抱死制动系统存在故障时，请立刻在安全区域停车并联系Lynk\n& Co领克中心。\n■在崎岖、有碎石或有雪覆盖的道路上，制动距离将比在正常道路\n时更长。",
+              "page": 157,
+              "chapter": "启动和驾驶",
+              "section": "制动防抱死系统",
+              "subsection": "功能状态说明",
+              "heading_path": [
+                "启动和驾驶",
+                "制动防抱死系统",
+                "功能状态说明"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "brake_warning_lights_001",
+      "question": "制动系统红色和黄色警告灯分别在什么情况下点亮？",
+      "old_gold_chunk_ids": [
+        "da9819c5-065b-50b8-81b3-bd53f020ff2f"
+      ],
+      "candidate_current_chunk_ids": [
+        "bb5eda8a-f95f-534d-8057-4f279d5994ff"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "da9819c5-065b-50b8-81b3-bd53f020ff2f",
+          "old_expected_text": "制动液液位低、制动液位传感器故障、电子制动力分配功 能故障时，仪表点亮红色警告灯。 制动系统故障时，仪表点亮黄色警告灯。",
+          "old_page": 155,
+          "old_chapter": null,
+          "old_section": "制动系统",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "bb5eda8a-f95f-534d-8057-4f279d5994ff",
+              "text": "功能状态说明\n制动液液位低、制动液位传感器故障、电子制动力分配功\n能故障时，仪表点亮红色警告灯。\n制动系统故障时，仪表点亮黄色警告灯。",
+              "page": 155,
+              "chapter": "启动和驾驶",
+              "section": "制动系统",
+              "subsection": "功能状态说明",
+              "heading_path": [
+                "启动和驾驶",
+                "制动系统",
+                "功能状态说明"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "brake_pad_wear_001",
+      "question": "刹车片达到磨损极限后需要注意什么？",
+      "old_gold_chunk_ids": [
+        "da9819c5-065b-50b8-81b3-bd53f020ff2f"
+      ],
+      "candidate_current_chunk_ids": [
+        "5491f6d4-2769-5941-bf72-e6597af15701"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "da9819c5-065b-50b8-81b3-bd53f020ff2f",
+          "old_expected_text": "刹车片到达磨损极限之后，制动性能会大幅度降低，因此尽快更 换刹车片。",
+          "old_page": 155,
+          "old_chapter": null,
+          "old_section": "制动系统",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "5491f6d4-2769-5941-bf72-e6597af15701",
+              "text": "警告！\n■刹车片到达磨损极限之后，制动性能会大幅度降低，因此尽快更\n换刹车片。",
+              "page": 155,
+              "chapter": "启动和驾驶",
+              "section": "制动系统",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "制动系统"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "emergency_epb_001",
+      "question": "行驶中遇到紧急情况时如何使用电子驻车制动器进行手动紧急制动？",
+      "old_gold_chunk_ids": [
+        "8167a089-f822-5b3e-b6b4-ae26aa318b14"
+      ],
+      "candidate_current_chunk_ids": [
+        "bb0eb2dc-19d5-57c6-a724-b83815c49cda"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "8167a089-f822-5b3e-b6b4-ae26aa318b14",
+          "old_expected_text": "车辆行驶过程中如出现紧急情况，您可以拉住电子驻车制动器开关， 启用紧急制动功能。 释放电子驻车制动器开关后，即可解除紧急制动。",
+          "old_page": 159,
+          "old_chapter": null,
+          "old_section": "手动紧急制动",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "bb0eb2dc-19d5-57c6-a724-b83815c49cda",
+              "text": "手动紧急制动\n车辆行驶过程中如出现紧急情况，您可以拉住电子驻车制动器开关，\n启用紧急制动功能。\n释放电子驻车制动器开关后，即可解除紧急制动。",
+              "page": 159,
+              "chapter": "启动和驾驶",
+              "section": "电子驻车制动（EPB）",
+              "subsection": "手动紧急制动",
+              "heading_path": [
+                "启动和驾驶",
+                "电子驻车制动（EPB）",
+                "手动紧急制动"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "autohold_explanation_001",
+      "question": "自动驻车 Auto Hold 的作用是什么？",
+      "old_gold_chunk_ids": [
+        "49675f87-f77c-551f-82e8-8d7cc80a7387"
+      ],
+      "candidate_current_chunk_ids": [
+        "4495a19a-ba84-55e6-860e-89c45f1088d6"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "49675f87-f77c-551f-82e8-8d7cc80a7387",
+          "old_expected_text": "自动驻车（Auto Hold）可以在正常驾驶过程中的短暂停车时提供制 动，这样您就不需要一直踩制动踏板。 车辆需要起步时，您只要踩下加速踏板或用力踩下制动踏板再松开， 车辆即可正常行驶。",
+          "old_page": 159,
+          "old_chapter": null,
+          "old_section": "手动紧急制动",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "4495a19a-ba84-55e6-860e-89c45f1088d6",
+              "text": "自动驻车（Auto Hold）可以在正常驾驶过程中的短暂停车时提供制\n动，这样您就不需要一直踩制动踏板。\n车辆需要起步时，您只要踩下加速踏板或用力踩下制动踏板再松开，\n车辆即可正常行驶。",
+              "page": 159,
+              "chapter": "启动和驾驶",
+              "section": "自动驻车系统",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "自动驻车系统"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "slope_parking_warning_001",
+      "question": "在坡道上停车时必须采取哪些驻车措施？",
+      "old_gold_chunk_ids": [
+        "2dec54cf-2e23-5528-a82c-e51d9ab99188"
+      ],
+      "candidate_current_chunk_ids": [
+        "0c768d60-b30b-5fbe-87b2-5601472859e4"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "2dec54cf-2e23-5528-a82c-e51d9ab99188",
+          "old_expected_text": "在坡道上停车时，必须将变速器挂入驻车挡（P），同时启用EPB 功能。",
+          "old_page": 166,
+          "old_chapter": null,
+          "old_section": "斜坡驻车",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "0c768d60-b30b-5fbe-87b2-5601472859e4",
+              "text": "警告！\n■在坡道上停车时，必须将变速器挂入驻车挡（P），同时启用EPB\n功能。",
+              "page": 166,
+              "chapter": "启动和驾驶",
+              "section": "斜坡驻车",
+              "subsection": null,
+              "heading_path": [
+                "启动和驾驶",
+                "斜坡驻车"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "overspeed_alarm_001",
+      "question": "超速报警在什么情况下触发和解除？",
+      "old_gold_chunk_ids": [
+        "6806aadf-b286-52c0-a29a-617b2f54dd5a"
+      ],
+      "candidate_current_chunk_ids": [
+        "4caecc96-ba5b-51ad-ae2b-8756050ad578"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "6806aadf-b286-52c0-a29a-617b2f54dd5a",
+          "old_expected_text": "车速高于超速报警车 速设定值时，系统会发出声音警告，同时仪表显示屏上弹出提示信息 提醒驾驶员减慢车速，安全行驶。当车速低于超速报警车速设定值 时，报警解除。",
+          "old_page": 171,
+          "old_chapter": null,
+          "old_section": "超速报警",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "4caecc96-ba5b-51ad-ae2b-8756050ad578",
+              "text": "车辆配备超速报警功能，开启超速报警功能后，车速高于超速报警车\n速设定值时，系统会发出声音警告，同时仪表显示屏上弹出提示信息\n提醒驾驶员减慢车速，安全行驶。当车速低于超速报警车速设定值\n时，报警解除。\n在中央显示屏中点击\n-Lynk Co-Pilot-超速报警，进入超速报警设\n置界面。\n01 点击开启/关闭超速报警。\n02点击调节超速报警车速设定值。",
+              "page": 171,
+              "chapter": "驾驶辅助",
+              "section": "超速报警",
+              "subsection": null,
+              "heading_path": [
+                "驾驶辅助",
+                "超速报警"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "driver_fatigue_alarm_001",
+      "question": "驾驶员疲劳报警会如何提醒驾驶员？",
+      "old_gold_chunk_ids": [
+        "bb7eaf75-4de2-548f-973b-f73b788881b8"
+      ],
+      "candidate_current_chunk_ids": [
+        "da507433-f072-5d54-bc20-6659cf3efbbc"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "bb7eaf75-4de2-548f-973b-f73b788881b8",
+          "old_expected_text": "当驾驶员轻微疲劳时，仪表显示屏显示白色指示灯，并通 过文言提醒驾驶员。 当驾驶员严重疲劳时，仪表显示屏显示红色指示灯，并通 过文言警示驾驶员。",
+          "old_page": 196,
+          "old_chapter": null,
+          "old_section": "驾驶员疲劳报警",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "da507433-f072-5d54-bc20-6659cf3efbbc",
+              "text": "驾驶员疲劳报警\n当驾驶员轻微疲劳时，仪表显示屏显示白色指示灯，并通\n过文言提醒驾驶员。\n当驾驶员严重疲劳时，仪表显示屏显示红色指示灯，并通\n过文言警示驾驶员。",
+              "page": 196,
+              "chapter": "驾驶辅助",
+              "section": "驾驶员状态监测系统",
+              "subsection": "驾驶员疲劳报警",
+              "heading_path": [
+                "驾驶辅助",
+                "驾驶员状态监测系统",
+                "驾驶员疲劳报警"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "life_detection_alarm_001",
+      "question": "生命探测功能会通过哪些方式报警？",
+      "old_gold_chunk_ids": [
+        "c3dcef90-0825-5615-9c71-1f060bc69de5"
+      ],
+      "candidate_current_chunk_ids": [
+        "921cc3f6-c086-553e-8656-e9b02295c548"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "c3dcef90-0825-5615-9c71-1f060bc69de5",
+          "old_expected_text": "生命探测功能将会通过以下方式进行报警： ■危险警报灯闪烁、喇叭鸣笛。 ■通过手机APP提醒。 ■若车内温度超过35℃，将会降低车窗。",
+          "old_page": 215,
+          "old_chapter": null,
+          "old_section": "生命体检测报警",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "921cc3f6-c086-553e-8656-e9b02295c548",
+              "text": "生命体检测报警\n生命探测功能将会通过以下方式进行报警：\n■危险警报灯闪烁、喇叭鸣笛。\n■通过手机APP提醒。\n■若车内温度超过35℃，将会降低车窗。",
+              "page": 215,
+              "chapter": "驾驶辅助",
+              "section": "生命体检测系统",
+              "subsection": "生命体检测报警",
+              "heading_path": [
+                "驾驶辅助",
+                "生命体检测系统",
+                "生命体检测报警"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "parking_radar_limitations_001",
+      "question": "泊车辅助雷达在哪些情况下可能误报、漏报或无法正常探测？",
+      "old_gold_chunk_ids": [
+        "70983ff1-917c-5858-ac42-d4f565e98375"
+      ],
+      "candidate_current_chunk_ids": [
+        "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊 车辅助系统发出错误的警告信号。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影 响与之相关系统的功能。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 2,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "当车辆上下陡坡时，泊车辅助系统可能会误报。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 3,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的 障碍物。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 4,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外 表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动 物、车辆等）或车辆侧面的物体做出反应。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 5,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由 特定面料做成的衣服。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 6,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、 柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等） 较低的物体。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 7,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、 草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物 体等），可能会发生误报、漏报障碍物的情况。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 8,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、 离车辆太近或太远的物体。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 9,
+          "old_chunk_id": "70983ff1-917c-5858-ac42-d4f565e98375",
+          "old_expected_text": "切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊 车辅助系统无法正常工作。",
+          "old_page": 220,
+          "old_chapter": null,
+          "old_section": "泊车辅助雷达局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f2fbb5f7-6aa3-5841-8cc6-083e67ee292b",
+              "text": "泊车辅助雷达局限性\n泊车辅助雷达有一定的局限性：\n■如果泊车辅助雷达受到诸如尘土、雪或冰的阻塞，可能会导致泊\n车辅助系统发出错误的警告信号。\n■将任何物体（例如：胶带、贴花等）贴在泊车辅助雷达上，会影\n响与之相关系统的功能。\n■当车辆上下陡坡时，泊车辅助系统可能会误报。\n■泊车辅助雷达无法检测到离地面较高（大约处于1.5 m以上）的\n障碍物。\n■泊车辅助雷达可能无法及时对动物、小型车辆（如三轮车）、外\n表不规则车辆、骑行者、横穿或迎面而来的移动物体（行人、动\n物、车辆等）或车辆侧面的物体做出反应。\n■泊车辅助雷达无法检测到用特定材料制成的物体或人们穿着的由\n特定面料做成的衣服。\n■泊车辅助雷达可能无法检测到（例如：链条、铁丝网、矮树丛、\n柱子的棱角、窄面、光滑的斜面、车位锁、专用车位指示牌等）\n较低的物体。\n■泊车辅助雷达无法识别的障碍物（例如：停车场起停杆、树、\n草、铁链、绳索、墙柱、栅栏、低矮障碍物、吸波物体、反光物\n体等），可能会发生误报、漏报障碍物的情况。您需要时刻注意\n周围情况，避免发生事故。\n■泊车辅助雷达无法检测到地面上较平的物体、保险杠下的物体、\n离车辆太近或太远的物体。\n■切勿加装非原厂的附件，如挡泥板、防撞条等，否则可能导致泊\n车辅助系统无法正常工作。",
+              "page": 220,
+              "chapter": "泊车",
+              "section": "泊车辅助传感器",
+              "subsection": "泊车辅助雷达局限性",
+              "heading_path": [
+                "泊车",
+                "泊车辅助传感器",
+                "泊车辅助雷达局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "parking_detection_range_001",
+      "question": "泊车辅助系统前后不同区域的检测范围是多少？",
+      "old_gold_chunk_ids": [
+        "ef3a1eb4-c2f6-58c4-a9bb-06796e8c9ea2"
+      ],
+      "candidate_current_chunk_ids": [],
+      "classification": "AMBIGUOUS",
+      "reason": "At least one old evidence item has no reliable current candidate.",
+      "confidence": "low",
+      "requires_manual_review": true,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "ef3a1eb4-c2f6-58c4-a9bb-06796e8c9ea2",
+          "old_expected_text": "检测区域 检测范围（米） 后部两侧 0.3 后部中央 1.5 前部两侧 0.3 前部中央 0.9",
+          "old_page": 225,
+          "old_chapter": null,
+          "old_section": "泊车辅助系统检测范围",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "no_match",
+          "candidates": []
+        }
+      ]
+    },
+    {
+      "case_id": "parking_emergency_brake_001",
+      "question": "泊车紧急制动 PEB 的作用是什么？",
+      "old_gold_chunk_ids": [
+        "d4e55068-7b16-5a7f-8b9b-f6db9766d4b8"
+      ],
+      "candidate_current_chunk_ids": [
+        "a087da75-d1d1-5463-8602-1f23da940c06"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "d4e55068-7b16-5a7f-8b9b-f6db9766d4b8",
+          "old_expected_text": "泊车紧急制动（PEB）通过泊车辅助传感器和泊车辅助摄像头对车辆 周围的行人或静止的物体进行探测，当存在碰撞风险时，PEB对车辆 进行紧急制动，并发出视觉和声音提示。",
+          "old_page": 228,
+          "old_chapter": null,
+          "old_section": "泊车紧急制动",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "a087da75-d1d1-5463-8602-1f23da940c06",
+              "text": "泊车紧急制动（PEB）通过泊车辅助传感器和泊车辅助摄像头对车辆\n周围的行人或静止的物体进行探测，当存在碰撞风险时，PEB对车辆\n进行紧急制动，并发出视觉和声音提示。",
+              "page": 228,
+              "chapter": "泊车",
+              "section": "泊车紧急制动",
+              "subsection": null,
+              "heading_path": [
+                "泊车",
+                "泊车紧急制动"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "parking_emergency_brake_fault_001",
+      "question": "泊车紧急制动系统故障或功能被抑制时会有什么提示？",
+      "old_gold_chunk_ids": [
+        "ab46a304-aa69-555e-83c8-0a41586fe96f"
+      ],
+      "candidate_current_chunk_ids": [
+        "a0c8d0b7-9356-511e-9bdb-40d4a8569d1f",
+        "809fb290-df5b-5021-9e4d-cb82339d72e6",
+        "147d2fac-f22e-5c7c-afe3-7e09e81b6124"
+      ],
+      "classification": "AMBIGUOUS",
+      "reason": "At least one evidence item maps to multiple current candidates.",
+      "confidence": "medium",
+      "requires_manual_review": true,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "ab46a304-aa69-555e-83c8-0a41586fe96f",
+          "old_expected_text": "泊车紧急制动系统故障警告灯：泊车紧急制动系统故障或 功能被抑制时，该警告灯点亮。",
+          "old_page": 73,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "a0c8d0b7-9356-511e-9bdb-40d4a8569d1f",
+              "text": "故障时，该警告灯闪烁后常\n亮。\n制动系统故障警告灯：制动液液位低、制动液\n位传感器故障、电子制动力分配功能故障时，\n红色警告灯点亮；制动系统故障时，黄色警告\n灯点亮。\n泊车紧急制动系统故障警告灯：泊车紧急制动系统故障或\n功能被抑制时，该警告灯点亮。\n12 V蓄电池充电故障警告灯：充电系统出现故障时，该警\n告灯点亮。\n动力电池故障警告灯：动力电池系统故障时，该警告灯点\n亮。\n车道辅助系统故障警告灯：车道辅助系统出现故障时，该\n警告灯点亮。\n前向碰撞减缓系统故障警告灯：前向碰撞减缓系统出现故\n障时，该警告灯点亮。\n电子驻车制动系统警告灯：电子驻车制动处于工作状态或\n出现故障时，该警告灯闪烁；电子驻车制动启用后，该警\n告灯点亮。\n安全带未系警示系统警告灯：系统检测到驾乘人员安全带\n未系紧时，该警告灯点亮。若系紧安全带后指示灯持续点\n亮，则表明安全带系统出现故障。\n动力系统故障警告灯：动力系统出现故障时，该警告灯点\n亮。\n驱动电机系统故障警告灯：驱动电机出现故障时，该警告\n灯点亮。\n陡坡缓降系统故障警告灯：陡坡缓降系统出现故障时，该\n警告灯点亮。\n安全气囊故障警告灯：安全气囊系统或预紧器系统存在故\n障时，该警告灯点亮。\n盲点监测故障警告灯：盲点监测系统出现故障时，该警告\n灯常亮。盲点监测系统标定未完成时，该警告灯闪烁。\n低速行人提示音功能故障警告灯：低速行人提示音功能故\n障时，该警告灯点亮。",
+              "page": 71,
+              "chapter": "仪表和灯光",
+              "section": "指示灯和警告灯",
+              "subsection": "警告灯图标",
+              "heading_path": [
+                "仪表和灯光",
+                "指示灯和警告灯",
+                "警告灯图标"
+              ],
+              "content_type": "note"
+            },
+            {
+              "chunk_id": "809fb290-df5b-5021-9e4d-cb82339d72e6",
+              "text": "警告灯图标\n说明！\n□车辆启动后，车辆将进行自检，部分警告灯图标将点亮，并在一\n段时间后熄灭。\n红色警告图标：红色警告图标点亮时表明已停用某些重要\n功能，或者车辆发生严重故障。红色警告图标也可能与其\n他指示灯一同点亮。\n冷却液温度高警告灯：发动机过热时，该警告灯点亮。\n发动机排放故障警告灯：发动机存在排放相关故障时，该\n警告灯点亮。\n发动机系统故障警告灯：发动机系统故障时，该警告灯点\n亮。\n变速器故障警告灯：变速器性能降低时，黄色\n故障灯点亮；变速器故障时，红色警告灯点\n亮。\n机油压力低警告灯：发动机机油压力低时，该警告灯点\n亮。\n车身稳定控制系统状态指示灯：车身稳定控制系统存在故\n障，该警告灯常亮。车身稳定控制系统工作时，该警告灯\n闪烁。\n防抱死制动系统故障警告灯：车辆启动后或车辆驾驶过程\n中，如果该警告灯点亮，这表示防抱死制动系统可能存在\n故障。\n转向系统故障警告灯：黄色警告灯点亮，转向\n助力系统性能减弱；红色警告灯点亮，转向助\n力系统助力丢失。\n智能远近光控制系统故障警告灯：智能远近光控制系统故\n障时，该警告灯点亮。\n远光灯故障警告灯：远光灯故障时，该警告灯点亮。\n近光灯故障警告灯：近光灯故障时，该警告灯点亮。\n位置灯故障警告灯：位置灯故障时，该警告灯点亮。\n制动灯故障警告灯：制动灯故障时，该警告灯点亮。\n胎压监测系统故障警告灯：某个或多个轮胎胎压过低时，\n该警告灯常亮。胎压监测系统故障时，该警告灯闪烁后常\n亮。\n制动系统故障警告灯：制动液液位低、制动液\n位传感器故障、电子制动力分配功能故障时，\n红色警告灯点亮；制动系统故障时，黄色警告\n灯点亮。\n泊车紧急制动系统故障警告灯：泊车紧急制动系统故障或\n功能被抑制时，该警告灯点亮。\n12 V蓄电池充电故障警告灯：充电系统出现故障时，该警\n告灯点亮。\n动力电池故障警告灯：动力电池系统故障时，该警告灯点\n亮。",
+              "page": 76,
+              "chapter": "仪表和灯光",
+              "section": "指示灯和警告灯",
+              "subsection": "警告灯图标",
+              "heading_path": [
+                "仪表和灯光",
+                "指示灯和警告灯",
+                "警告灯图标"
+              ],
+              "content_type": "note"
+            },
+            {
+              "chunk_id": "147d2fac-f22e-5c7c-afe3-7e09e81b6124",
+              "text": "动系统故障时，黄色警告\n灯点亮。\n泊车紧急制动系统故障警告灯：泊车紧急制动系统故障或\n功能被抑制时，该警告灯点亮。\n12 V蓄电池充电故障警告灯：充电系统出现故障时，该警\n告灯点亮。\n动力电池故障警告灯：动力电池系统故障时，该警告灯点\n亮。\n车道辅助系统故障警告灯：车道辅助系统出现故障时，该\n警告灯点亮。\n前向碰撞减缓系统故障警告灯：前向碰撞减缓系统出现故\n障时，该警告灯点亮。\n电子驻车制动系统警告灯：电子驻车制动处于工作状态或\n出现故障时，该警告灯闪烁；电子驻车制动启用后，该警\n告灯点亮。\n安全带未系警示系统警告灯：系统检测到驾乘人员安全带\n未系紧时，该警告灯点亮。若系紧安全带后指示灯持续点\n亮，则表明安全带系统出现故障。\n动力系统故障警告灯：动力系统出现故障时，该警告灯点\n亮。\n驱动电机系统故障警告灯：驱动电机出现故障时，该警告\n灯点亮。\n陡坡缓降系统故障警告灯：陡坡缓降系统出现故障时，该\n警告灯点亮。\n安全气囊故障警告灯：安全气囊系统或预紧器系统存在故\n障时，该警告灯点亮。\n盲点监测故障警告灯：盲点监测系统出现故障时，该警告\n灯常亮。盲点监测系统标定未完成时，该警告灯闪烁。\n低速行人提示音功能故障警告灯：低速行人提示音功能故\n障时，该警告灯点亮。",
+              "page": 76,
+              "chapter": "仪表和灯光",
+              "section": "指示灯和警告灯",
+              "subsection": "警告灯图标",
+              "heading_path": [
+                "仪表和灯光",
+                "指示灯和警告灯",
+                "警告灯图标"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "apa_enable_001",
+      "question": "可以通过哪些入口启用全自动泊车 APA？",
+      "old_gold_chunk_ids": [
+        "0d6f0a91-e0bb-5fad-8256-103218193a93"
+      ],
+      "candidate_current_chunk_ids": [
+        "83e0d9cb-c7e0-5c73-bb5a-7a98d0511911"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "0d6f0a91-e0bb-5fad-8256-103218193a93",
+          "old_expected_text": "您可以通过以下方式启用APA： ■在中央显示屏中点击 -自动泊车。 ■在360°全景界面点击 图标。",
+          "old_page": 230,
+          "old_chapter": null,
+          "old_section": "启用/关闭全自动泊车（APA）",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "83e0d9cb-c7e0-5c73-bb5a-7a98d0511911",
+              "text": "启用/关闭全自动泊车（APA）\n您可以通过以下方式启用APA：\n■在中央显示屏中点击\n-自动泊车。\n■在360°全景界面点击\n图标。",
+              "page": 230,
+              "chapter": "泊车",
+              "section": "全自动泊车",
+              "subsection": "启用/关闭全自动泊车（APA）",
+              "heading_path": [
+                "泊车",
+                "全自动泊车",
+                "启用/关闭全自动泊车（APA）"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "apa_park_in_001",
+      "question": "使用 APA 泊入停车位时有哪些步骤？",
+      "old_gold_chunk_ids": [
+        "be29d3d3-4460-53c3-a65b-8317c97fdf58"
+      ],
+      "candidate_current_chunk_ids": [
+        "6a12ea04-024e-5e4d-8170-24ea4da4d059"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "be29d3d3-4460-53c3-a65b-8317c97fdf58",
+          "old_expected_text": "1 车位搜索：以小于25 km/h的速度缓慢向前行驶，直到中央显示 屏显示搜索到停车位。 2 选择停车位：在中央显示屏上选择需要泊入的停车位，选中后该 停车位高亮显示。 3 选择泊车方式：点击“开始泊车”按键，选择使用APA。",
+          "old_page": 231,
+          "old_chapter": null,
+          "old_section": "设置自动泊车界面",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "6a12ea04-024e-5e4d-8170-24ea4da4d059",
+              "text": "车辆泊入停车位\n启用APA功能后，可以按照以下步骤泊入停车位：\n1 车位搜索：以小于25 km/h的速度缓慢向前行驶，直到中央显示\n屏显示搜索到停车位。\n2 选择停车位：在中央显示屏上选择需要泊入的停车位，选中后该\n停车位高亮显示。\n3 选择泊车方式：点击“开始泊车”按键，选择使用APA。\n4 泊车运行：依据中央显示屏提示信息，松开方向盘和制动踏板。\nAPA控制车速和转向，辅助驾驶员泊入停车位。\n5 泊车完成：自动泊入完成后，中央显示屏显示泊车完成信息。",
+              "page": 231,
+              "chapter": "泊车",
+              "section": "全自动泊车",
+              "subsection": "车辆泊入停车位",
+              "heading_path": [
+                "泊车",
+                "全自动泊车",
+                "车辆泊入停车位"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "be29d3d3-4460-53c3-a65b-8317c97fdf58",
+          "old_expected_text": "4 泊车运行：依据中央显示屏提示信息，松开方向盘和制动踏板。 APA控制车速和转向，辅助驾驶员泊入停车位。 5 泊车完成：自动泊入完成后，中央显示屏显示泊车完成信息。",
+          "old_page": 231,
+          "old_chapter": null,
+          "old_section": "设置自动泊车界面",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "6a12ea04-024e-5e4d-8170-24ea4da4d059",
+              "text": "车辆泊入停车位\n启用APA功能后，可以按照以下步骤泊入停车位：\n1 车位搜索：以小于25 km/h的速度缓慢向前行驶，直到中央显示\n屏显示搜索到停车位。\n2 选择停车位：在中央显示屏上选择需要泊入的停车位，选中后该\n停车位高亮显示。\n3 选择泊车方式：点击“开始泊车”按键，选择使用APA。\n4 泊车运行：依据中央显示屏提示信息，松开方向盘和制动踏板。\nAPA控制车速和转向，辅助驾驶员泊入停车位。\n5 泊车完成：自动泊入完成后，中央显示屏显示泊车完成信息。",
+              "page": 231,
+              "chapter": "泊车",
+              "section": "全自动泊车",
+              "subsection": "车辆泊入停车位",
+              "heading_path": [
+                "泊车",
+                "全自动泊车",
+                "车辆泊入停车位"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "apa_exit_conditions_001",
+      "question": "哪些情况下 APA 会终止并要求驾驶员接管？",
+      "old_gold_chunk_ids": [
+        "c9c1e5f2-0942-5037-98ef-fa20ce5ca870"
+      ],
+      "candidate_current_chunk_ids": [
+        "3836553d-5cb2-59e1-aeec-27938d1d3d94"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "c9c1e5f2-0942-5037-98ef-fa20ce5ca870",
+          "old_expected_text": "当出现以下情况时，APA会终止，并强制退出，此时您必须接管车辆 控制权。 ■泊车空间过小。 ■泊车超速、超时。 ■使用防滑链时。",
+          "old_page": 232,
+          "old_chapter": null,
+          "old_section": "全自动泊车局限性",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "3836553d-5cb2-59e1-aeec-27938d1d3d94",
+              "text": "全自动泊车局限性\n当出现以下情况时，APA会终止，并强制退出，此时您必须接管车辆\n控制权。\n■泊车空间过小。\n■泊车超速、超时。\n■使用防滑链时。\n更多全自动泊车的局限性相关信息，请参见泊车辅助传感器章节。",
+              "page": 232,
+              "chapter": "泊车",
+              "section": "全自动泊车",
+              "subsection": "全自动泊车局限性",
+              "heading_path": [
+                "泊车",
+                "全自动泊车",
+                "全自动泊车局限性"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "rpa_explanation_001",
+      "question": "遥控泊车 RPA 可以实现哪些功能？",
+      "old_gold_chunk_ids": [
+        "2f14b49f-cb0b-53cd-b818-1fcfacc045c6"
+      ],
+      "candidate_current_chunk_ids": [
+        "cf0289f7-b451-52a6-bfd1-b8ee01fe91f6"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "2f14b49f-cb0b-53cd-b818-1fcfacc045c6",
+          "old_expected_text": "遥控泊车（RPA）是一种远程泊车控制功能，可在车外一定范围内使 用Lynk & Co App控制车辆进行泊入、泊出、直线前进或后退。 RPA主要包含以下功能： ■直线遥控功能。 ■遥控泊入功能。 ■遥控泊出功能。",
+          "old_page": 232,
+          "old_chapter": null,
+          "old_section": "遥控泊车",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "cf0289f7-b451-52a6-bfd1-b8ee01fe91f6",
+              "text": "遥控泊车（RPA）是一种远程泊车控制功能，可在车外一定范围内使\n用Lynk & Co App控制车辆进行泊入、泊出、直线前进或后退。\nRPA主要包含以下功能：\n■直线遥控功能。\n■遥控泊入功能。\n■遥控泊出功能。",
+              "page": 232,
+              "chapter": "泊车",
+              "section": "遥控泊车",
+              "subsection": null,
+              "heading_path": [
+                "泊车",
+                "遥控泊车"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "rpa_safety_001",
+      "question": "使用遥控泊车 RPA 时有哪些安全注意事项？",
+      "old_gold_chunk_ids": [
+        "bcb006ae-2501-50de-bdde-aceb63622720"
+      ],
+      "candidate_current_chunk_ids": [
+        "e0e75b72-c518-5d69-8d26-4bb579f65544"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "bcb006ae-2501-50de-bdde-aceb63622720",
+          "old_expected_text": "遥控泊车辅助在泊车入位过程中会代替驾驶员执行转向和制动的 操作，但驾驶员仍需注意观察周围环境，必要时结束泊车过程， 以避免某些障碍物因系统无法识别而影响行车安全。",
+          "old_page": 232,
+          "old_chapter": null,
+          "old_section": "遥控泊车",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e0e75b72-c518-5d69-8d26-4bb579f65544",
+              "text": "说明！\n□通过Lynk & Co App使用RPA功能前需要阅读并同意免责声明，因\n此请认真阅读免责声明，确保在已知晓并接受相关条件或条款的\n情况下开启并使RPA功能。\n□遥控泊车辅助在泊车入位过程中会代替驾驶员执行转向和制动的\n操作，但驾驶员仍需注意观察周围环境，必要时结束泊车过程，\n以避免某些障碍物因系统无法识别而影响行车安全。\n□作为驾驶员，您应遵守相关法律要求，并对安全停车承担全部责\n任。\nRPA可支持三种车位：水平车位、垂直车位、斜列车位。",
+              "page": 232,
+              "chapter": "泊车",
+              "section": "遥控泊车",
+              "subsection": null,
+              "heading_path": [
+                "泊车",
+                "遥控泊车"
+              ],
+              "content_type": "note"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "bcb006ae-2501-50de-bdde-aceb63622720",
+          "old_expected_text": "作为驾驶员，您应遵守相关法律要求，并对安全停车承担全部责 任。",
+          "old_page": 232,
+          "old_chapter": null,
+          "old_section": "遥控泊车",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e0e75b72-c518-5d69-8d26-4bb579f65544",
+              "text": "说明！\n□通过Lynk & Co App使用RPA功能前需要阅读并同意免责声明，因\n此请认真阅读免责声明，确保在已知晓并接受相关条件或条款的\n情况下开启并使RPA功能。\n□遥控泊车辅助在泊车入位过程中会代替驾驶员执行转向和制动的\n操作，但驾驶员仍需注意观察周围环境，必要时结束泊车过程，\n以避免某些障碍物因系统无法识别而影响行车安全。\n□作为驾驶员，您应遵守相关法律要求，并对安全停车承担全部责\n任。\nRPA可支持三种车位：水平车位、垂直车位、斜列车位。",
+              "page": 232,
+              "chapter": "泊车",
+              "section": "遥控泊车",
+              "subsection": null,
+              "heading_path": [
+                "泊车",
+                "遥控泊车"
+              ],
+              "content_type": "note"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "ac_airflow_levels_001",
+      "question": "空调风量共有多少个速度等级？",
+      "old_gold_chunk_ids": [
+        "5e5106f0-94d3-5e99-9c13-c32aac7a2524"
+      ],
+      "candidate_current_chunk_ids": [
+        "ac339937-ed45-55e8-aa8a-4d4bcd5271a2"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "5e5106f0-94d3-5e99-9c13-c32aac7a2524",
+          "old_expected_text": "风速共有9个速度等级可设置。您可以通过空调系统面板调节空调风 量。",
+          "old_page": 243,
+          "old_chapter": null,
+          "old_section": "空调风量调节",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "ac339937-ed45-55e8-aa8a-4d4bcd5271a2",
+              "text": "空调风量调节\n风速共有9个速度等级可设置。您可以通过空调系统面板调节空调风\n量。\n01 风速/副驾温度调节切换按钮\n02风速/副驾温度调节旋钮\n按压风速/副驾温度调节切换按钮。当\n图标亮起时，可以通过旋转\n风速/副驾温度调节旋钮开启/关闭鼓风机，也可以调节鼓风机转速。\n中央显示屏调节空调风量\n在中央显示屏空调控制界面。\n01 点击减小空调风量。\n02空调风量显示。\n03点击增加空调风量。",
+              "page": 243,
+              "chapter": "空调",
+              "section": "调节空调风量",
+              "subsection": null,
+              "heading_path": [
+                "空调",
+                "调节空调风量"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "charging_led_states_001",
+      "question": "充电接口 LED 指示灯不同颜色分别表示什么状态？",
+      "old_gold_chunk_ids": [
+        "32cc69b7-2f1f-5726-bbcd-86250a8f0039",
+        "59e6d2f2-42c1-54b6-88fa-6dad14db8b8f"
+      ],
+      "candidate_current_chunk_ids": [
+        "adaf7b26-e2fc-54d2-b885-d57a0bbb39c4",
+        "66e0c695-609e-5b72-b7a6-4025e3606124"
+      ],
+      "classification": "AMBIGUOUS",
+      "reason": "At least one evidence item maps to multiple current candidates.",
+      "confidence": "medium",
+      "requires_manual_review": true,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "32cc69b7-2f1f-5726-bbcd-86250a8f0039",
+          "old_expected_text": "蓝色常亮（2 分钟后熄灭）——预约充电。 蓝色闪烁——对外放电。 绿色闪烁——充电中。 绿色常亮——充电完成。 绿-绿-红依次闪烁——充电中电子锁故障。 红色常亮——充电故障。",
+          "old_page": 292,
+          "old_chapter": null,
+          "old_section": "充电接口灯光指示",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "adaf7b26-e2fc-54d2-b885-d57a0bbb39c4",
+              "text": "充电接口灯光指示\n车辆充电输入插座配有LED指示灯，显示充电状态。\nLED指示灯根据不同的充电状态显示不同的颜色。\n蓝色常亮（2 分钟后熄灭）——预约充电。\n蓝色闪烁——对外放电。\n绿色闪烁——充电中。\n绿色常亮——充电完成。\n绿-绿-红依次闪烁——充电中电子锁故障。\n红色常亮——充电故障。\n橙色常亮——充电预加热中。\n橙-橙-红依次闪烁——充电预加热中电子锁故障。",
+              "page": 292,
+              "chapter": "高压系统",
+              "section": "车载充电设备充电",
+              "subsection": "充电接口灯光指示",
+              "heading_path": [
+                "高压系统",
+                "车载充电设备充电",
+                "充电接口灯光指示"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "59e6d2f2-42c1-54b6-88fa-6dad14db8b8f",
+          "old_expected_text": "橙色常亮——充电预加热中。 橙-橙-红依次闪烁——充电预加热中电子锁故障。",
+          "old_page": 296,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "adaf7b26-e2fc-54d2-b885-d57a0bbb39c4",
+              "text": "充电接口灯光指示\n车辆充电输入插座配有LED指示灯，显示充电状态。\nLED指示灯根据不同的充电状态显示不同的颜色。\n蓝色常亮（2 分钟后熄灭）——预约充电。\n蓝色闪烁——对外放电。\n绿色闪烁——充电中。\n绿色常亮——充电完成。\n绿-绿-红依次闪烁——充电中电子锁故障。\n红色常亮——充电故障。\n橙色常亮——充电预加热中。\n橙-橙-红依次闪烁——充电预加热中电子锁故障。",
+              "page": 292,
+              "chapter": "高压系统",
+              "section": "车载充电设备充电",
+              "subsection": "充电接口灯光指示",
+              "heading_path": [
+                "高压系统",
+                "车载充电设备充电",
+                "充电接口灯光指示"
+              ],
+              "content_type": "normal"
+            },
+            {
+              "chunk_id": "66e0c695-609e-5b72-b7a6-4025e3606124",
+              "text": "充电接口灯光指示\n车辆充电输入插座配有LED指示灯，显示充电状态。\nLED指示灯根据不同的充电状态显示不同的颜色。\n蓝色常亮（2 分钟后熄灭）——预约充电。\n蓝色闪烁——对外放电。\n绿色闪烁——充电中。\n绿色常亮——充电完成。\n绿-绿-红依次闪烁——充电中电子锁故障。\n红色常亮——充电故障。\n橙色常亮——充电预加热中。\n橙-橙-红依次闪烁——充电预加热中电子锁故障。",
+              "page": 295,
+              "chapter": "高压系统",
+              "section": "随车设备快速充电",
+              "subsection": "充电接口灯光指示",
+              "heading_path": [
+                "高压系统",
+                "随车设备快速充电",
+                "充电接口灯光指示"
+              ],
+              "content_type": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "charging_limit_001",
+      "question": "如何在中央显示屏中设置动力电池充电限值？",
+      "old_gold_chunk_ids": [
+        "b734a9e1-0449-55d2-8e2f-a4c20a18e198"
+      ],
+      "candidate_current_chunk_ids": [
+        "0c76635d-1551-5d28-b215-baeaf9c34c6e"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "b734a9e1-0449-55d2-8e2f-a4c20a18e198",
+          "old_expected_text": "在中央显示屏中点击 -充电供电-充电，进入充电设置界面。 01 点击设置充电限值（100%、90%(推荐)、自定义）。 02选择自定义后，滑动滑块可以设置充电限值。",
+          "old_page": 293,
+          "old_chapter": null,
+          "old_section": "通过中央显示屏设置和查看电池充电状态",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "0c76635d-1551-5d28-b215-baeaf9c34c6e",
+              "text": "通过中央显示屏设置和查看电池充电状态\n在中央显示屏中点击\n-充电供电-充电，进入充电设置界面。\n01 点击设置充电限值（100%、90%(推荐)、自定义）。\n02选择自定义后，滑动滑块可以设置充电限值。\n充电过程中，若动力电池达到设置的目标充电量时，将自动停止充\n电。",
+              "page": 293,
+              "chapter": "高压系统",
+              "section": "车载充电设备充电",
+              "subsection": "通过中央显示屏设置和查看电池充电状态",
+              "heading_path": [
+                "高压系统",
+                "车载充电设备充电",
+                "通过中央显示屏设置和查看电池充电状态"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "appointment_charging_001",
+      "question": "预约充电功能有什么用途？",
+      "old_gold_chunk_ids": [
+        "5c6aed6e-0ee7-5fc8-a422-3e9897a6b900"
+      ],
+      "candidate_current_chunk_ids": [
+        "89ebd4d2-6df1-57ce-9227-628a4b53e964"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "5c6aed6e-0ee7-5fc8-a422-3e9897a6b900",
+          "old_expected_text": "预约充电功能可以帮助您合理用电，如某一时间段电费低，即可预约 至该时间段进行车辆充电。",
+          "old_page": 297,
+          "old_chapter": null,
+          "old_section": "预约充电",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "89ebd4d2-6df1-57ce-9227-628a4b53e964",
+              "text": "预约充电功能可以帮助您合理用电，如某一时间段电费低，即可预约\n至该时间段进行车辆充电。\n1 在中央显示屏中点击\n-充电供电-充电，进入充电设置界面。\n01 点击开启/关闭预约充电。\n02设置预约充电每天或单次。\n03设置预约充电开始时间和充电结束时间。\n2 将车载充电设备或充电桩的充电枪完全插入到车辆充电插座上。\n车辆充电插座上的蓝色充电指示灯常亮，表示预约充电成功。",
+              "page": 297,
+              "chapter": "高压系统",
+              "section": "预约充电",
+              "subsection": null,
+              "heading_path": [
+                "高压系统",
+                "预约充电"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "remote_key_battery_replace_001",
+      "question": "如何更换遥控钥匙电池？",
+      "old_gold_chunk_ids": [
+        "d36bb2f5-040a-5a34-9cd2-213f605d58c9"
+      ],
+      "candidate_current_chunk_ids": [
+        "a3790d26-6ccf-5154-852e-40aae139fa2d"
+      ],
+      "classification": "CHUNK_ID_CHANGED",
+      "reason": "Direct evidence maps to a current chunk with a different id.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "d36bb2f5-040a-5a34-9cd2-213f605d58c9",
+          "old_expected_text": "3 拆下钥匙盖后，拆除遥控钥匙电池上端的盖子，插入新电池，使 “+”极端朝上。 4 更换钥匙电池后，按遥控钥匙上的任意按键，检查机械钥匙安装 区域内的工作指示灯是否点亮。",
+          "old_page": 303,
+          "old_chapter": null,
+          "old_section": "更换遥控钥匙电池",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "a3790d26-6ccf-5154-852e-40aae139fa2d",
+              "text": "如果遥控钥匙电池电量耗尽，可能会出现遥控钥匙无法正常工作的情\n况，如无法正常锁止/解锁车辆，启动车辆等。请使用新电池更换。\n1 拆下机械钥匙，请参见应急解锁和锁止车门（页码334）。\n按住钥匙盖的边缘。\n向外侧方向移动，取下钥匙盖。\n3 拆下钥匙盖后，拆除遥控钥匙电池上端的盖子，插入新电池，使\n“+”极端朝上。\n4 更换钥匙电池后，按遥控钥匙上的任意按键，检查机械钥匙安装\n区域内的工作指示灯是否点亮。\n01 工作指示灯。\n5 安装遥控钥匙时，按照相反的步骤进行安装。\n6 操作遥控钥匙上的按键，检查并确认遥控钥匙正常工作。",
+              "page": 303,
+              "chapter": "保养和维护",
+              "section": "更换遥控钥匙电池",
+              "subsection": null,
+              "heading_path": [
+                "保养和维护",
+                "更换遥控钥匙电池"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "fuse_box_location_001",
+      "question": "乘客舱内的保险丝盒位于哪里？",
+      "old_gold_chunk_ids": [
+        "8ebab730-1ecb-506f-a60e-b26fe58e52a7"
+      ],
+      "candidate_current_chunk_ids": [
+        "f0a81c32-b464-52d7-94f5-9ccb50ea993a"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "8ebab730-1ecb-506f-a60e-b26fe58e52a7",
+          "old_expected_text": "乘客舱内的保险丝盒（CJB）位于驾驶员座椅下方，可从后排进行保 险丝的相关操作。",
+          "old_page": 307,
+          "old_chapter": null,
+          "old_section": "驾驶员座椅下方的保险丝盒",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "f0a81c32-b464-52d7-94f5-9ccb50ea993a",
+              "text": "驾驶员座椅下方的保险丝盒\n乘客舱内的保险丝盒（CJB）位于驾驶员座椅下方，可从后排进行保\n险丝的相关操作。\n1 将驾驶员座椅尽量前移。\n2 释放地毯锁片，打开护罩。\n3 松开保险丝盒盖卡扣。",
+              "page": 307,
+              "chapter": "保养和维护",
+              "section": "更换保险丝",
+              "subsection": "驾驶员座椅下方的保险丝盒",
+              "heading_path": [
+                "保养和维护",
+                "更换保险丝",
+                "驾驶员座椅下方的保险丝盒"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "vin_location_001",
+      "question": "车辆识别代码 VIN 可以在哪里查看？",
+      "old_gold_chunk_ids": [
+        "60453a99-1b8f-581e-aa0c-b3f8761ea2e3"
+      ],
+      "candidate_current_chunk_ids": [
+        "cb485b1e-6c09-5988-8041-049f9aca3c5a"
+      ],
+      "classification": "BOUNDARY_CHANGED",
+      "reason": "Direct evidence remains, but the current chunk boundary or heading text changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "60453a99-1b8f-581e-aa0c-b3f8761ea2e3",
+          "old_expected_text": "车辆识别代码（VIN）是车辆的法定识别标志。 01 位于挡风玻璃左下角的VIN。 02前排乘客座椅梁上的VIN。",
+          "old_page": 347,
+          "old_chapter": null,
+          "old_section": "",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "cb485b1e-6c09-5988-8041-049f9aca3c5a",
+              "text": "铭牌\n此标签包含车辆品牌、车辆识别代码、发动机排量等信息。\n车辆识别代码（VIN）\n车辆识别代码（VIN）是车辆的法定识别标志。\n01 位于挡风玻璃左下角的VIN。\n02前排乘客座椅梁上的VIN。",
+              "page": 347,
+              "chapter": "技术资料",
+              "section": "车辆标识",
+              "subsection": "铭牌",
+              "heading_path": [
+                "技术资料",
+                "车辆标识",
+                "铭牌"
+              ],
+              "content_type": "procedure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "pressure_wash_warning_001",
+      "question": "使用高压水枪清洗车辆时有哪些注意事项？",
+      "old_gold_chunk_ids": [
+        "200ae47f-4061-5c61-b4a8-360796d2214c"
+      ],
+      "candidate_current_chunk_ids": [
+        "e02d2d11-fcdc-58ee-8f58-63557f557146"
+      ],
+      "classification": "METADATA_CHANGED",
+      "reason": "Direct evidence remains, but current structural metadata changed.",
+      "confidence": "high",
+      "requires_manual_review": false,
+      "evidence_audit": [
+        {
+          "evidence_index": 0,
+          "old_chunk_id": "200ae47f-4061-5c61-b4a8-360796d2214c",
+          "old_expected_text": "洗车前，检查并确认车辆的外部开闭件已正确关闭。",
+          "old_page": 317,
+          "old_chapter": null,
+          "old_section": "高压冲洗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e02d2d11-fcdc-58ee-8f58-63557f557146",
+              "text": "高压冲洗\n警告！\n■在清洗车辆后若要立即驾车，请数次踩下制动踏板，以去除制动\n摩擦片上的水汽。水汽可能影响制动效率。\n■洗车前，检查并确认车辆的外部开闭件已正确关闭。\n■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。\n■避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传\n感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且\n至少保持10 cm以上的距离。\n■务必严格按高压清洗器使用说明清洁车辆，特别注意工作压力和\n喷洗距离。如果使用压力清洗器，则喷嘴与车身的表面至少须保\n持30 cm的距离。保持喷嘴移动，不要朝某个部位一直喷水，高\n压水流浸入车辆零部件内可能导致损坏。\n■请勿使喷嘴直接或间接对发动机舱内进行冲洗。高压水流会造成\n发动机舱内的电气元件受损或造成一些部件不能正常使用。",
+              "page": 317,
+              "chapter": "保养和维护",
+              "section": "清洁车辆",
+              "subsection": "高压冲洗",
+              "heading_path": [
+                "保养和维护",
+                "清洁车辆",
+                "高压冲洗"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 1,
+          "old_chunk_id": "200ae47f-4061-5c61-b4a8-360796d2214c",
+          "old_expected_text": "在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。",
+          "old_page": 317,
+          "old_chapter": null,
+          "old_section": "高压冲洗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e02d2d11-fcdc-58ee-8f58-63557f557146",
+              "text": "高压冲洗\n警告！\n■在清洗车辆后若要立即驾车，请数次踩下制动踏板，以去除制动\n摩擦片上的水汽。水汽可能影响制动效率。\n■洗车前，检查并确认车辆的外部开闭件已正确关闭。\n■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。\n■避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传\n感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且\n至少保持10 cm以上的距离。\n■务必严格按高压清洗器使用说明清洁车辆，特别注意工作压力和\n喷洗距离。如果使用压力清洗器，则喷嘴与车身的表面至少须保\n持30 cm的距离。保持喷嘴移动，不要朝某个部位一直喷水，高\n压水流浸入车辆零部件内可能导致损坏。\n■请勿使喷嘴直接或间接对发动机舱内进行冲洗。高压水流会造成\n发动机舱内的电气元件受损或造成一些部件不能正常使用。",
+              "page": 317,
+              "chapter": "保养和维护",
+              "section": "清洁车辆",
+              "subsection": "高压冲洗",
+              "heading_path": [
+                "保养和维护",
+                "清洁车辆",
+                "高压冲洗"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 2,
+          "old_chunk_id": "200ae47f-4061-5c61-b4a8-360796d2214c",
+          "old_expected_text": "避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传 感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且 至少保持10 cm以上的距离。",
+          "old_page": 317,
+          "old_chapter": null,
+          "old_section": "高压冲洗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e02d2d11-fcdc-58ee-8f58-63557f557146",
+              "text": "高压冲洗\n警告！\n■在清洗车辆后若要立即驾车，请数次踩下制动踏板，以去除制动\n摩擦片上的水汽。水汽可能影响制动效率。\n■洗车前，检查并确认车辆的外部开闭件已正确关闭。\n■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。\n■避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传\n感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且\n至少保持10 cm以上的距离。\n■务必严格按高压清洗器使用说明清洁车辆，特别注意工作压力和\n喷洗距离。如果使用压力清洗器，则喷嘴与车身的表面至少须保\n持30 cm的距离。保持喷嘴移动，不要朝某个部位一直喷水，高\n压水流浸入车辆零部件内可能导致损坏。\n■请勿使喷嘴直接或间接对发动机舱内进行冲洗。高压水流会造成\n发动机舱内的电气元件受损或造成一些部件不能正常使用。",
+              "page": 317,
+              "chapter": "保养和维护",
+              "section": "清洁车辆",
+              "subsection": "高压冲洗",
+              "heading_path": [
+                "保养和维护",
+                "清洁车辆",
+                "高压冲洗"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 3,
+          "old_chunk_id": "200ae47f-4061-5c61-b4a8-360796d2214c",
+          "old_expected_text": "如果使用压力清洗器，则喷嘴与车身的表面至少须保 持30 cm的距离。",
+          "old_page": 317,
+          "old_chapter": null,
+          "old_section": "高压冲洗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e02d2d11-fcdc-58ee-8f58-63557f557146",
+              "text": "高压冲洗\n警告！\n■在清洗车辆后若要立即驾车，请数次踩下制动踏板，以去除制动\n摩擦片上的水汽。水汽可能影响制动效率。\n■洗车前，检查并确认车辆的外部开闭件已正确关闭。\n■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。\n■避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传\n感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且\n至少保持10 cm以上的距离。\n■务必严格按高压清洗器使用说明清洁车辆，特别注意工作压力和\n喷洗距离。如果使用压力清洗器，则喷嘴与车身的表面至少须保\n持30 cm的距离。保持喷嘴移动，不要朝某个部位一直喷水，高\n压水流浸入车辆零部件内可能导致损坏。\n■请勿使喷嘴直接或间接对发动机舱内进行冲洗。高压水流会造成\n发动机舱内的电气元件受损或造成一些部件不能正常使用。",
+              "page": 317,
+              "chapter": "保养和维护",
+              "section": "清洁车辆",
+              "subsection": "高压冲洗",
+              "heading_path": [
+                "保养和维护",
+                "清洁车辆",
+                "高压冲洗"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        },
+        {
+          "evidence_index": 4,
+          "old_chunk_id": "200ae47f-4061-5c61-b4a8-360796d2214c",
+          "old_expected_text": "请勿使喷嘴直接或间接对发动机舱内进行冲洗。",
+          "old_page": 317,
+          "old_chapter": null,
+          "old_section": "高压冲洗",
+          "old_subsection": null,
+          "old_heading_path": [],
+          "match_method": "exact_quote",
+          "candidates": [
+            {
+              "chunk_id": "e02d2d11-fcdc-58ee-8f58-63557f557146",
+              "text": "高压冲洗\n警告！\n■在清洗车辆后若要立即驾车，请数次踩下制动踏板，以去除制动\n摩擦片上的水汽。水汽可能影响制动效率。\n■洗车前，检查并确认车辆的外部开闭件已正确关闭。\n■在清洗车辆时，禁止将水枪对准车辆底部接插件进行冲洗。\n■避免用高压清洗机或蒸汽清洗机对传感器进行清洁，以免损坏传\n感器。清洗车辆时应使用较小的水流短时间冲洗传感器表面，且\n至少保持10 cm以上的距离。\n■务必严格按高压清洗器使用说明清洁车辆，特别注意工作压力和\n喷洗距离。如果使用压力清洗器，则喷嘴与车身的表面至少须保\n持30 cm的距离。保持喷嘴移动，不要朝某个部位一直喷水，高\n压水流浸入车辆零部件内可能导致损坏。\n■请勿使喷嘴直接或间接对发动机舱内进行冲洗。高压水流会造成\n发动机舱内的电气元件受损或造成一些部件不能正常使用。",
+              "page": 317,
+              "chapter": "保养和维护",
+              "section": "清洁车辆",
+              "subsection": "高压冲洗",
+              "heading_path": [
+                "保养和维护",
+                "清洁车辆",
+                "高压冲洗"
+              ],
+              "content_type": "warning"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -32,8 +32,11 @@
 - V3.0.2 已完成 evaluation dataset、evaluation runner 和基础 retrieval metrics。
 - V3.0.3 已完成 cross-mode diagnostics。
 - V3.1 已完成可关闭的本地 cross-encoder rerank baseline 和 rerank on/off comparison。
-- V3.2 已将评测集扩展并清洗为 69 条 text-only dev cases，并完成 hybrid baseline 与 `BAAI/bge-reranker-base` 的复核。rerank 在当前 dev set 上明显改善 top-1 evidence ranking，但带来约 1.81x latency cost，因此 `ENABLE_RERANK=false` 仍为默认配置。
-- 当前重点是继续 review failure cases、latency 和模块边界。不要在缺少更广泛评测依据时默认开启 rerank、引入 query rewrite 或继续叠加规则。
+- V3.2 已将评测集扩展并清洗为 69 条 text-only dev records，并完成 hybrid baseline 与 `BAAI/bge-reranker-base` 的初步复核。
+- V3.3-V3.5 已完成 failure review、parser/chunk hierarchy 修复、retrieval benchmark recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。
+- 当前唯一正式 V3.5 retrieval baseline 包含 69 条 records、68 条 active cases、1 条 excluded case 和 99 条 gold evidence；validator issues 为 0。
+- Frozen metrics：hybrid no-rerank `Hit@1=0.6618`、`Hit@5=0.9706`、`MRR=0.7922`；hybrid + rerank `Hit@1=0.8676`、`Hit@5=1.0000`、`MRR=0.9277`。
+- Retrieval 阶段已经 freeze。当前重点转向 V4 Answer Quality / Answer Evaluation；不要继续增加 retrieval complexity、parser 特例或 query-specific 规则。`ENABLE_RERANK=false` 仍为默认配置。
 
 ## 2. AI 编程助手工作原则
 
@@ -309,20 +312,22 @@ Commit message 应描述真实改动，避免无意义提交信息，例如：
 - V3.0.3：Cross-mode diagnostics 和 case-level failure analysis
 - V3.1：可关闭的本地 cross-encoder rerank baseline 和 rerank on/off comparison
 - V3.2：将评测集扩展并清洗为 69 条 text-only dev cases，复核 rerank 排序收益与 latency cost；rerank 继续作为 optional enhancement，默认关闭
-- V3.3：基于更广泛评测继续做 failure review、latency review、消融实验、模块裁剪和架构收敛
-- V4：安全回答策略强化、引用溯源强化和前端展示
+- V3.3：基于更广泛评测完成 failure review、模块边界复核和诊断收敛
+- V3.4：修复 manual hierarchy、section/subsection、heading path 和 chunk boundary
+- V3.5：完成 retrieval benchmark recalibration、consistency validation、adjudication 和 final freeze
+- V4：Answer Quality / Answer Evaluation，包括 evidence provenance、groundedness、citation correctness、coverage、forbidden content 和人工评分
 - V5：工程化打磨、部署、文档和简历包装
 
 ## 10. 反过拟合原则
 
-当前项目已经进入 69 条 text-only dev evaluation set、evaluation runner 和 rerank comparison 阶段。反过拟合原则适用于所有 dev cases、failure cases、rerank improved / regressed cases 和人工审查样例，不再只针对早期 smoke tests。
+当前项目已经冻结 69-record / 68-active 的 V3.5 text-only retrieval dev benchmark。反过拟合原则适用于所有 dev cases、failure cases、rerank improved / regressed cases 和人工审查样例，不再只针对早期 smoke tests。
 
 必须遵守：
 
 - 不得为了单个 case 写死页码、section、chunk_id、答案或 query-specific if-else。
 - 不得根据单个 failed case 直接新增 retrieval rule、rerank rule、bonus / penalty 或 prompt 特例。
 - 不得为了提升 dev set 指标而删除困难样例、放宽 expected evidence、扩大 `acceptable_sections` 或修改 evidence。
-- 不得把当前 69 条 dev cases 当成 final benchmark。
+- 不得把当前 frozen V3.5 dev benchmark 当成跨手册、跨车型的最终外部 test benchmark。
 - 不得把 visual-dependent 问题混入当前 text-only retrieval / rerank 主评测。
 - 不得用 prompt 弥补 retrieval、chunking、metadata 或 evidence 标注问题。
 - 所有新增规则必须解决一类通用问题，并通过日志、debug metadata 或 evaluation runner 验证。
@@ -359,7 +364,7 @@ Smoke tests 用于快速发现明显崩溃或重大回归。
 
 ## 12. 评测路线
 
-当前 V3.2 阶段已经建立并清洗了 69 条 text-only dev evaluation set。该评测集用于开发阶段的 retrieval、rerank、chunking、metadata 和 failure analysis。它不是 final benchmark。
+当前已冻结 V3.5 text-only retrieval dev benchmark：69 条 records、68 条 active cases、1 条 excluded case、99 条 gold evidence。它用于当前 chunk strategy 下的 retrieval/rerank 回归和 failure analysis，不是跨手册、跨车型的 final test benchmark。
 
 当前系统是 text-only RAG。核心答案依赖图标、按钮示意图、编号图例或视觉版面的问题，应删除、改写或单独标注为未来多模态扩展问题，不纳入当前 retrieval / rerank 主评测。
 
@@ -402,35 +407,32 @@ Smoke tests 用于快速发现明显崩溃或重大回归。
 - `evidence_hit@5_regressions`
 - latency cost
 
-V3.2 rerank comparison 结论：
+V3.5 frozen rerank comparison 结论：
 
-- 在 69 条 text-only dev cases 上，hybrid + `BAAI/bge-reranker-base` 相比 hybrid baseline 明显提升 top-1 evidence ranking。
-- `evidence_hit@1` 从 `0.7681` 提升到 `0.9130`。
-- `MRR` 从 `0.8792` 提升到 `0.9541`。
-- `evidence_hit@3` 和 `evidence_hit@5` 均保持 `1.0000`。
-- 没有 `lost_top1_hit`，也没有 `evidence_hit@5` regression。
-- rerank 带来约 `1.81x` latency cost。
+- 在 68 条 active cases 上，hybrid + `BAAI/bge-reranker-base` 相比 hybrid baseline 明显提升 top-1 evidence ranking。
+- `evidence_hit@1` 从 `0.6618` 提升到 `0.8676`。
+- `MRR` 从 `0.7922` 提升到 `0.9277`。
+- `evidence_hit@3` 从 `0.9265` 提升到 `0.9853`，`evidence_hit@5` 从 `0.9706` 提升到 `1.0000`。
+- rerank 仍存在少量 case-level regression，但没有 `evidence_hit@5` regression。
+- 单次 elapsed 为 `21.11s` 和 `42.96s`，只能作为运行记录；严格 latency 结论需要 warmup、重复运行和 p50/p95。
 - rerank 保留为 optional enhancement，`ENABLE_RERANK=false` 仍为默认配置。
 
 train / dev / test 原则：
 
 - train set 用于开发观察。
-- 当前 69 条数据是 dev set，用于方案比较和 failure analysis。
+- 当前 69 条 records 中 68 条 active，用于冻结基准下的回归和 failure analysis。
 - 未来如建立 test set，必须冻结。
 - 不得根据 test set 的具体失败样例直接调规则。
 - 避免把评测集变成新的训练集。
 
 后续评测路线：
 
-1. 对 regressed cases 和 unchanged non-top1 cases 做 failure case review。
-2. 区分 retrieval failure、rerank failure、chunk boundary 问题、section metadata 问题和 visual-dependent 问题。
-3. 在 failure review 之前，不引入 query rewrite。
-4. 在更大范围评测、参数对照和 latency review 完成前，不默认开启 rerank。
-5. 后续可对比 `rerank_top_n=10` 与 `rerank_top_n=20`。
-6. 后续可对比 `BAAI/bge-reranker-base` 与 `BAAI/bge-reranker-v2-m3`。
-7. 如果 rerank 进入用户请求链路，必须补充更细粒度 latency metrics。
-8. 如果继续扩充评测集，只应补充能增加覆盖面的 text-only cases，不为凑数量添加低质量样例。
-9. 后续 answer-level evaluation 可考虑 citation correctness、groundedness、completeness 和 forbidden content rate。
+1. 刷新 `answer_eval_set` provenance，并与 frozen V3.5 evidence 对齐。
+2. 修复 answer evaluator 已知问题，建立 formal answer baseline。
+3. 增加 citation correctness、groundedness、completeness、forbidden content rate 和人工评分。
+4. 根据 answer failure types 改进 context assembly 和 generation，不用 prompt 掩盖 retrieval 失败。
+5. 如果未来重开 retrieval/chunk 优化，必须先定义新版本和 recalibration plan，不能直接复用 frozen gold。
+6. 如果 rerank 进入用户请求链路，必须补充 warmup、重复运行、per-query latency 和 p50/p95。
 
 所有后续 rerank、query rewrite、chunk 优化、metadata selection 调整，都必须通过 evaluation runner 做量化验证，并结合人工 failure analysis 解释结果。
 

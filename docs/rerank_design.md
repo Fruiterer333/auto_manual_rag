@@ -4,7 +4,7 @@
 
 当前项目已经完成 V3.0 Hybrid Retrieval、V3.0.1 index hygiene 与 diagnostics、V3.0.2 retrieval evaluation framework，以及 V3.0.3 case-level cross-mode diagnostics。
 
-> 状态更新：本文档最初基于 29 条 dev cases 设计 V3.1 rerank baseline。当前 V3.2 已将评测集扩展并清洗为 69 条 text-only dev cases，并完成 rerank on/off 复核。最新结果见 [`docs/evaluation/rerank_evaluation_summary.md`](evaluation/rerank_evaluation_summary.md)。本文保留早期设计背景，但当前结论以 V3.2 总结为准。
+> 状态更新：本文档最初基于 29 条 dev cases 设计 V3.1 rerank baseline，正文保留早期设计背景。V3.2 的历史结果见 [`docs/evaluation/rerank_evaluation_summary.md`](evaluation/rerank_evaluation_summary.md)；当前正式结论以 V3.5 frozen benchmark 总览 [`reports/evaluation/v3_5_retrieval_benchmark_summary.md`](../reports/evaluation/v3_5_retrieval_benchmark_summary.md) 为准。
 
 V3.0.3 的历史 diagnostics 基于当时的 29 条 `dev` cases，报告显示：
 

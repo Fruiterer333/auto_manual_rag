@@ -1,6 +1,19 @@
-# V3.0.2 Evaluation
+# Retrieval Evaluation Methodology
 
-V3.0.2 的目标是建立可复现、可量化、可比较的评测体系，不是继续调检索规则、prompt 或 tokenizer。当前四个 smoke tests 只能用于发现明显回归，不能作为唯一优化目标。
+本项目的 retrieval evaluation 用于可复现地比较 dense、BM25、hybrid 和 optional rerank，不用于通过少量 case 反向调规则。当前正式基线是与 V3.5 chunk/index 对齐并完成 gold adjudication 的 frozen retrieval benchmark。
+
+早期 V3.0.2 建立了 evaluation framework；后续 V3.2-V3.5 扩展数据集、修复 chunk hierarchy，并完成 benchmark recalibration、consistency validation、failure review 和 freeze。历史结果继续保留，但必须与当前 frozen baseline 区分。
+
+## Retrieval Benchmark Purpose and Unit
+
+当前 benchmark 的评测单位是 chunk-level retrieval evidence，不是 answer semantic similarity：
+
+- 每条 active case 定义一个或多个能独立支撑问题的 gold chunks；
+- `evidence_hit@k` 判断 top-k 是否命中 gold evidence；
+- benchmark 不使用 retriever 当前排名反向定义 gold；
+- Answer Evaluation 是后续独立阶段，不应混入 retrieval 指标。
+
+Gold chunk 与 chunk strategy 版本耦合。parser、splitter、heading text、boundary 或 deterministic chunk ID 发生实质变化后，旧 gold 可能失效。此时必须基于问题、原始手册事实和新 chunk 输出重新校准，不能把 stale gold 静默计为 retrieval miss。
 
 ## Dataset
 
@@ -27,6 +40,27 @@ JSONL 每行一条 `EvalCase`。关键字段：
 - `split`：默认 `dev`，预留 train/dev/test 扩展。
 
 新增 eval case 时必须能追溯到真实手册证据。`evidence.quote` 应来自已解析 chunk、`inspect_chunks.py` 输出或手册页面文本，不允许凭汽车常识编写。
+
+当前 V3.5 dataset 状态：
+
+| item | value |
+| --- | ---: |
+| total records | 69 |
+| active cases | 68 |
+| excluded cases | 1 |
+| benchmark evidence | 99 |
+| pending human review | 0 |
+| validation issues | 0 |
+
+`parking_detection_range_001` 保留在 JSONL 中并设置 `excluded=true`。其所需表格数值未被当前 text-only chunk corpus 表示，因此属于 parser/table extraction coverage gap，不是 retrieval failure，也不进入 Hit@k / MRR denominator。
+
+Multi-gold semantics：
+
+- 多个 independently sufficient chunks 可同时作为 gold；
+- evaluator 使用 ANY_OF，命中任意 gold 即算 evidence hit；
+- MRR 使用排名最高的 gold chunk；
+- 当前明确的 multi-gold cases 包括 `parking_emergency_brake_fault_001`、`charging_led_states_001` 和 `wiper_caution_001`；
+- 真正需要多个 chunk 联合回答的 multi-hop / multi-evidence case 不应未经设计直接套用 ANY_OF。
 
 ## Retrieval Evaluation
 
@@ -74,6 +108,26 @@ python scripts/evaluate_retrieval.py --dataset data/eval/manual_eval_set.jsonl -
 
 `reports/evaluation/` 下的运行报告通常是本地生成结果，不建议提交大体积报告。
 
+## Benchmark Consistency Validation
+
+正式 retrieval evaluation 前应先运行：
+
+```bash
+.venv/bin/python scripts/validate_retrieval_eval_set.py \
+  --dataset data/eval/manual_eval_set.jsonl \
+  --split dev
+```
+
+Validator 检查 active gold chunk 是否存在，以及 evidence text、page、section/subsection 等关键字段是否与当前 index 一致。Excluded case 不要求 gold 存在。发现 stale gold 时应 fail-fast，而不是继续运行并把 benchmark inconsistency 记为 retrieval miss。
+
+触发 recalibration 的典型变化包括：
+
+- parser hierarchy 或 heading inheritance 改变；
+- subsection heading 加入 chunk text；
+- chunk boundary 拆分、合并或跨页行为改变；
+- chunk ID 生成输入发生变化；
+- gold evidence 被证明存在多个等价 current chunks。
+
 ## Metrics
 
 第一版指标使用简单可复现规则，不使用 LLM-as-judge。
@@ -109,7 +163,7 @@ python scripts/evaluate_retrieval.py --dataset data/eval/manual_eval_set.jsonl -
 
 ## 评测集局限和解读注意事项
 
-当前 `manual_eval_set.jsonl` 是第一版 `dev` set，用于建立可复现的比较基线，不应视为最终冻结的 `test` set。解读报告时需要注意：
+当前 `manual_eval_set.jsonl` 已冻结为 V3.5 retrieval dev benchmark，但不应视为跨手册、跨车型的最终 `test` set。解读报告时需要注意：
 
 - `section_hit` 依赖 chunk metadata 质量。当前 parser 仍可能产生 section 缺失或解析偏差；遇到此类样例时，应结合 `page_hit`、`evidence_hit` 和 `term_coverage_ratio` 判断，不应只看 `section_hit`。
 - `content_type_hit` 依赖 parser 对 `warning`、`caution`、`procedure` 等类型的标注质量，只能作为辅助指标。
@@ -120,3 +174,100 @@ python scripts/evaluate_retrieval.py --dataset data/eval/manual_eval_set.jsonl -
 
 ## dataset changelog
 删除 seatbelt_after_collision_warning_001：该样例的 evidence 标注置信度不足，可能导致误判检索失败，因此暂时从 V3.0.2 eval set 中移除。
+
+## V3.5 Retrieval Benchmark Freeze
+
+V3.5 Retrieval Benchmark 已完成以下收尾步骤：
+
+1. chunk strategy recalibration；
+2. benchmark consistency validation；
+3. retrieval failure review；
+4. gold-equivalence adjudication；
+5. final benchmark freeze。
+
+当前冻结基准状态：
+
+- total records：69；
+- active cases：68；
+- excluded cases：1；
+- benchmark evidence：99；
+- pending human review：0；
+- validation issues：0；
+- excluded case：`parking_detection_range_001`，原因是所需表格数值未被当前纯文本 chunk corpus 表示；
+- chunking/index version：V3.5；
+- Chroma stored chunks：1002；
+- BM25 / hygiene-filtered retrieval-eligible chunks：981；
+- `parking_emergency_brake_fault_001` 包含 3 个 independently sufficient equivalent gold chunks；
+- `charging_led_states_001` 包含 2 个完整覆盖 8 种 LED 状态的 equivalent gold chunks；
+- `wiper_caution_001` 包含 2 个 equivalent gold chunks：前雨刮和后雨刮的完整冬季使用注意事项文本。
+
+历史结果的含义必须明确区分：
+
+- legacy V3.5 metrics：使用 recalibration 前的旧 `manual_eval_set`，仅作为历史实验记录；
+- pre-freeze recalibrated result：完成 chunk/index 对齐和重校准、但尚未接受最终 gold-equivalence 决策的结果；
+- official V3.5 retrieval baseline：使用当前 69 条记录、68 条 active cases 和最终 multi-gold 标注重新计算的 frozen metrics。
+
+冻结后的指标变化可能来自 gold 标注修正，而不一定代表 production retrieval regression 或 improvement。多 gold case 使用 ANY_OF 语义：命中任意一个已确认等价 chunk 即算 evidence hit，MRR 使用排名最高的 gold chunk。
+
+## Legacy, Recalibrated and Frozen Results
+
+不同报告使用不同 benchmark state，不能直接做 production regression 解释：
+
+| benchmark state | 含义 |
+| --- | --- |
+| legacy / pre-recalibration | 使用旧 chunk mapping、旧 metadata 或旧 gold truth 的历史实验。 |
+| recalibrated pre-freeze | 已与 V3.5 index 对齐，但尚未完成最后 gold-equivalence adjudication。 |
+| frozen / official | 完成 recalibration、validation、ambiguity review 和 gold-equivalence adjudication 后的正式 V3.5 baseline。 |
+
+Official frozen metrics：
+
+| mode | Hit@1 | Hit@3 | Hit@5 | MRR | elapsed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Hybrid no-rerank | 0.6618 | 0.9265 | 0.9706 | 0.7922 | 21.11s |
+| Hybrid + rerank | 0.8676 | 0.9853 | 1.0000 | 0.9277 | 42.96s |
+
+Pre-freeze recalibrated → frozen：
+
+- no-rerank Hit@1：`0.6471 -> 0.6618`，MRR：`0.7848 -> 0.7922`；
+- rerank Hit@1：`0.8529 -> 0.8676`，MRR：`0.9203 -> 0.9277`；
+- Hit@3 / Hit@5 不变。
+
+这组小幅变化来自 `wiper_caution_001` equivalent-gold adjudication，不是 production retrieval improvement。Legacy → recalibrated 的较大变化主要来自 benchmark truth 修正，也不能解释为在同一 benchmark 上发生 production regression。
+
+## Reranker Interpretation
+
+在 frozen benchmark 上，rerank：
+
+- 将 Hit@1 从 `45/68` 提升到 `59/68`；
+- 将 Hit@5 从 `66/68` 提升到 `68/68`；
+- 明显改善 ranking quality；
+- 仍存在 3 个 regressed cases 和 2 个 lost-top1 cases；
+- 当前代码默认仍为 `ENABLE_RERANK=false`。
+
+Rerank 只能重排已有候选，不能修复 parser/table extraction coverage gap、stale benchmark 或缺失 evidence。当前没有证据支持继续增加 retrieval complexity，也没有依据仅凭单次运行延迟默认开启 rerank。
+
+## Latency Measurement Limitations
+
+Frozen reports 中的 `21.11s` 和 `42.96s` 只记录对应单次运行。模型加载、缓存、设备状态和进程生命周期都会影响结果，不能据此形成严格 latency ratio 结论。
+
+正式 latency comparison 应至少使用：
+
+- 同一进程和相同硬件；
+- model warmup；
+- 多轮重复运行；
+- per-query latency；
+- p50 / p95；
+- 区分模型加载时间与稳态推理时间。
+
+## Transition to Answer Evaluation
+
+V3.5 Retrieval 阶段已经 freeze。下一主阶段是 V4 Answer Quality / Answer Evaluation：
+
+1. refresh `answer_eval_set` provenance；
+2. 将 answer evidence 与 frozen V3.5 benchmark 对齐；
+3. 修复 answer evaluator 已知问题；
+4. 建立正式 answer baseline；
+5. 引入 groundedness、citation correctness、coverage、forbidden content 和人工评分；
+6. 根据 answer failure types 做局部改进。
+
+Retrieval frozen 不代表最终答案质量已经解决。Candidate recall 较高后，剩余问题更可能集中在 ranking、context assembly、evidence usage 和 generation，而不是需要继续堆叠 retrieval 技术。

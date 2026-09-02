@@ -15,6 +15,29 @@ class _PromptEvidence:
     truncated: bool = False
 
 
+@dataclass(frozen=True)
+class PromptEvidenceSnapshot:
+    evidence_id: str
+    order: int
+    chunk_id: str
+    page: int | None
+    chapter: str | None
+    section: str | None
+    subsection: str | None
+    heading_path: str
+    content_type: str
+    text: str
+    truncated: bool
+    original_text_chars: int
+    prompt_text_chars: int
+
+
+@dataclass(frozen=True)
+class AnswerPromptAssembly:
+    prompt: str
+    evidence_snapshots: tuple[PromptEvidenceSnapshot, ...]
+
+
 def build_answer_prompt(
     question: str,
     chunks: list[Chunk],
@@ -22,17 +45,33 @@ def build_answer_prompt(
     max_contexts: int = DEFAULT_MAX_CONTEXTS,
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
 ) -> str:
+    return assemble_answer_prompt(
+        question,
+        chunks,
+        max_contexts=max_contexts,
+        max_context_chars=max_context_chars,
+    ).prompt
+
+
+def assemble_answer_prompt(
+    question: str,
+    chunks: list[Chunk],
+    *,
+    max_contexts: int = DEFAULT_MAX_CONTEXTS,
+    max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
+) -> AnswerPromptAssembly:
     evidences = _select_prompt_evidence(
         chunks,
         max_contexts=max_contexts,
         max_chars=max_context_chars,
     )
-    context = "\n\n".join(
-        _format_evidence(evidence, f"E{index}")
+    snapshots = tuple(
+        _build_evidence_snapshot(evidence, index)
         for index, evidence in enumerate(evidences, start=1)
     )
+    context = "\n\n".join(_format_evidence(snapshot) for snapshot in snapshots)
 
-    return f"""
+    prompt = f"""
 你是汽车用户手册问答助手。
 
 回答规则：
@@ -51,27 +90,48 @@ Evidence:
 
 请给出回答：
 """.strip()
+    return AnswerPromptAssembly(prompt=prompt, evidence_snapshots=snapshots)
 
 
-def _format_evidence(evidence: _PromptEvidence, evidence_id: str) -> str:
-    chunk = evidence.chunk
-    page = chunk.page if chunk.page is not None else "N/A"
-    subsection = _display_value(chunk.subsection or chunk.metadata.get("subsection"))
+def _format_evidence(snapshot: PromptEvidenceSnapshot) -> str:
+    page = snapshot.page if snapshot.page is not None else "N/A"
     lines = [
-        f"[EVIDENCE {evidence_id}]",
+        f"[EVIDENCE {snapshot.evidence_id}]",
         f"page: {page}",
-        f"chapter: {_display_value(chunk.chapter)}",
-        f"section: {_display_value(chunk.section)}",
-        f"subsection: {subsection}",
-        f"heading_path: {_format_heading_path(chunk)}",
-        f"content_type: {chunk.content_type or 'normal'}",
+        f"chapter: {_display_value(snapshot.chapter)}",
+        f"section: {_display_value(snapshot.section)}",
+        f"subsection: {_display_value(snapshot.subsection)}",
+        f"heading_path: {snapshot.heading_path}",
+        f"content_type: {snapshot.content_type}",
         "content:",
-        evidence.content,
+        snapshot.text,
     ]
-    if evidence.truncated:
+    if snapshot.truncated:
         lines.append("truncated: true")
     lines.append("[/EVIDENCE]")
     return "\n".join(lines)
+
+
+def _build_evidence_snapshot(
+    evidence: _PromptEvidence,
+    order: int,
+) -> PromptEvidenceSnapshot:
+    chunk = evidence.chunk
+    return PromptEvidenceSnapshot(
+        evidence_id=f"E{order}",
+        order=order,
+        chunk_id=chunk.chunk_id,
+        page=chunk.page,
+        chapter=chunk.chapter,
+        section=chunk.section,
+        subsection=chunk.subsection or _metadata_str(chunk, "subsection"),
+        heading_path=_format_heading_path(chunk),
+        content_type=chunk.content_type or "normal",
+        text=evidence.content,
+        truncated=evidence.truncated,
+        original_text_chars=len(chunk.text.strip()),
+        prompt_text_chars=len(evidence.content),
+    )
 
 
 def _format_heading_path(chunk: Chunk) -> str:
@@ -132,3 +192,8 @@ def _display_value(value: object) -> str:
     if value is None or value == "":
         return "N/A"
     return str(value)
+
+
+def _metadata_str(chunk: Chunk, key: str) -> str | None:
+    value = chunk.metadata.get(key)
+    return str(value) if value is not None and value != "" else None

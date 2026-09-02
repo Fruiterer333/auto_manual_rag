@@ -1,3 +1,4 @@
+from typing import Any
 from time import perf_counter
 
 import requests
@@ -8,6 +9,107 @@ from app.rag.llms.base import BaseLLMClient
 
 
 logger = get_logger(__name__)
+
+
+GENERATE_TIMEOUT_SECONDS = 120
+METADATA_TIMEOUT_SECONDS = 5
+
+
+def get_generation_request_metadata() -> dict[str, Any]:
+    """Describe the exact generation controls sent by the current client."""
+    return {
+        "generation_stream": False,
+        "generation_temperature": None,
+        "generation_temperature_source": "unset_ollama_default",
+        "generation_seed": None,
+        "generation_seed_source": "unset_ollama_default",
+        "generation_options": None,
+        "generation_options_source": "not_sent",
+        "generation_timeout_seconds": GENERATE_TIMEOUT_SECONDS,
+        "generation_timeout_source": "explicit",
+    }
+
+
+def collect_ollama_runtime_metadata(settings: Settings) -> dict[str, str | None]:
+    """Best-effort runtime identity metadata without invoking generation.
+
+    Version and digest are intentionally optional: a metadata lookup failure must
+    not change generation behavior or prevent a baseline from recording the
+    unknown value it actually ran with.
+    """
+    base_url = settings.OLLAMA_BASE_URL.rstrip("/")
+    metadata: dict[str, str | None] = {
+        "ollama_base_url": base_url,
+        "ollama_version": None,
+        "ollama_version_source": "unknown",
+        "ollama_model_tag": settings.OLLAMA_MODEL,
+        "ollama_model_digest": None,
+        "ollama_model_digest_source": "unknown",
+        "ollama_runtime_metadata_error": None,
+    }
+    errors: list[str] = []
+
+    try:
+        response = requests.get(
+            f"{base_url}/api/version",
+            timeout=METADATA_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        version = response.json().get("version")
+        if isinstance(version, str) and version:
+            metadata["ollama_version"] = version
+            metadata["ollama_version_source"] = "api_version"
+        else:
+            errors.append("api_version_missing_version")
+    except (requests.RequestException, ValueError) as exc:
+        errors.append(f"api_version_unavailable:{type(exc).__name__}")
+
+    try:
+        response = requests.get(
+            f"{base_url}/api/tags",
+            timeout=METADATA_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        models = response.json().get("models")
+        if isinstance(models, list):
+            matching_model = next(
+                (
+                    model
+                    for model in models
+                    if isinstance(model, dict)
+                    and settings.OLLAMA_MODEL in {
+                        model.get("name"),
+                        model.get("model"),
+                    }
+                ),
+                None,
+            )
+            digest = matching_model.get("digest") if matching_model else None
+            if isinstance(digest, str) and digest:
+                metadata["ollama_model_digest"] = digest
+                metadata["ollama_model_digest_source"] = "api_tags"
+            else:
+                errors.append("api_tags_model_digest_unavailable")
+        else:
+            errors.append("api_tags_missing_models")
+    except (requests.RequestException, ValueError) as exc:
+        errors.append(f"api_tags_unavailable:{type(exc).__name__}")
+
+    if errors:
+        metadata["ollama_runtime_metadata_error"] = ";".join(errors)
+        logger.warning(
+            "Ollama runtime metadata incomplete: model=%s errors=%s",
+            settings.OLLAMA_MODEL,
+            metadata["ollama_runtime_metadata_error"],
+        )
+    else:
+        logger.info(
+            "Ollama runtime metadata collected: model=%s version=%s digest=%s",
+            settings.OLLAMA_MODEL,
+            metadata["ollama_version"],
+            metadata["ollama_model_digest"],
+        )
+    return metadata
 
 
 class OllamaClient(BaseLLMClient):
@@ -37,7 +139,7 @@ class OllamaClient(BaseLLMClient):
         )
 
         try:
-            response = requests.post(url, json=payload, timeout=120)
+            response = requests.post(url, json=payload, timeout=GENERATE_TIMEOUT_SECONDS)
             response.raise_for_status()
         except requests.RequestException as exc:
             logger.exception("Ollama request failed: model=%s", self.settings.OLLAMA_MODEL)

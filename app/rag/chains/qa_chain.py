@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from time import perf_counter
 
 from app.core.config import Settings, get_settings
@@ -5,7 +6,11 @@ from app.core.logger import get_logger
 from app.data.schemas.models import Citation, QueryRequest, QueryResponse
 from app.rag.embeddings.local_embedding import LocalEmbeddingClient
 from app.rag.llms.ollama_client import OllamaClient
-from app.rag.prompts.answer_prompt import DEFAULT_MAX_CONTEXTS, build_answer_prompt
+from app.rag.prompts.answer_prompt import (
+    DEFAULT_MAX_CONTEXTS,
+    PromptEvidenceSnapshot,
+    assemble_answer_prompt,
+)
 from app.rag.rerankers import get_reranker
 from app.rag.rerankers.base import BaseReranker
 from app.rag.retrievers.context_selector import (
@@ -19,9 +24,18 @@ from app.rag.retrievers.chunk_filters import (
 )
 from app.rag.retrievers.hybrid_retriever import HybridRetriever
 from app.rag.utils.citation_utils import build_relevant_quote
+from app.rag.utils.internal_evidence_refs import strip_internal_evidence_references
 
 
 logger = get_logger(__name__)
+
+
+@dataclass(frozen=True)
+class AnswerGenerationTrace:
+    response: QueryResponse
+    raw_answer: str | None
+    final_answer: str
+    prompt_evidence: tuple[PromptEvidenceSnapshot, ...]
 
 
 class QAChain:
@@ -47,6 +61,18 @@ class QAChain:
         top_k: int = 5,
         retrieval_mode: str | None = None,
     ) -> QueryResponse:
+        return self.answer_with_trace(
+            question=question,
+            top_k=top_k,
+            retrieval_mode=retrieval_mode,
+        ).response
+
+    def answer_with_trace(
+        self,
+        question: str,
+        top_k: int = 5,
+        retrieval_mode: str | None = None,
+    ) -> AnswerGenerationTrace:
         start_time = perf_counter()
         mode = self._resolve_retrieval_mode(retrieval_mode)
         logger.info("QA started: question=%s top_k=%s retrieval_mode=%s", question, top_k, mode)
@@ -155,21 +181,29 @@ class QAChain:
                 len(answer),
                 perf_counter() - start_time,
             )
-            return QueryResponse(
+            response = QueryResponse(
                 question=question,
                 answer=answer,
                 citations=[],
                 retrieval_mode=mode,
             )
+            return AnswerGenerationTrace(
+                response=response,
+                raw_answer=None,
+                final_answer=answer,
+                prompt_evidence=(),
+            )
 
         chunks = [retrieved.chunk for retrieved in retrieved_chunks]
-        prompt = build_answer_prompt(
+        prompt_assembly = assemble_answer_prompt(
             question=question,
             chunks=chunks,
             max_contexts=answer_context_limit,
             max_context_chars=self.settings.MAX_CONTEXT_CHARS,
         )
-        raw_answer = self.llm_client.generate(prompt)
+        # Prompt assembly is the source of truth for model-visible contexts.
+        retrieved_chunks = retrieved_chunks[: len(prompt_assembly.evidence_snapshots)]
+        raw_answer = self.llm_client.generate(prompt_assembly.prompt)
         answer = self._post_process_answer(raw_answer)
         citations = [
             Citation(
@@ -200,11 +234,17 @@ class QAChain:
             len(answer),
             perf_counter() - start_time,
         )
-        return QueryResponse(
+        response = QueryResponse(
             question=question,
             answer=answer,
             citations=citations,
             retrieval_mode=mode,
+        )
+        return AnswerGenerationTrace(
+            response=response,
+            raw_answer=raw_answer,
+            final_answer=answer,
+            prompt_evidence=prompt_assembly.evidence_snapshots,
         )
 
     def run(self, request: QueryRequest) -> QueryResponse:
@@ -221,23 +261,7 @@ class QAChain:
         return mode
 
     def _post_process_answer(self, answer: str) -> str:
-        import re
-
-        cleaned = re.sub(
-            r"(参见|参考|根据)?\s*(手册片段|资料|片段|上下文|context|source id)\s*\d+\s*(中|里|内)?",
-            "",
-            answer,
-            flags=re.IGNORECASE,
-        )
-        cleaned = re.sub(
-            r"(参见|参考|根据)?\s*Evidence(?:\s*ID)?\s*E\d+\s*(中|里|内)?",
-            "",
-            cleaned,
-            flags=re.IGNORECASE,
-        )
-        cleaned = re.sub(r"(参见|参考|根据)\s*[,，:：]?", "", cleaned)
-        cleaned = cleaned.lstrip("，,:：。；; ")
-        cleaned = re.sub(r"\s{2,}", " ", cleaned).strip()
+        cleaned = strip_internal_evidence_references(answer)
         removed = cleaned != answer
         logger.info("Answer postprocess completed: removed_internal_refs=%s", removed)
         return cleaned

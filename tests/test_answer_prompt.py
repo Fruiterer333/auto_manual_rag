@@ -2,6 +2,7 @@ from app.data.schemas.models import Chunk
 from app.rag.prompts.answer_prompt import (
     DEFAULT_MAX_CONTEXTS,
     DEFAULT_MAX_CONTEXT_CHARS,
+    assemble_answer_prompt,
     build_answer_prompt,
 )
 
@@ -155,6 +156,68 @@ def test_first_evidence_is_truncated_when_it_exceeds_char_budget() -> None:
     assert "[EVIDENCE E1]" in prompt
     assert "[TRUNCATED]" in prompt
     assert "truncated: true" in prompt
+
+
+def test_prompt_snapshot_records_exact_untruncated_evidence() -> None:
+    chunk = _chunk(
+        "chunk-1",
+        "完整证据正文。",
+        heading_path=["启动和驾驶", "电子驻车制动（EPB）", "EPB AUTO功能"],
+    )
+
+    assembly = assemble_answer_prompt("如何操作？", [chunk])
+    snapshot = assembly.evidence_snapshots[0]
+
+    assert snapshot.evidence_id == "E1"
+    assert snapshot.order == 1
+    assert snapshot.chunk_id == "chunk-1"
+    assert snapshot.page == 10
+    assert snapshot.chapter == "启动和驾驶"
+    assert snapshot.section == "电子驻车制动（EPB）"
+    assert snapshot.subsection == "EPB AUTO功能"
+    assert snapshot.heading_path == "启动和驾驶 > 电子驻车制动（EPB） > EPB AUTO功能"
+    assert snapshot.text == "完整证据正文。"
+    assert snapshot.truncated is False
+    assert snapshot.original_text_chars == len(chunk.text)
+    assert snapshot.prompt_text_chars == len(snapshot.text)
+    assert f"content:\n{snapshot.text}" in assembly.prompt
+
+
+def test_prompt_snapshot_records_exact_first_evidence_truncation() -> None:
+    chunk = _chunk("chunk-1", "第一条证据内容很长，需要被截断。")
+
+    assembly = assemble_answer_prompt(
+        "如何操作？",
+        [chunk],
+        max_contexts=1,
+        max_context_chars=12,
+    )
+    snapshot = assembly.evidence_snapshots[0]
+
+    assert snapshot.truncated is True
+    assert snapshot.text in assembly.prompt
+    assert snapshot.text.endswith("[TRUNCATED]")
+    assert snapshot.original_text_chars > snapshot.prompt_text_chars
+    assert "truncated: true" in assembly.prompt
+
+
+def test_prompt_snapshot_excludes_later_evidence_after_budget_break() -> None:
+    assembly = assemble_answer_prompt(
+        "如何操作？",
+        [
+            _chunk("chunk-1", "短证据。"),
+            _chunk("chunk-2", "这是一条会超过剩余预算的较长证据。"),
+            _chunk("chunk-3", "第三条不应越过第二条进入prompt。"),
+        ],
+        max_contexts=3,
+        max_context_chars=6,
+    )
+
+    assert [item.evidence_id for item in assembly.evidence_snapshots] == ["E1"]
+    assert [item.chunk_id for item in assembly.evidence_snapshots] == ["chunk-1"]
+    assert "[EVIDENCE E2]" not in assembly.prompt
+    assert "chunk-2" not in [item.chunk_id for item in assembly.evidence_snapshots]
+    assert "chunk-3" not in [item.chunk_id for item in assembly.evidence_snapshots]
 
 
 def test_prompt_contains_condition_difference_and_true_conflict_policy() -> None:

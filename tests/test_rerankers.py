@@ -126,6 +126,13 @@ class _FakeLLMClient:
         return "按照手册执行操作。"
 
 
+class _EvidenceLeakingFakeLLMClient(_FakeLLMClient):
+    def generate(self, prompt: str) -> str:
+        assert "如何执行操作？" in prompt
+        self.prompts.append(prompt)
+        return "根据 Evidence E1，按照手册执行操作。"
+
+
 class _RecordingNoopReranker(NoopReranker):
     def __init__(self) -> None:
         self.calls: list[tuple[str, list[str], int | None]] = []
@@ -210,7 +217,14 @@ def test_answer_postprocess_removes_explicit_evidence_reference_only() -> None:
     chain = QAChain.__new__(QAChain)
 
     assert chain._post_process_answer("根据 Evidence E1，执行该操作。") == "执行该操作。"
+    assert chain._post_process_answer("参照E3证据，执行相应操作。") == "执行相应操作。"
+    assert chain._post_process_answer("参考 E5 证据，可查看相关说明。") == "可查看相关说明。"
+    assert chain._post_process_answer("根据[EVIDENCE E2]，车辆应立即停车。") == "车辆应立即停车。"
     assert chain._post_process_answer("车辆显示故障代码 E1") == "车辆显示故障代码 E1"
+    assert chain._post_process_answer("具体操作应根据车辆状态进行。") == "具体操作应根据车辆状态进行。"
+    assert chain._post_process_answer("根据车辆状态选择相应功能。") == "根据车辆状态选择相应功能。"
+    assert chain._post_process_answer("具体要求请参考用户手册。") == "具体要求请参考用户手册。"
+    assert chain._post_process_answer("可参见车辆保养章节。") == "可参见车辆保养章节。"
 
 
 class _NeighborFakeRetriever(_FakeRetriever):
@@ -300,3 +314,57 @@ def test_qa_chain_excludes_char_budgeted_contexts_from_prompt_and_citations() ->
     assert "第一证据。" in prompt
     assert "第二条证据超过剩余字符预算。" not in prompt
     assert "第三证据。" not in prompt
+
+
+def test_answer_trace_preserves_raw_answer_and_model_visible_evidence() -> None:
+    long_text = "这是模型实际看到的完整证据正文。" * 20
+    llm_client = _EvidenceLeakingFakeLLMClient()
+    chain = QAChain(
+        settings=Settings(
+            ENABLE_RERANK=False,
+            ENABLE_METADATA_CONTEXT_SELECTION=False,
+            ENABLE_NEIGHBOR_CONTEXT_EXPANSION=False,
+            MAX_CONTEXT_CHARS=6000,
+        ),
+        embedding_client=_FakeEmbeddingClient(),
+        retriever=_FakeRetriever(
+            [_retrieved_chunk("chunk-1", 0.9, text=long_text)],
+            expected_candidate_k=1,
+        ),
+        llm_client=llm_client,
+        reranker=NoopReranker(),
+    )
+
+    trace = chain.answer_with_trace("如何执行操作？", top_k=1, retrieval_mode="hybrid")
+
+    assert trace.raw_answer == "根据 Evidence E1，按照手册执行操作。"
+    assert trace.final_answer == "按照手册执行操作。"
+    assert trace.response.answer == trace.final_answer
+    assert len(trace.prompt_evidence) == 1
+    assert trace.prompt_evidence[0].evidence_id == "E1"
+    assert trace.prompt_evidence[0].text == long_text
+    assert trace.prompt_evidence[0].chunk_id == trace.response.citations[0].chunk_id
+    assert len(trace.response.citations[0].quote) < len(trace.prompt_evidence[0].text)
+
+
+def test_answer_trace_records_empty_evidence_without_calling_llm() -> None:
+    llm_client = _FakeLLMClient()
+    chain = QAChain(
+        settings=Settings(
+            ENABLE_RERANK=False,
+            ENABLE_METADATA_CONTEXT_SELECTION=False,
+            ENABLE_NEIGHBOR_CONTEXT_EXPANSION=False,
+        ),
+        embedding_client=_FakeEmbeddingClient(),
+        retriever=_FakeRetriever([], expected_candidate_k=1),
+        llm_client=llm_client,
+        reranker=NoopReranker(),
+    )
+
+    trace = chain.answer_with_trace("如何执行操作？", top_k=1, retrieval_mode="hybrid")
+
+    assert trace.raw_answer is None
+    assert trace.final_answer == "我没有在手册中找到可靠依据"
+    assert trace.prompt_evidence == ()
+    assert trace.response.citations == []
+    assert llm_client.prompts == []

@@ -13,18 +13,48 @@ logger = get_logger(__name__)
 
 GENERATE_TIMEOUT_SECONDS = 120
 METADATA_TIMEOUT_SECONDS = 5
+INHERITED_GENERATION_OPTIONS = (
+    "top_k",
+    "top_p",
+    "min_p",
+    "repeat_penalty",
+    "num_predict",
+    "num_ctx",
+)
 
 
-def get_generation_request_metadata() -> dict[str, Any]:
+def get_generation_options(settings: Settings) -> dict[str, float | int]:
+    """Return the complete set of generation options explicitly controlled here."""
+    return {
+        "temperature": settings.OLLAMA_TEMPERATURE,
+        "seed": settings.OLLAMA_SEED,
+    }
+
+
+def build_generation_request_payload(settings: Settings, prompt: str) -> dict[str, Any]:
+    """Build the single request shape shared by production and evaluation calls."""
+    return {
+        "model": settings.OLLAMA_MODEL,
+        "prompt": prompt,
+        "stream": False,
+        "options": get_generation_options(settings),
+    }
+
+
+def get_generation_request_metadata(settings: Settings) -> dict[str, Any]:
     """Describe the exact generation controls sent by the current client."""
+    options = get_generation_options(settings)
     return {
         "generation_stream": False,
-        "generation_temperature": None,
-        "generation_temperature_source": "unset_ollama_default",
-        "generation_seed": None,
-        "generation_seed_source": "unset_ollama_default",
-        "generation_options": None,
-        "generation_options_source": "not_sent",
+        "generation_stream_source": "explicit",
+        "generation_temperature": options["temperature"],
+        "generation_temperature_source": "settings_explicit",
+        "generation_seed": options["seed"],
+        "generation_seed_source": "settings_explicit",
+        "generation_options": options,
+        "generation_options_source": "settings_explicit",
+        "generation_inherited_options": list(INHERITED_GENERATION_OPTIONS),
+        "generation_inherited_options_source": "ollama_model_or_service_defaults",
         "generation_timeout_seconds": GENERATE_TIMEOUT_SECONDS,
         "generation_timeout_source": "explicit",
     }
@@ -126,16 +156,14 @@ class OllamaClient(BaseLLMClient):
     def generate(self, prompt: str) -> str:
         start_time = perf_counter()
         url = f"{self.settings.OLLAMA_BASE_URL.rstrip('/')}/api/generate"
-        payload = {
-            "model": self.settings.OLLAMA_MODEL,
-            "prompt": prompt,
-            "stream": False,
-        }
+        payload = build_generation_request_payload(self.settings, prompt)
         logger.info(
-            "Calling Ollama: base_url=%s model=%s prompt_chars=%s",
+            "Calling Ollama: base_url=%s model=%s prompt_chars=%s temperature=%s seed=%s",
             self.settings.OLLAMA_BASE_URL,
             self.settings.OLLAMA_MODEL,
             len(prompt),
+            self.settings.OLLAMA_TEMPERATURE,
+            self.settings.OLLAMA_SEED,
         )
 
         try:

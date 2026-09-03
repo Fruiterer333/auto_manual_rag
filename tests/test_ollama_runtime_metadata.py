@@ -13,19 +13,50 @@ class _Response:
         return self.payload
 
 
-def test_generation_request_metadata_preserves_unset_ollama_defaults() -> None:
-    metadata = ollama_client.get_generation_request_metadata()
+def test_generation_request_metadata_records_explicit_settings_values() -> None:
+    metadata = ollama_client.get_generation_request_metadata(Settings())
 
     assert metadata == {
         "generation_stream": False,
-        "generation_temperature": None,
-        "generation_temperature_source": "unset_ollama_default",
-        "generation_seed": None,
-        "generation_seed_source": "unset_ollama_default",
-        "generation_options": None,
-        "generation_options_source": "not_sent",
+        "generation_stream_source": "explicit",
+        "generation_temperature": 0.0,
+        "generation_temperature_source": "settings_explicit",
+        "generation_seed": 42,
+        "generation_seed_source": "settings_explicit",
+        "generation_options": {"temperature": 0.0, "seed": 42},
+        "generation_options_source": "settings_explicit",
+        "generation_inherited_options": [
+            "top_k",
+            "top_p",
+            "min_p",
+            "repeat_penalty",
+            "num_predict",
+            "num_ctx",
+        ],
+        "generation_inherited_options_source": "ollama_model_or_service_defaults",
         "generation_timeout_seconds": 120,
         "generation_timeout_source": "explicit",
+    }
+
+
+def test_ollama_generate_sends_explicit_temperature_and_seed(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_post(url: str, *, json: dict[str, object], timeout: int) -> _Response:
+        captured.update({"url": url, "payload": json, "timeout": timeout})
+        return _Response({"response": "生成结果"})
+
+    monkeypatch.setattr(ollama_client.requests, "post", fake_post)
+    client = ollama_client.OllamaClient(Settings())
+
+    assert client.generate("测试提示") == "生成结果"
+    assert captured["url"] == "http://127.0.0.1:11434/api/generate"
+    assert captured["timeout"] == ollama_client.GENERATE_TIMEOUT_SECONDS
+    assert captured["payload"] == {
+        "model": "qwen2.5:7b",
+        "prompt": "测试提示",
+        "stream": False,
+        "options": {"temperature": 0.0, "seed": 42},
     }
 
 

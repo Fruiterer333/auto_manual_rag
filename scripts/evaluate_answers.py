@@ -57,7 +57,7 @@ def main() -> None:
     if not cases:
         raise ValueError("No answer evaluation cases matched the provided filters.")
     ensure_answer_eval_semantics_valid(cases)
-    generation_metadata = get_generation_request_metadata()
+    generation_metadata = get_generation_request_metadata(settings)
     ollama_runtime_metadata = collect_ollama_runtime_metadata(settings)
 
     chain = QAChain(settings=settings)

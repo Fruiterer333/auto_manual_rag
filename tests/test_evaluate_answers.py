@@ -99,10 +99,12 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
     assert payload["semantics_version"] == "v4.3"
     assert payload["config"]["answer_eval_semantics_version"] == "v4.3"
     assert len(payload["config"]["answer_eval_dataset_sha256"]) == 64
-    assert payload["config"]["generation_temperature"] is None
-    assert payload["config"]["generation_temperature_source"] == "unset_ollama_default"
-    assert payload["config"]["generation_seed"] is None
-    assert payload["config"]["generation_seed_source"] == "unset_ollama_default"
+    assert payload["config"]["generation_temperature"] == 0.0
+    assert payload["config"]["generation_temperature_source"] == "settings_explicit"
+    assert payload["config"]["generation_seed"] == 42
+    assert payload["config"]["generation_seed_source"] == "settings_explicit"
+    assert payload["config"]["generation_options"] == {"temperature": 0.0, "seed": 42}
+    assert payload["config"]["generation_options_source"] == "settings_explicit"
     assert payload["config"]["generation_timeout_seconds"] == 120
     assert payload["config"]["ollama_version"] == "0.test"
     assert payload["config"]["ollama_model_digest"] == "sha256:test"

@@ -288,4 +288,18 @@ V4.7 在 retrieval、Prompt、Prompt Evidence、context、dataset、evaluation s
 
 集成后在 Ollama `0.33.2`、model digest `6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7` 下完成 4 cases x 3 runs 验证，Prompt Evidence identity/order/text、raw answer 和 final answer 均 exact match。该结果只证明当前固定环境的重复运行稳定性，不代表跨硬件、跨 Ollama 版本或跨 inference backend 的普适确定性。
 
-下一阶段为 V4.8 Final System Evaluation。不得在该评测中继续扩大 Answer Model 候选集，或同时修改 Prompt、retrieval 与 context selection。
+## V4.8 Final System Evaluation
+
+V4.8 使用已经集成的稳定配置完成最终系统评测，没有继续扩大 Answer Model 候选集，也没有修改 Prompt、retrieval 或 context selection。
+
+- 最终 Answer Model：`qwen3.5:9b`；
+- direct-answer 配置：`temperature=0.0`、`seed=42`、`stream=false`、`think=false`；
+- retrieval：hybrid、rerank=false、top_k=5；
+- context：metadata selection=true、neighbor expansion=false、max_contexts=5、max_context_chars=6000；
+- semantics：`v4.3`。
+
+Frozen retrieval verification 在 68 条 active cases 上得到 `Hit@1=0.6618`、`Hit@3=0.9265`、`Hit@5=0.9706`、`MRR=0.7922`，与 V3.5 冻结结果一致。12-case final answer run 与 V4.7 选中模型运行的 Prompt Evidence identity/order/text、raw answer 和 final answer 均为 12/12 exact match。
+
+V4.8 的逐 case human rubric 仍标记为 PROPOSED。`10/12` Human Full Pass、`1/12` severe failure、`1/12` unsupported claim 和 `1/12` critical safety omission 只能称为 12-case dev diagnostic set 的结果，不代表 production accuracy。完整结论和 known limitations 见 `reports/evaluation/v4_8_final_system_evaluation.md`。
+
+下一阶段为 V5.0 Resume Release，主要完成 Git checkpoint、演示验证、文档和项目包装。Embedding / Retrieval Model Benchmark 与 Query Transformation 保留为由后续证据触发的 Future Work。

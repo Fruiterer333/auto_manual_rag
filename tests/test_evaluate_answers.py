@@ -70,6 +70,8 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
             output=str(markdown_path),
             json_output=str(json_path),
             retrieval_mode="hybrid",
+            model="qwen3.5:9b",
+            think="false",
             top_k=5,
             limit=1,
             split="dev",
@@ -114,11 +116,14 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
     assert payload["config"]["generation_temperature_source"] == "settings_explicit"
     assert payload["config"]["generation_seed"] == 42
     assert payload["config"]["generation_seed_source"] == "settings_explicit"
+    assert payload["config"]["generation_think"] is False
+    assert payload["config"]["generation_think_source"] == "settings_explicit"
     assert payload["config"]["generation_options"] == {"temperature": 0.0, "seed": 42}
     assert payload["config"]["generation_options_source"] == "settings_explicit"
     assert payload["config"]["generation_timeout_seconds"] == 120
     assert payload["config"]["ollama_version"] == "0.test"
     assert payload["config"]["ollama_model_digest"] == "sha256:test"
+    assert payload["config"]["llm_model"] == "qwen3.5:9b"
     assert payload["config"]["experiment_id"] == "v4.6-b-condition-preservation"
     assert payload["config"]["experiment_phase"] == "reference"
     assert payload["config"]["git_branch"] == "exp/v4.6-condition-preservation"
@@ -136,3 +141,29 @@ def test_formal_baseline_default_name_includes_mode_rerank_and_timestamp() -> No
     assert path.parent.as_posix() == "reports/evaluation"
     assert path.name.startswith("v4_answer_baseline_hybrid_no_rerank_")
     assert path.suffix == ".md"
+
+
+def test_runtime_overrides_do_not_change_production_defaults() -> None:
+    settings = Settings(_env_file=None)
+
+    unchanged = evaluate_answers._apply_runtime_overrides(
+        settings,
+        argparse.Namespace(model=None, think=None),
+    )
+    overridden = evaluate_answers._apply_runtime_overrides(
+        settings,
+        argparse.Namespace(model="qwen3.5:9b", think="false"),
+    )
+
+    assert unchanged is settings
+    assert unchanged.OLLAMA_MODEL == "qwen3.5:9b"
+    assert unchanged.OLLAMA_THINK is False
+    assert overridden.OLLAMA_MODEL == "qwen3.5:9b"
+    assert overridden.OLLAMA_THINK is False
+
+    think_enabled = evaluate_answers._apply_runtime_overrides(
+        settings,
+        argparse.Namespace(model=None, think="true"),
+    )
+    assert think_enabled.OLLAMA_MODEL == "qwen3.5:9b"
+    assert think_enabled.OLLAMA_THINK is True

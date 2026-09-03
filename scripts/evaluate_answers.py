@@ -11,7 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app.core.config import get_settings
+from app.core.config import Settings, get_settings
 from app.evaluation.answer_evaluator import (
     ANSWER_EVAL_SEMANTICS_VERSION,
     build_answer_evaluation_run,
@@ -36,6 +36,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output")
     parser.add_argument("--json-output")
     parser.add_argument("--retrieval-mode", choices=("dense", "bm25", "hybrid"))
+    parser.add_argument("--model", help="Temporarily override the answer model for this run.")
+    parser.add_argument(
+        "--think",
+        choices=("true", "false"),
+        help="Explicitly enable or disable model thinking for this run.",
+    )
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--limit", type=int)
     parser.add_argument("--split", default="dev")
@@ -49,7 +55,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    settings = get_settings()
+    settings = _apply_runtime_overrides(get_settings(), args)
     retrieval_mode = args.retrieval_mode or settings.RETRIEVAL_MODE
     markdown_path = (
         Path(args.output)
@@ -149,6 +155,17 @@ def _default_output_path(
 
 def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _apply_runtime_overrides(settings: Settings, args: argparse.Namespace) -> Settings:
+    updates: dict[str, object] = {}
+    model = getattr(args, "model", None)
+    think = getattr(args, "think", None)
+    if model:
+        updates["OLLAMA_MODEL"] = model
+    if think is not None:
+        updates["OLLAMA_THINK"] = think == "true"
+    return settings.model_copy(update=updates) if updates else settings
 
 
 def _collect_git_identity() -> dict[str, str | bool | None]:

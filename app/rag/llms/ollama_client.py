@@ -33,12 +33,15 @@ def get_generation_options(settings: Settings) -> dict[str, float | int]:
 
 def build_generation_request_payload(settings: Settings, prompt: str) -> dict[str, Any]:
     """Build the single request shape shared by production and evaluation calls."""
-    return {
+    payload: dict[str, Any] = {
         "model": settings.OLLAMA_MODEL,
         "prompt": prompt,
         "stream": False,
         "options": get_generation_options(settings),
     }
+    if settings.OLLAMA_THINK is not None:
+        payload["think"] = settings.OLLAMA_THINK
+    return payload
 
 
 def get_generation_request_metadata(settings: Settings) -> dict[str, Any]:
@@ -51,6 +54,10 @@ def get_generation_request_metadata(settings: Settings) -> dict[str, Any]:
         "generation_temperature_source": "settings_explicit",
         "generation_seed": options["seed"],
         "generation_seed_source": "settings_explicit",
+        "generation_think": settings.OLLAMA_THINK,
+        "generation_think_source": (
+            "settings_explicit" if settings.OLLAMA_THINK is not None else "unset"
+        ),
         "generation_options": options,
         "generation_options_source": "settings_explicit",
         "generation_inherited_options": list(INHERITED_GENERATION_OPTIONS),
@@ -158,12 +165,13 @@ class OllamaClient(BaseLLMClient):
         url = f"{self.settings.OLLAMA_BASE_URL.rstrip('/')}/api/generate"
         payload = build_generation_request_payload(self.settings, prompt)
         logger.info(
-            "Calling Ollama: base_url=%s model=%s prompt_chars=%s temperature=%s seed=%s",
+            "Calling Ollama: base_url=%s model=%s prompt_chars=%s temperature=%s seed=%s think=%s",
             self.settings.OLLAMA_BASE_URL,
             self.settings.OLLAMA_MODEL,
             len(prompt),
             self.settings.OLLAMA_TEMPERATURE,
             self.settings.OLLAMA_SEED,
+            self.settings.OLLAMA_THINK,
         )
 
         try:

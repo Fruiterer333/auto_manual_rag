@@ -18,7 +18,12 @@ def _case(case_id: str) -> AnswerEvalCase:
     )
 
 
-def _trace(raw_answer: str, final_answer: str, chunk_id: str = "chunk-1") -> AnswerGenerationTrace:
+def _trace(
+    raw_answer: str,
+    final_answer: str,
+    chunk_id: str = "chunk-1",
+    evidence_text: str = "证据正文",
+) -> AnswerGenerationTrace:
     evidence = PromptEvidenceSnapshot(
         evidence_id="E1",
         order=1,
@@ -29,7 +34,7 @@ def _trace(raw_answer: str, final_answer: str, chunk_id: str = "chunk-1") -> Ans
         subsection=None,
         heading_path="N/A",
         content_type="normal",
-        text="证据正文",
+        text=evidence_text,
         truncated=False,
         original_text_chars=4,
         prompt_text_chars=4,
@@ -68,11 +73,22 @@ def test_stability_summary_requires_raw_final_and_evidence_identity_matches() ->
             trace_record(3, _trace("原始答案", "最终答案")),
         ],
     )
+    changed_evidence_text = summarize_case_runs(
+        case=case,
+        runs=[
+            trace_record(1, _trace("原始答案", "最终答案")),
+            trace_record(2, _trace("原始答案", "最终答案", evidence_text="不同证据")),
+            trace_record(3, _trace("原始答案", "最终答案")),
+        ],
+    )
 
     assert stable["case_stable"] is True
     assert changed_raw["raw_answer_exact_match"] is False
     assert changed_raw["final_answer_exact_match"] is True
     assert changed_raw["case_stable"] is False
+    assert changed_evidence_text["prompt_evidence_identity_exact_match"] is False
+    assert changed_evidence_text["prompt_evidence_identity_order_text_exact_match"] is False
+    assert changed_evidence_text["case_stable"] is False
 
 
 def test_environment_blocked_artifact_is_not_reported_as_verified() -> None:

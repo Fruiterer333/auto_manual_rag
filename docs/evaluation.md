@@ -271,3 +271,21 @@ V3.5 Retrieval 阶段已经 freeze。下一主阶段是 V4 Answer Quality / Answ
 6. 根据 answer failure types 做局部改进。
 
 Retrieval frozen 不代表最终答案质量已经解决。Candidate recall 较高后，剩余问题更可能集中在 ranking、context assembly、evidence usage 和 generation，而不是需要继续堆叠 retrieval 技术。
+
+## V4.7 Answer Model Selection 与稳定默认配置
+
+V4.7 在 retrieval、Prompt、Prompt Evidence、context、dataset、evaluation semantics 和 application-level generation parameters 保持不变的条件下，对 `qwen2.5:7b`、`qwen3.5:9b` 和 `gemma3:12b` 做了 12-case dev diagnostic controlled comparison。三组运行的 Prompt Evidence identity/order/text 对 12/12 cases 完全一致。
+
+最终人工选型结论为 `qwen3.5:9b`。它与 `gemma3:12b` 的 proposed quality 基本持平，均修复两个 primary condition-handling targets，但模型体积和本地离线运行 elapsed 更低。该结论只适用于当前 dev diagnostic set 和本机部署约束，不是 production accuracy 结论。
+
+稳定默认 generation configuration：
+
+- model：`qwen3.5:9b`；
+- temperature：`0.0`；
+- seed：`42`；
+- stream：`false`；
+- think：`false`。
+
+集成后在 Ollama `0.33.2`、model digest `6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7` 下完成 4 cases x 3 runs 验证，Prompt Evidence identity/order/text、raw answer 和 final answer 均 exact match。该结果只证明当前固定环境的重复运行稳定性，不代表跨硬件、跨 Ollama 版本或跨 inference backend 的普适确定性。
+
+下一阶段为 V4.8 Final System Evaluation。不得在该评测中继续扩大 Answer Model 候选集，或同时修改 Prompt、retrieval 与 context selection。

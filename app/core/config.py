@@ -10,9 +10,10 @@ class Settings(BaseSettings):
     PROCESSED_DATA_DIR: str = "data/processed"
     CHROMA_DIR: str = "data/chroma"
     OLLAMA_BASE_URL: str = "http://127.0.0.1:11434"
-    OLLAMA_MODEL: str = "qwen2.5:7b"
+    OLLAMA_MODEL: str = "qwen3.5:9b"
     OLLAMA_TEMPERATURE: float = 0.0
     OLLAMA_SEED: int = 42
+    OLLAMA_THINK: bool | None = False
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-zh-v1.5"
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str | None = None

@@ -68,6 +68,7 @@ def trace_record(run_number: int, trace: AnswerGenerationTrace) -> dict[str, Any
                 "evidence_id": evidence.evidence_id,
                 "order": evidence.order,
                 "chunk_id": evidence.chunk_id,
+                "text": evidence.text,
             }
             for evidence in trace.prompt_evidence
         ],
@@ -98,6 +99,7 @@ def summarize_case_runs(
         "raw_answer_exact_match": raw_match,
         "final_answer_exact_match": final_match,
         "prompt_evidence_identity_exact_match": evidence_match,
+        "prompt_evidence_identity_order_text_exact_match": evidence_match,
         "case_stable": raw_match and final_match and evidence_match,
     }
 
@@ -125,13 +127,14 @@ def build_verification_artifact(
         "raw_answer_exact_match_all_cases": all_stable,
         "final_answer_exact_match_all_cases": all_stable,
         "prompt_evidence_identity_exact_match_all_cases": all_stable,
+        "prompt_evidence_identity_order_text_exact_match_all_cases": all_stable,
         "repeated_run_stability_verified": status == "VERIFIED" and all_stable,
     }
 
 
 def render_verification_markdown(artifact: dict[str, Any]) -> str:
     lines = [
-        "# V4.5.1 重复生成稳定性验证",
+        "# Answer Generation 重复运行稳定性验证",
         "",
         f"- 验证状态：`{artifact['verification_status']}`",
         f"- V4.3 语义版本：`{artifact['semantics_version']}`",
@@ -161,7 +164,7 @@ def render_verification_markdown(artifact: dict[str, Any]) -> str:
                 "",
                 "## Case 结果",
                 "",
-                "| case_id | raw exact | final exact | Evidence identity exact | stable |",
+                "| case_id | raw exact | final exact | Evidence identity/order/text exact | stable |",
                 "| --- | --- | --- | --- | --- |",
             ]
         )
@@ -169,7 +172,7 @@ def render_verification_markdown(artifact: dict[str, Any]) -> str:
             lines.append(
                 f"| `{case['case_id']}` | {case['raw_answer_exact_match']} | "
                 f"{case['final_answer_exact_match']} | "
-                f"{case['prompt_evidence_identity_exact_match']} | "
+                f"{case['prompt_evidence_identity_order_text_exact_match']} | "
                 f"{case['case_stable']} |"
             )
     lines.extend(

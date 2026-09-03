@@ -37,7 +37,7 @@
 
 ## 2. 当前版本状态
 
-当前可以视为 V3.5 Retrieval freeze 与 V4.5.1 Answer Evaluation reproducibility checkpoint。已经实现并验证的主要能力包括：
+当前可以视为 V3.5 Retrieval freeze 与 V4.7 Answer Model Selection checkpoint。已经实现并验证的主要能力包括：
 
 - PDF ingest、文本清洗和索引构建；
 - `ManualStructureParser` 恢复 `chapter` / `section` / `subsection` 层级；
@@ -55,13 +55,14 @@
 - rerank on/off comparison；
 - V4 answer-eval provenance、sanitization、Exact Prompt Evidence snapshot 和 frozen evaluation semantics；
 - 12-case V4.4 historical formal answer baseline 与 V4.5 human adjudication；
-- 显式 generation configuration：`temperature=0.0`、`seed=42`、`stream=false`；
+- 稳定 Answer Model 默认为 `qwen3.5:9b`，显式 generation configuration 为 `temperature=0.0`、`seed=42`、`stream=false`、`think=false`；
 - 在固定 Ollama `0.33.2`、`qwen2.5:7b` model digest 和 generation configuration 下完成 4 cases x 3 runs 的 exact-output stability verification；
+- 通过固定 RAG pipeline 的三模型 controlled comparison，在 12-case dev diagnostic set 上从 `qwen2.5:7b`、`qwen3.5:9b`、`gemma3:12b` 中选择 `qwen3.5:9b`；三组 Prompt Evidence 全部保持不变，选定模型随后通过 4 cases x 3 runs 的本机 exact-output stability verification；
 - FastAPI、Streamlit 和 CLI 基础链路。
 
 当前默认链路仍是 hybrid no-rerank。rerank 指标收益明显，但延迟成本也明显，因此继续作为 optional high-precision mode，而不是默认行为。
 
-V3.5 retrieval benchmark 已完成 chunk/index 对齐、recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。V4.0-V4.5.1 已完成 answer-eval 基础设施、formal historical baseline、human failure taxonomy 和 generation reproducibility 验证。V4.6 已完成 failure analysis、fixed-generation reference 和 Condition Preservation 单变量实验；该 treatment 经因果隔离验证后判定为 `REJECT`，未进入稳定 Prompt，production RAG behavior 保持不变。下一阶段是 Resume-Ready Answer Model Selection。
+V3.5 retrieval benchmark 已完成 chunk/index 对齐、recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。V4.0-V4.5.1 已完成 answer-eval 基础设施、formal historical baseline、human failure taxonomy 和 generation reproducibility 验证。V4.6 的 Condition Preservation 单变量实验判定为 `REJECT`，未进入稳定 Prompt。V4.7 已完成三模型受控比较和人工选型确认，`qwen3.5:9b` 已集成为稳定默认 Answer Model；下一阶段是 V4.8 Final System Evaluation。
 
 V4.5 的 Human Full Pass 为 12-case dev diagnostic set 上的 `7/12`（58.33%），只用于当前 failure analysis，不代表 production accuracy、跨车型准确率或系统总体准确率。V4.4 保留为继承当时 generation defaults 的历史基线；后续严格 A/B 将使用 V4.5.1 固定参数建立独立 controlled reference，不覆盖历史 artifact。
 
@@ -322,12 +323,11 @@ elapsed 仅记录这一次运行。它不是严格 latency benchmark；正式比
 
 ## 12. 下一阶段建议工作方向
 
-### 优先级 A：Resume-Ready Answer Model Selection
+### 优先级 A：Final System Evaluation
 
-- 固定 retrieval、Prompt、Prompt Evidence、context configuration、evaluation semantics、`temperature=0.0` 和 `seed=42`；
-- 只改变 Answer Model，比较当前 `qwen2.5:7b` 与少量高价值候选；
-- 继续使用独立 `exp/*` 分支和 controlled reference，不把模型选择与 Prompt/retrieval 改动混合；
-- 同时检查目标失败、pass-case regression、unsupported claim、safety 和 completeness；
+- 以 `qwen3.5:9b`、`think=false` 和当前冻结 RAG pipeline 运行 V4.8 Final System Evaluation；
+- 保留 V4.7 三模型 comparison 作为选型证据，不继续扩大候选集；
+- 明确区分 12-case dev diagnostic 结果与 production accuracy；
 - V4.6 rejected treatment 只保留实验报告，不作为当前系统能力。
 
 ### 优先级 B：固化 checkpoint 与项目展示
@@ -339,11 +339,10 @@ elapsed 仅记录这一次运行。它不是严格 latency benchmark；正式比
 - 增加 query/result debug 页面或更清晰的 CLI 输出；
 - 整理 docs，使项目更适合简历和面试讲解。
 
-### 优先级 C：更高成本探索
+### 优先级 C：更高成本 Future Work
 
-- V4.7 Answer Model Benchmark；
-- V4.8 Embedding / Retrieval Model Benchmark；
-- V4.9 Query Transformation；
+- Embedding / Retrieval Model Benchmark；
+- Query Transformation；
 - 多手册 / 多车型泛化与最终外部评测；
 - 表格、图片、图标、多模态能力；
 - 更复杂的 query rewrite 或 agent workflow。

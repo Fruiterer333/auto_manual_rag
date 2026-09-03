@@ -38,7 +38,8 @@
 - Frozen metrics：hybrid no-rerank `Hit@1=0.6618`、`Hit@5=0.9706`、`MRR=0.7922`；hybrid + rerank `Hit@1=0.8676`、`Hit@5=1.0000`、`MRR=0.9277`。
 - Retrieval 阶段已经 freeze。V4.0-V4.5 已完成 Answer Evaluation provenance、sanitization、generation auditability、semantics freeze、formal baseline 和 human adjudication；V4.5.1 已将 `temperature=0.0`、`seed=42`、`stream=false` 显式化，并在固定 Ollama `0.33.2` 和 `qwen2.5:7b` model digest 的环境中通过 4 cases x 3 runs 的 exact-output stability 验证。
 - V4.6 已完成 failure-to-intervention mapping、fixed-generation R0 与 Condition Preservation T1 单变量实验。因果隔离有效，但 T1 未修复两个目标条件保持失败，结论为 `REJECT`；rejected Prompt behavior 不得进入稳定主分支，负实验 artifact 应保留。
-- 下一阶段是 Resume-Ready Answer Model Selection：固定 retrieval、Prompt、Prompt Evidence、context、generation configuration、dataset 和 evaluation semantics，只比较少量高价值 Answer Model。`ENABLE_RERANK=false` 仍为默认配置。
+- V4.7 已完成 Resume-Ready Answer Model Selection。在固定 RAG pipeline 和 12-case dev diagnostic set 下比较 `qwen2.5:7b`、`qwen3.5:9b`、`gemma3:12b` 后，人工确认选择 `qwen3.5:9b`；稳定默认 generation configuration 为 `temperature=0.0`、`seed=42`、`stream=false`、`think=false`。选定模型已在当前 Ollama `0.33.2` 和固定 model digest 下通过 4 cases x 3 runs 的 Prompt Evidence/raw/final exact-output stability 验证。
+- 下一阶段是 V4.8 Final System Evaluation。`ENABLE_RERANK=false` 仍为默认配置，不得在最终评测中混入新的模型搜索、Prompt 调整或 retrieval 改动。
 
 ## 2. AI 编程助手工作原则
 
@@ -359,9 +360,9 @@ Commit message 应描述真实改动，避免无意义提交信息，例如：
 - V4.5：完成人工裁决与 failure taxonomy；Human Full Pass 为 12-case dev diagnostic set 上的 `7/12`，不得表述为 production accuracy
 - V4.5.1：显式固定 generation parameters，并在当前固定 runtime/model identity 下完成 repeated-run stability verification
 - V4.6：完成 Failure-Driven Grounded Generation failure analysis 和 Condition Preservation controlled experiment；T1 rejected，stable Prompt 保持不变
-- V4.7：Resume-Ready Answer Model Selection，在冻结其他变量时比较少量高价值 Answer Model
-- V4.8：Embedding / Retrieval Model Benchmark
-- V4.9：Query Transformation
+- V4.7：已完成 Resume-Ready Answer Model Selection，稳定默认 Answer Model 为 `qwen3.5:9b`，显式 `think=false`
+- V4.8：Final System Evaluation
+- Future Work：Embedding / Retrieval Model Benchmark 与 Query Transformation
 - V5.0：Final Evaluation、工程化打磨、部署、文档和简历包装
 
 ## 10. 反过拟合原则
@@ -474,10 +475,10 @@ train / dev / test 原则：
 后续评测路线：
 
 1. V4.6 已基于冻结的 V4.4/V4.5 evidence 完成 failure-to-intervention mapping 和 Condition Preservation 单变量实验；T1 rejected，production Prompt 不变。
-2. V4.7 以 fixed-generation controlled reference 开展 Resume-Ready Answer Model Selection，不混改 Prompt、retrieval 或 context。
-3. V4.8 独立比较 Embedding / Retrieval Model。
-4. V4.9 在已有评测与 failure evidence 支持下研究 Query Transformation。
-5. V5.0 执行最终评测；当前 12-case answer dev diagnostic set 和 68-active retrieval dev benchmark 都不得冒充外部 test set。
+2. V4.7 已在 Prompt Evidence 不变的前提下完成三模型 controlled comparison，并选择 `qwen3.5:9b`。
+3. V4.8 使用已集成的稳定默认模型执行 Final System Evaluation，不再扩大候选集或混入其他优化变量。
+4. Embedding / Retrieval Model Benchmark 与 Query Transformation 降为 Future Work，必须由新的评测证据触发。
+5. 当前 12-case answer dev diagnostic set 和 68-active retrieval dev benchmark 都不得冒充外部 test set。
 6. 如果未来重开 retrieval/chunk 优化，必须先定义新版本和 recalibration plan，不能直接复用 frozen gold。
 7. 如果 rerank 进入用户请求链路，必须补充 warmup、重复运行、per-query latency 和 p50/p95。
 

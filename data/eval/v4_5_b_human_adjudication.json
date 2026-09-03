@@ -1,0 +1,216 @@
+{
+  "adjudication_version": "v4.5-b-final",
+  "source_baseline_path": "reports/evaluation/v4_answer_baseline_hybrid_no_rerank_20260902_200054.json",
+  "records": [
+    {
+      "case_id": "abs_fault_warning_answer_001",
+      "groundedness": 1,
+      "correctness": 0,
+      "completeness": 0,
+      "condition_handling": 1,
+      "safety_preservation": 0,
+      "unsupported_claim": true,
+      "critical_safety_omission": true,
+      "primary_failure_layer": "GENERATION",
+      "failure_labels": [
+        "GENERATION_GROUNDING_FAILURE",
+        "COMPLETENESS_FAILURE",
+        "SAFETY_PRESERVATION_FAILURE",
+        "UNSUPPORTED_EXTRAPOLATION"
+      ],
+      "rationale": "未要求立即在安全区域停车，且加入当前 Evidence 无法直接支持的谨慎驾驶和制动性能表述；联系领克中心的处理被保留。",
+      "adjudication_status": "final",
+      "post_hoc_root_cause_evidence_audit": "冻结 prompt_evidence 未包含合同要求的“立即在安全区域停车”专属指令；人工主归因仍为 GENERATION，事后根因归因需显式协调。"
+    },
+    {
+      "case_id": "epb_enable_release_answer_001",
+      "groundedness": 0,
+      "correctness": 0,
+      "completeness": 0,
+      "condition_handling": 0,
+      "safety_preservation": 0,
+      "unsupported_claim": true,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "RETRIEVAL",
+      "secondary_failure_layer": "GENERATION",
+      "failure_labels": [
+        "RETRIEVAL_FAILURE",
+        "CONTEXT_CONTAMINATION",
+        "GENERATION_GROUNDING_FAILURE",
+        "CONDITION_HANDLING_FAILURE",
+        "COMPLETENESS_FAILURE",
+        "UNSUPPORTED_EXTRAPOLATION"
+      ],
+      "rationale": "正常启用 EPB 的直接 Evidence 未进入 prompt；现有上下文只覆盖部分互补的释放 Evidence，回答又混入紧急制动和不适用的释放条件。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "epb_poweroff_release_answer_001",
+      "groundedness": 1,
+      "correctness": 0,
+      "completeness": 1,
+      "condition_handling": 0,
+      "safety_preservation": 2,
+      "unsupported_claim": true,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "GENERATION",
+      "failure_labels": [
+        "GENERATION_GROUNDING_FAILURE",
+        "CONDITION_HANDLING_FAILURE",
+        "COMPLETENESS_FAILURE",
+        "UNSUPPORTED_EXTRAPOLATION"
+      ],
+      "rationale": "第一条释放路径遗漏关闭 EPB AUTO 的必要条件；第二条路径仍有效且安全警告得到保留。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "remote_key_start_answer_001",
+      "groundedness": 1,
+      "correctness": 0,
+      "completeness": 2,
+      "condition_handling": 0,
+      "safety_preservation": 2,
+      "unsupported_claim": true,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "GENERATION",
+      "failure_labels": [
+        "CONTEXT_CONTAMINATION",
+        "GENERATION_GROUNDING_FAILURE",
+        "CONDITION_HANDLING_FAILURE",
+        "UNSUPPORTED_EXTRAPOLATION"
+      ],
+      "rationale": "普通遥控钥匙启动 Evidence 已存在，但回答把仅在钥匙电量低且未被检测到时适用的前杯托紧急启动步骤提升为无条件常规步骤。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "epb_auto_subsection_answer_001",
+      "groundedness": 1,
+      "correctness": 1,
+      "completeness": 2,
+      "condition_handling": 1,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "GENERATION",
+      "failure_labels": [
+        "CONTEXT_CONTAMINATION",
+        "CONDITION_HANDLING_FAILURE",
+        "UNNECESSARY_PROCEDURAL_EXPANSION"
+      ],
+      "rationale": "核心结论正确，但回答把其他 prompt Evidence 中的程序和条件扩展进来，造成不必要且有害的答案范围扩大。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "pressure_wash_warning_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "evaluator_diagnostics": [
+        "EVALUATOR_PROXY_FALSE_NEGATIVE"
+      ],
+      "rationale": "高压冲洗的安全距离和禁止事项均由模型可见 Evidence 直接支持；结构代理 miss 不构成回答失败。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "overspeed_condition_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [
+        "UNNECESSARY_PROCEDURAL_EXPANSION"
+      ],
+      "evaluator_diagnostics": [
+        "EVALUATOR_PROXY_FALSE_NEGATIVE"
+      ],
+      "rationale": "回答正确保留超速触发与低于阈值后解除的条件；“报警会自动解除”与合同术语不同，不应被当作完整性失败。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "remote_start_blocked_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "evaluator_diagnostics": [
+        "EVALUATOR_PROXY_FALSE_NEGATIVE"
+      ],
+      "rationale": "所有 canonical 的远程启动受阻条件均被正确覆盖；“发动机出现故障”等同义表述及结构代理差异不改变人工通过结论。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "abs_explanation_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "rationale": "防抱死系统的功能说明与模型可见 Evidence 一致。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "autohold_explanation_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "rationale": "Auto Hold 的短暂停车、制动踏板保持与加速释放关系均得到正确说明。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "charging_led_list_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "evaluator_diagnostics": [
+        "EVALUATOR_PROXY_FALSE_NEGATIVE"
+      ],
+      "rationale": "充电接口 LED 各颜色状态均由 canonical Prompt Evidence 覆盖；结构代理不一致不构成回答失败。",
+      "adjudication_status": "final"
+    },
+    {
+      "case_id": "unsupported_voice_brake_calibration_answer_001",
+      "groundedness": 2,
+      "correctness": 2,
+      "completeness": 2,
+      "condition_handling": 2,
+      "safety_preservation": 2,
+      "unsupported_claim": false,
+      "critical_safety_omission": false,
+      "primary_failure_layer": "NONE",
+      "failure_labels": [],
+      "rationale": "hard-negative 的不足证据回答正确拒绝了在语音控制与制动系统 Evidence 之间进行无依据合成。",
+      "adjudication_status": "final"
+    }
+  ]
+}

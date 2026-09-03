@@ -37,7 +37,7 @@
 
 ## 2. 当前版本状态
 
-当前可以视为 V3.5 阶段的稳定 checkpoint。已经实现并验证的主要能力包括：
+当前可以视为 V3.5 Retrieval freeze 与 V4.5.1 Answer Evaluation reproducibility checkpoint。已经实现并验证的主要能力包括：
 
 - PDF ingest、文本清洗和索引构建；
 - `ManualStructureParser` 恢复 `chapter` / `section` / `subsection` 层级；
@@ -53,11 +53,17 @@
 - retrieval evaluation runner；
 - retrieval benchmark consistency validation；
 - rerank on/off comparison；
+- V4 answer-eval provenance、sanitization、Exact Prompt Evidence snapshot 和 frozen evaluation semantics；
+- 12-case V4.4 historical formal answer baseline 与 V4.5 human adjudication；
+- 显式 generation configuration：`temperature=0.0`、`seed=42`、`stream=false`；
+- 在固定 Ollama `0.33.2`、`qwen2.5:7b` model digest 和 generation configuration 下完成 4 cases x 3 runs 的 exact-output stability verification；
 - FastAPI、Streamlit 和 CLI 基础链路。
 
 当前默认链路仍是 hybrid no-rerank。rerank 指标收益明显，但延迟成本也明显，因此继续作为 optional high-precision mode，而不是默认行为。
 
-V3.5 retrieval benchmark 已完成 chunk/index 对齐、recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。当前 retrieval 阶段不再继续围绕个别 case 调 parser 或检索规则，下一主阶段转向 V4 Answer Quality / Answer Evaluation。
+V3.5 retrieval benchmark 已完成 chunk/index 对齐、recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。V4.0-V4.5.1 已完成 answer-eval 基础设施、formal historical baseline、human failure taxonomy 和 generation reproducibility 验证。V4.6 已完成 failure analysis、fixed-generation reference 和 Condition Preservation 单变量实验；该 treatment 经因果隔离验证后判定为 `REJECT`，未进入稳定 Prompt，production RAG behavior 保持不变。下一阶段是 Resume-Ready Answer Model Selection。
+
+V4.5 的 Human Full Pass 为 12-case dev diagnostic set 上的 `7/12`（58.33%），只用于当前 failure analysis，不代表 production accuracy、跨车型准确率或系统总体准确率。V4.4 保留为继承当时 generation defaults 的历史基线；后续严格 A/B 将使用 V4.5.1 固定参数建立独立 controlled reference，不覆盖历史 artifact。
 
 ## 3. 为什么汽车用户手册 RAG 不只是简单切块
 
@@ -316,13 +322,13 @@ elapsed 仅记录这一次运行。它不是严格 latency benchmark；正式比
 
 ## 12. 下一阶段建议工作方向
 
-### 优先级 A：进入 V4 Answer Quality / Answer Evaluation
+### 优先级 A：Resume-Ready Answer Model Selection
 
-- refresh `answer_eval_set` provenance，并与 frozen V3.5 evidence 对齐；
-- 修复 answer evaluator 已知问题；
-- 建立正式 answer baseline；
-- 增加 groundedness、citation correctness、coverage 和 forbidden content 检查；
-- 引入人工评分，按 failure type 驱动 answer-stage 改进。
+- 固定 retrieval、Prompt、Prompt Evidence、context configuration、evaluation semantics、`temperature=0.0` 和 `seed=42`；
+- 只改变 Answer Model，比较当前 `qwen2.5:7b` 与少量高价值候选；
+- 继续使用独立 `exp/*` 分支和 controlled reference，不把模型选择与 Prompt/retrieval 改动混合；
+- 同时检查目标失败、pass-case regression、unsupported claim、safety 和 completeness；
+- V4.6 rejected treatment 只保留实验报告，不作为当前系统能力。
 
 ### 优先级 B：固化 checkpoint 与项目展示
 
@@ -335,9 +341,10 @@ elapsed 仅记录这一次运行。它不是严格 latency benchmark；正式比
 
 ### 优先级 C：更高成本探索
 
-- rerank latency optimization；
-- 对比不同 reranker 模型和 `rerank_top_n`；
-- 多手册 / 多车型泛化；
+- V4.7 Answer Model Benchmark；
+- V4.8 Embedding / Retrieval Model Benchmark；
+- V4.9 Query Transformation；
+- 多手册 / 多车型泛化与最终外部评测；
 - 表格、图片、图标、多模态能力；
 - 更复杂的 query rewrite 或 agent workflow。
 

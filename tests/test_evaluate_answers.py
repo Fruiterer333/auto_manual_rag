@@ -73,6 +73,8 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
             top_k=5,
             limit=1,
             split="dev",
+            experiment_id="v4.6-b-condition-preservation",
+            experiment_phase="reference",
         ),
     )
     monkeypatch.setattr(evaluate_answers, "get_settings", lambda: Settings())
@@ -84,6 +86,15 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
         lambda settings: {
             "ollama_version": "0.test",
             "ollama_model_digest": "sha256:test",
+        },
+    )
+    monkeypatch.setattr(
+        evaluate_answers,
+        "_collect_git_identity",
+        lambda: {
+            "git_branch": "exp/v4.6-condition-preservation",
+            "git_commit": "test-commit",
+            "git_worktree_dirty": True,
         },
     )
 
@@ -108,6 +119,12 @@ def test_answer_runner_writes_auditable_json_without_real_llm(tmp_path, monkeypa
     assert payload["config"]["generation_timeout_seconds"] == 120
     assert payload["config"]["ollama_version"] == "0.test"
     assert payload["config"]["ollama_model_digest"] == "sha256:test"
+    assert payload["config"]["experiment_id"] == "v4.6-b-condition-preservation"
+    assert payload["config"]["experiment_phase"] == "reference"
+    assert payload["config"]["git_branch"] == "exp/v4.6-condition-preservation"
+    assert payload["config"]["git_commit"] == "test-commit"
+    assert payload["config"]["git_worktree_dirty"] is True
+    assert len(payload["config"]["answer_prompt_sha256"]) == 64
 
 
 def test_formal_baseline_default_name_includes_mode_rerank_and_timestamp() -> None:

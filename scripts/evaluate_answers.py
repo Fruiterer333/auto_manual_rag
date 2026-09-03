@@ -1,5 +1,6 @@
 import argparse
 import hashlib
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -38,6 +39,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--limit", type=int)
     parser.add_argument("--split", default="dev")
+    parser.add_argument("--experiment-id")
+    parser.add_argument(
+        "--experiment-phase",
+        choices=("reference", "treatment"),
+    )
     return parser.parse_args()
 
 
@@ -59,6 +65,7 @@ def main() -> None:
     ensure_answer_eval_semantics_valid(cases)
     generation_metadata = get_generation_request_metadata(settings)
     ollama_runtime_metadata = collect_ollama_runtime_metadata(settings)
+    git_metadata = _collect_git_identity()
 
     chain = QAChain(settings=settings)
     results = []
@@ -101,6 +108,12 @@ def main() -> None:
             "neighbor_expansion_enabled": settings.ENABLE_NEIGHBOR_CONTEXT_EXPANSION,
             "answer_eval_dataset_sha256": _file_sha256(Path(args.dataset)),
             "answer_eval_semantics_version": ANSWER_EVAL_SEMANTICS_VERSION,
+            "experiment_id": getattr(args, "experiment_id", None),
+            "experiment_phase": getattr(args, "experiment_phase", None),
+            **git_metadata,
+            "answer_prompt_sha256": _file_sha256(
+                PROJECT_ROOT / "app/rag/prompts/answer_prompt.py"
+            ),
             **generation_metadata,
             **ollama_runtime_metadata,
         },
@@ -136,6 +149,24 @@ def _default_output_path(
 
 def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _collect_git_identity() -> dict[str, str | bool | None]:
+    def _git(*args: str) -> str | None:
+        result = subprocess.run(
+            ("git", *args),
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    return {
+        "git_branch": _git("branch", "--show-current"),
+        "git_commit": _git("rev-parse", "HEAD"),
+        "git_worktree_dirty": bool(_git("status", "--porcelain")),
+    }
 
 
 if __name__ == "__main__":

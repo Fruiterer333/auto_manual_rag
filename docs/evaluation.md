@@ -11,7 +11,7 @@
 - 每条 active case 定义一个或多个能独立支撑问题的 gold chunks；
 - `evidence_hit@k` 判断 top-k 是否命中 gold evidence；
 - benchmark 不使用 retriever 当前排名反向定义 gold；
-- Answer Evaluation 是后续独立阶段，不应混入 retrieval 指标。
+- Answer Evaluation 已在 V4 建立独立 provenance、semantics freeze、formal historical baseline 和 human adjudication；其结论仍不得混入 retrieval 指标或反向改写冻结的 V3.5 gold evidence。
 
 Gold chunk 与 chunk strategy 版本耦合。parser、splitter、heading text、boundary 或 deterministic chunk ID 发生实质变化后，旧 gold 可能失效。此时必须基于问题、原始手册事实和新 chunk 输出重新校准，不能把 stale gold 静默计为 retrieval miss。
 

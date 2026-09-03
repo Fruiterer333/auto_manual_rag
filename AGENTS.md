@@ -36,7 +36,9 @@
 - V3.3-V3.5 已完成 failure review、parser/chunk hierarchy 修复、retrieval benchmark recalibration、consistency validation、ambiguous-case adjudication、gold-equivalence adjudication 和 final freeze。
 - 当前唯一正式 V3.5 retrieval baseline 包含 69 条 records、68 条 active cases、1 条 excluded case 和 99 条 gold evidence；validator issues 为 0。
 - Frozen metrics：hybrid no-rerank `Hit@1=0.6618`、`Hit@5=0.9706`、`MRR=0.7922`；hybrid + rerank `Hit@1=0.8676`、`Hit@5=1.0000`、`MRR=0.9277`。
-- Retrieval 阶段已经 freeze。当前重点转向 V4 Answer Quality / Answer Evaluation；不要继续增加 retrieval complexity、parser 特例或 query-specific 规则。`ENABLE_RERANK=false` 仍为默认配置。
+- Retrieval 阶段已经 freeze。V4.0-V4.5 已完成 Answer Evaluation provenance、sanitization、generation auditability、semantics freeze、formal baseline 和 human adjudication；V4.5.1 已将 `temperature=0.0`、`seed=42`、`stream=false` 显式化，并在固定 Ollama `0.33.2` 和 `qwen2.5:7b` model digest 的环境中通过 4 cases x 3 runs 的 exact-output stability 验证。
+- V4.6 已完成 failure-to-intervention mapping、fixed-generation R0 与 Condition Preservation T1 单变量实验。因果隔离有效，但 T1 未修复两个目标条件保持失败，结论为 `REJECT`；rejected Prompt behavior 不得进入稳定主分支，负实验 artifact 应保留。
+- 下一阶段是 Resume-Ready Answer Model Selection：固定 retrieval、Prompt、Prompt Evidence、context、generation configuration、dataset 和 evaluation semantics，只比较少量高价值 Answer Model。`ENABLE_RERANK=false` 仍为默认配置。
 
 ## 2. AI 编程助手工作原则
 
@@ -187,6 +189,42 @@ V3.x 阶段必须进一步保持以下工程边界，避免逻辑散落和补丁
 
 如果一个规则只改善少数样例、缺乏通用解释、难以 debug 或难以评估，应避免加入主链路。
 
+## 3.8 受控实验与分支治理
+
+任何可能影响 retrieval、ranking、context selection、prompt、generation、answer model、embedding model、query transformation 或 evaluation outcome 的实验性修改，原则上不得未经验证直接进入稳定主分支。
+
+标准流程：
+
+1. 从稳定主分支创建单一目的的 `exp/<experiment-name>` 分支；
+2. 明确 hypothesis、独立变量、冻结变量、目标 case、回归护栏和 reject criteria；
+3. 完成实现和 deterministic tests；
+4. 使用冻结数据集和配置执行 controlled evaluation；
+5. 结合自动指标与人工分析生成 experiment report；
+6. 只有收益有证据支持且 regression risk 可接受时，才提出 merge candidate。
+
+约束：
+
+- 一个实验原则上只改变一个主要变量；无法拆分时必须在设计报告中说明原因。
+- 实验结果只能是 `ACCEPT`、`REJECT` 或 `INCONCLUSIVE`，不能因为已经投入实现成本而强行合并。
+- `REJECT` 和 `INCONCLUSIVE` 的实现不进入稳定主分支，但实验报告应保留。
+- 实验分支在真正开始实现时创建，不为路线图中的未来设想预建分支。
+- V4.4 是继承当时 Ollama generation defaults 的历史 baseline，不得覆盖或改写为 fixed-generation baseline。V4.5.1 之后的严格 A/B 必须建立独立的 fixed-generation controlled reference。
+
+## 3.9 Global Project Information Sync Audit
+
+每个 major milestone、architecture change、evaluation semantics change 或 accepted experiment 完成后，必须审计以下信息面，并逐项判断 `UPDATE_REQUIRED` 或 `NO_UPDATE_NEEDED`：
+
+- `README.md`；
+- `AGENTS.md`；
+- `docs/` 与 `docs/evaluation/`；
+- `reports/evaluation/`；
+- `.env.example` 和配置文档；
+- CLI/help text；
+- tests；
+- 相关代码注释、docstring、设计与评测方法文档。
+
+Global Sync Audit 不要求机械修改所有文件。README 只维护当前稳定能力、正式默认配置、已验证的重要状态、高层 roadmap 和 known limitations；长期开发约束、实验分支和 merge policy 放在 AGENTS.md；详细实验结果放在 `reports/evaluation/`；方法与设计放在 `docs/evaluation/` 或对应 design docs。
+
 ## 4. 汽车用户手册领域约束
 
 本项目处理的是汽车用户手册，不是普通文本。开发时必须特别注意：
@@ -221,6 +259,7 @@ V3.x 阶段必须进一步保持以下工程边界，避免逻辑散落和补丁
 - LLM 和 Embedding 都必须设计成可替换接口。
 - 不要把某个模型写死在业务代码中。
 - 所有模型名称、base_url、超时时间等都应通过配置读取。
+- V4.5.1 之后的受控实验使用显式 `temperature=0.0`、`seed=42` 和 `stream=false`。该配置只在已记录的当前 runtime、Ollama 版本、模型 digest 和 inference backend 下验证了 repeated-run exact-output stability，不得表述为跨硬件、跨版本或跨 backend 的普适确定性。
 
 ## 7. 代码质量要求
 
@@ -315,8 +354,15 @@ Commit message 应描述真实改动，避免无意义提交信息，例如：
 - V3.3：基于更广泛评测完成 failure review、模块边界复核和诊断收敛
 - V3.4：修复 manual hierarchy、section/subsection、heading path 和 chunk boundary
 - V3.5：完成 retrieval benchmark recalibration、consistency validation、adjudication 和 final freeze
-- V4：Answer Quality / Answer Evaluation，包括 evidence provenance、groundedness、citation correctness、coverage、forbidden content 和人工评分
-- V5：工程化打磨、部署、文档和简历包装
+- V4.0-V4.3：完成 Answer Evaluation provenance refresh、sanitization、Exact Prompt Evidence auditability 和 evaluation semantics freeze
+- V4.4：完成 12-case historical formal answer baseline；该基线继承当时 generation defaults
+- V4.5：完成人工裁决与 failure taxonomy；Human Full Pass 为 12-case dev diagnostic set 上的 `7/12`，不得表述为 production accuracy
+- V4.5.1：显式固定 generation parameters，并在当前固定 runtime/model identity 下完成 repeated-run stability verification
+- V4.6：完成 Failure-Driven Grounded Generation failure analysis 和 Condition Preservation controlled experiment；T1 rejected，stable Prompt 保持不变
+- V4.7：Resume-Ready Answer Model Selection，在冻结其他变量时比较少量高价值 Answer Model
+- V4.8：Embedding / Retrieval Model Benchmark
+- V4.9：Query Transformation
+- V5.0：Final Evaluation、工程化打磨、部署、文档和简历包装
 
 ## 10. 反过拟合原则
 
@@ -427,12 +473,13 @@ train / dev / test 原则：
 
 后续评测路线：
 
-1. 刷新 `answer_eval_set` provenance，并与 frozen V3.5 evidence 对齐。
-2. 修复 answer evaluator 已知问题，建立 formal answer baseline。
-3. 增加 citation correctness、groundedness、completeness、forbidden content rate 和人工评分。
-4. 根据 answer failure types 改进 context assembly 和 generation，不用 prompt 掩盖 retrieval 失败。
-5. 如果未来重开 retrieval/chunk 优化，必须先定义新版本和 recalibration plan，不能直接复用 frozen gold。
-6. 如果 rerank 进入用户请求链路，必须补充 warmup、重复运行、per-query latency 和 p50/p95。
+1. V4.6 已基于冻结的 V4.4/V4.5 evidence 完成 failure-to-intervention mapping 和 Condition Preservation 单变量实验；T1 rejected，production Prompt 不变。
+2. V4.7 以 fixed-generation controlled reference 开展 Resume-Ready Answer Model Selection，不混改 Prompt、retrieval 或 context。
+3. V4.8 独立比较 Embedding / Retrieval Model。
+4. V4.9 在已有评测与 failure evidence 支持下研究 Query Transformation。
+5. V5.0 执行最终评测；当前 12-case answer dev diagnostic set 和 68-active retrieval dev benchmark 都不得冒充外部 test set。
+6. 如果未来重开 retrieval/chunk 优化，必须先定义新版本和 recalibration plan，不能直接复用 frozen gold。
+7. 如果 rerank 进入用户请求链路，必须补充 warmup、重复运行、per-query latency 和 p50/p95。
 
 所有后续 rerank、query rewrite、chunk 优化、metadata selection 调整，都必须通过 evaluation runner 做量化验证，并结合人工 failure analysis 解释结果。
 

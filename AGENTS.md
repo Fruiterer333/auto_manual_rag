@@ -40,7 +40,7 @@
 - V4.6 已完成 failure-to-intervention mapping、fixed-generation R0 与 Condition Preservation T1 单变量实验。因果隔离有效，但 T1 未修复两个目标条件保持失败，结论为 `REJECT`；rejected Prompt behavior 不得进入稳定主分支，负实验 artifact 应保留。
 - V4.7 已完成 Resume-Ready Answer Model Selection。在固定 RAG pipeline 和 12-case dev diagnostic set 下比较 `qwen2.5:7b`、`qwen3.5:9b`、`gemma3:12b` 后，人工确认选择 `qwen3.5:9b`；稳定默认 generation configuration 为 `temperature=0.0`、`seed=42`、`stream=false`、`think=false`。选定模型已在当前 Ollama `0.33.2` 和固定 model digest 下通过 4 cases x 3 runs 的 Prompt Evidence/raw/final exact-output stability 验证。
 - V4.8 已完成 Final System Evaluation。Frozen hybrid no-rerank retrieval 复跑结果与 V3.5 指标一致；12-case answer dev diagnostic final run 与 V4.7 选中模型运行的 Prompt Evidence、raw answer 和 final answer 均为 12/12 exact match。未发现新的 release-blocking regression。
-- 下一阶段是 V5.0 Resume Release。`ENABLE_RERANK=false` 仍为默认配置；不得把 V5.0 包装与演示收尾扩展成新的模型搜索、Prompt 调整或 retrieval 优化。
+- V5.0-A Portfolio Audit 与 V5.0-B Portfolio Hardening 已完成；当前 V5.0-C 只冻结技术事实、整理 Resume / Interview / Release Package 并完成发布前核验。`ENABLE_RERANK=false` 仍为默认配置；V5.0-C 完成后项目进入 maintenance，不得把包装与面试准备扩展成新的模型搜索、Prompt 调整或 retrieval 优化。
 
 ## 2. AI 编程助手工作原则
 
@@ -364,7 +364,10 @@ Commit message 应描述真实改动，避免无意义提交信息，例如：
 - V4.7：已完成 Resume-Ready Answer Model Selection，稳定默认 Answer Model 为 `qwen3.5:9b`，显式 `think=false`
 - V4.8：已完成 Final System Evaluation，冻结最终配置、retrieval verification、12-case answer dev diagnostic 结果和 known limitations
 - Future Work：Embedding / Retrieval Model Benchmark 与 Query Transformation
-- V5.0：Resume Release、工程化收尾、演示验证、文档和简历包装
+- V5.0-A：已完成 Portfolio Audit，明确 AI Application Engineer 定位和 release-readiness 缺口
+- V5.0-B：已完成 Portfolio Hardening，补齐产品优先 README、Demo、Quick Start、Example Q&A 和评测导航
+- V5.0-C：冻结技术事实，整理 Resume / Interview / Code Study / Release Package，并完成发布前核验
+- Maintenance：V5.0-C 后停止主动功能开发；只接受 correctness bug fix、依赖维护、文档纠正和面试驱动的事实澄清
 
 ## 10. 反过拟合原则
 
@@ -478,11 +481,12 @@ train / dev / test 原则：
 1. V4.6 已基于冻结的 V4.4/V4.5 evidence 完成 failure-to-intervention mapping 和 Condition Preservation 单变量实验；T1 rejected，production Prompt 不变。
 2. V4.7 已在 Prompt Evidence 不变的前提下完成三模型 controlled comparison，并选择 `qwen3.5:9b`。
 3. V4.8 已使用稳定默认模型完成 Final System Evaluation；最终配置、known limitations 和 Resume-Ready 技术核心状态已经冻结。
-4. V5.0 只做 Resume Release、工程化收尾、演示验证和项目包装，不应默认重开 Answer Model、Prompt 或 retrieval 实验。
+4. V5.0-A/B 已完成审计与 Portfolio Hardening；V5.0-C 只做事实冻结、Resume / Interview / Release Package 和发布前核验，不应默认重开 Answer Model、Prompt 或 retrieval 实验。
 5. Embedding / Retrieval Model Benchmark 与 Query Transformation 降为 Future Work，必须由新的评测证据触发。
 6. 当前 12-case answer dev diagnostic set 和 68-active retrieval dev benchmark 都不得冒充外部 test set。
 7. 如果未来重开 retrieval/chunk 优化，必须先定义新版本和 recalibration plan，不能直接复用 frozen gold。
 8. 如果 rerank 进入用户请求链路，必须补充 warmup、重复运行、per-query latency 和 p50/p95。
+9. V5.0-C 完成后项目进入 maintenance；任何新的实验必须由 correctness issue 或新的冻结评测证据触发，不能因为“仍可优化”而恢复无边界开发。
 
 所有后续 rerank、query rewrite、chunk 优化、metadata selection 调整，都必须通过 evaluation runner 做量化验证，并结合人工 failure analysis 解释结果。
 

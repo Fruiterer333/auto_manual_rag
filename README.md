@@ -300,6 +300,11 @@ tests/                  parser、retrieval、generation、evaluation 单元测�
 - [V3.5 retrieval benchmark summary](reports/evaluation/v3_5_retrieval_benchmark_summary.md)
 - [V4.8 final system evaluation](reports/evaluation/v4_8_final_system_evaluation.md)
 - [V5.0 portfolio audit](docs/v5_0_portfolio_audit.md)
+- [Frozen technical facts](docs/portfolio/technical_facts.md)
+- [Resume project material](docs/portfolio/resume_project.md)
+- [Interview guide](docs/portfolio/interview_guide.md)
+- [Code study map](docs/portfolio/code_study_map.md)
+- [Resume-ready release notes](docs/portfolio/release_notes.md)
 - [Development constraints](AGENTS.md)
 
 ## Future Work

@@ -302,4 +302,4 @@ Frozen retrieval verification 在 68 条 active cases 上得到 `Hit@1=0.6618`�
 
 V4.8 的逐 case human rubric 仍标记为 PROPOSED。`10/12` Human Full Pass、`1/12` severe failure、`1/12` unsupported claim 和 `1/12` critical safety omission 只能称为 12-case dev diagnostic set 的结果，不代表 production accuracy。完整结论和 known limitations 见 `reports/evaluation/v4_8_final_system_evaluation.md`。
 
-下一阶段为 V5.0 Resume Release，主要完成 Git checkpoint、演示验证、文档和项目包装。Embedding / Retrieval Model Benchmark 与 Query Transformation 保留为由后续证据触发的 Future Work。
+V5.0-A Portfolio Audit 与 V5.0-B Portfolio Hardening 已完成；V5.0-C 只冻结技术事实、整理 Resume / Interview / Release Package 并完成发布前核验，不新增评测语义或技术实验。V5.0-C 后项目进入 maintenance。Embedding / Retrieval Model Benchmark 与 Query Transformation 仅保留为由新 failure evidence 触发的 Future Work。

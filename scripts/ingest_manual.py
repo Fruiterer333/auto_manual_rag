@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build Chroma index for a manual PDF.")
-    parser.add_argument("--file-path", default="data/raw/train_a.pdf")
+    parser.add_argument("--file-path", default="data/raw/demo_manual.pdf")
     parser.add_argument("--rebuild", action="store_true")
     parser.add_argument("--chunk-size", type=int, default=800)
     parser.add_argument("--chunk-overlap", type=int, default=120)

@@ -7,7 +7,7 @@ router = APIRouter(tags=["ingest"])
 
 
 class IngestRequest(BaseModel):
-    file_path: str = "data/raw/train_a.pdf"
+    file_path: str = "data/raw/demo_manual.pdf"
     rebuild: bool = True
     chunk_size: int = Field(default=800, gt=0)
     chunk_overlap: int = Field(default=120, ge=0)

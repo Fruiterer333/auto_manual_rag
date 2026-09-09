@@ -1,8 +1,8 @@
 # Auto Manual RAG
 
-面向汽车用户手册的本地 RAG 问答系统。项目从 PDF 中恢复手册层级结构，通过 Dense + BM25 + RRF 混合检索组织证据，再由本地模型生成回答并返回页码、章节和原文摘录。
+面向汽车用户手册的本地 RAG 问答系统。
 
-系统覆盖结构感知解析、Evidence-grounded Answering、引用溯源、FastAPI/Streamlit/CLI 入口，以及 retrieval/answer evaluation。
+系统实现了汽车用户手册的结构化解析、混合检索、基于检索证据的回答生成与引用溯源，并提供 CLI、FastAPI 和 Streamlit 三种使用入口，同时建立了检索与回答质量评测流程。
 
 ## Demo
 
@@ -10,18 +10,19 @@
 
 > **问题：** 自动驻车 Auto Hold 的作用是什么？
 >
-> **回答：** 系统会在正常驾驶中的短暂停车时自动提供制动，驾驶员无需持续踩住制动踏板；需要起步时可踩下加速踏板，或用力踩下制动踏板后松开。
+> **回答：**  提供制动支持：在正常驾驶过程中的短暂停车时，系统会自动提供制动。 解放驾驶员脚部：通过上述功能，您不需要一直踩住制动踏板。
+起步操作简化：当车辆需要起步时，您只需踩下加速踏板，或者用力踩下制动踏板再松开，车辆即可正常行驶。
 >
 > **引用：** 用户手册第 159 页，`启动和驾驶 > 自动驻车系统`。
 
 ## Features
 
 - **Manual-aware parsing**：恢复 `chapter`、`section`、`subsection` 和 `heading_path`，保留页码、风险等级和跨页信息。
-- **Hybrid retrieval**：组合 Chroma dense retrieval 与 BM25 sparse retrieval，并使用 RRF 融合两路排名。
+- **Hybrid retrieval**：组合 dense retrieval 与 BM25 sparse retrieval，并使用 RRF 融合两路排名。
 - **Optional reranking**：支持本地 cross-encoder reranker，默认关闭，可用于更强调 top-1 精度的场景。
 - **Evidence hygiene**：过滤目录和低信息噪声，执行精确内容去重，并保留可解释的诊断 metadata。
 - **Evidence-grounded answering**：最终上下文限制为最多 5 条、6000 字符，由 Ollama `qwen3.5:9b` 基于明确 Evidence 回答。
-- **Traceable evaluation**：提供 retrieval/answer datasets、benchmark consistency validation、Exact Prompt Evidence 和结构化 citations。
+- **Traceable evaluation**：提供 Retrieval/Answer 评测数据集、Benchmark 一致性校验、实际入模证据追踪与结构化引用。
 
 ## Architecture
 
@@ -65,7 +66,6 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Windows PowerShell 使用 `.venv\Scripts\Activate.ps1` 激活环境。
 
 ### 2. Prepare Ollama
 
@@ -138,14 +138,14 @@ FastAPI 运行后，在另一个终端启动：
 
 ## Evaluation
 
-检索评测包含 68 条 active queries。以下指标衡量 gold Evidence 的检索排名质量，不是 answer accuracy、system accuracy 或 production accuracy。
+检索评测包含 68 条 active queries。
 
 | Configuration | Hit@1 | Hit@3 | Hit@5 | MRR |
 | --- | ---: | ---: | ---: | ---: |
 | Hybrid | 0.6618 | 0.9265 | 0.9706 | 0.7922 |
 | Hybrid + Reranker | 0.8676 | 0.9853 | 1.0000 | 0.9277 |
 
-Answer-level evaluation 另外检查 groundedness、correctness、completeness 和 condition handling。评测记录模型实际可见的 Exact Prompt Evidence，用于区分 retrieval failure 与 generation failure。
+Answer-level evaluation 进一步评估 groundedness、correctness、completeness 和 condition handling，并记录模型实际可见的入模证据（prompt evidence），支持对 retrieval、context selection 与 generation failure 进行分层归因。
 
 - [Evaluation methodology](docs/evaluation.md)
 - [Final evaluation report](reports/evaluation/README.md)
@@ -156,7 +156,7 @@ Answer-level evaluation 另外检查 groundedness、correctness、completeness �
 | --- | --- |
 | Dense + BM25 + RRF | Dense 提供语义召回，BM25 保留术语和精确短语匹配；RRF 可以融合不同分数尺度的排名。 |
 | Optional reranker | Cross-encoder 将 Hit@1 从 `0.6618` 提升到 `0.8676`，但增加本地推理开销，因此不作为默认链路。 |
-| `qwen3.5:9b` | 在 model-visible Evidence 保持一致的本地候选模型比较中选定，兼顾回答质量、模型大小和运行成本。 |
+| `qwen3.5:9b` | 在统一 model-visible evidence 的受控对比实验中选定，综合权衡回答质量、模型规模与本地推理开销。 |
 | Exact Prompt Evidence | 保存模型实际看到的证据，使回答、citations 和 evaluation 能基于同一上下文审计。 |
 
 ## Limitations
